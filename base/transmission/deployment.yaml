@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: transmission
+  name: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: transmission
+  template:
+    metadata:
+      labels:
+        run: transmission
+    spec:
+      securityContext:
+        fsGroup: 1000
+      initContainers:
+      - name: chown
+        image: busybox
+        command:
+        - sh
+        - -c
+        - "echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json"
+        volumeMounts:
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
+        - mountPath: /watch
+          name: htpc-home
+          subPath: watch
+      containers:    
+      - name: transmission
+        image: linuxserver/transmission
+        env:
+        - name: TZ
+          value: Pacific/Auckland
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: WHITELIST
+          value: ""
+        - name: HOST_WHITELIST
+          value: ""
+        ports:
+        - containerPort: 9091
+          name: webui
+          protocol: TCP
+        - containerPort: 51413
+          name: torrent-tcp
+          protocol: TCP
+        - containerPort: 51413
+          name: torrent-udp
+          protocol: UDP
+        resources: {}
+        volumeMounts: 
+        - mountPath: /config 
+          name: htpc-home
+          subPath: transmission
+        - mountPath: /downloads 
+          name: htpc-home
+          subPath: downloads
+        - mountPath: /watch
+          name: htpc-home
+          subPath: watch
