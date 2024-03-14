@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: htpc
+
+commonLabels:
+  app: htpc
+
+resources:
+- namespace.yaml
+- jackett
+- radarr
+- sonarr
+- bazarr
+- transmission
+- emby
+- ingress-route.yaml
+
+patchesStrategicMerge:
+- volumes_patch.yaml
+- env_variables_patch.yaml
+
+vars:
+  - name: SONARR
+    objref:
+      kind: Service
+      name: sonarr
+      apiVersion: v1
+  - name: RADARR
+    objref:
+      kind: Service
+      name: radarr
+      apiVersion: v1

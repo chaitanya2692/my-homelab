@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../../base
+
+images:
+  - name: linuxserver/jackett
+    newTag: arm32v6-latest
+  - name: linuxserver/sonarr
+    newTag: arm32v6-latest
+  - name: linuxserver/radarr
+    newTag: arm32v6-latest
+  - name: linuxserver/bazarr
+    newTag: arm32v6-latest
+  - name: linuxserver/transmission
+    newTag: arm32v6-latest
+  - name: emby/embyserver
+    newName: emby/embyserver_arm32v7
+    newTag: latest
