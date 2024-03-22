@@ -16,68 +16,66 @@ spec:
         run: sonarr
     spec:
       securityContext:
-        # runAsUser: 1000
-        # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
-      - name: chown
-        image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /tv"]
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: sonarr
-        - mountPath: /tv
-          name: htpc-home
-          subPath: media/tv
-      - name: config
-        image: busybox
-        command: ["sh", "-c"]
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        args:
-          - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(SONARR)</UrlBase></Config>'> /config/config.xml;echo end;"
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: sonarr
+        - name: chown
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /tv"]
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: sonarr
+            - mountPath: /tv
+              name: htpc-home
+              subPath: media/tv
+        - name: config
+          image: busybox
+          command: ["sh", "-c"]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          args:
+            - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(SONARR)</UrlBase></Config>'> /config/config.xml;echo end;"
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: sonarr
       containers:
-      - env:
-        - name: TZ
-          value: UTC
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        image: linuxserver/sonarr
-        name: sonarr
-        ports:
-        - containerPort: 8989
-          name: webui
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: sonarr
-        - mountPath: /tv
-          name: htpc-home
-          subPath: media/tv
-        - mountPath: /downloads
-          name: htpc-home
-          subPath: downloads
+        - env:
+            - name: TZ
+              value: UTC
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          image: linuxserver/sonarr
+          name: sonarr
+          ports:
+            - containerPort: 8989
+              name: webui
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl "http://localhost:8989/sonarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl "http://localhost:8989/sonarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: sonarr
+            - mountPath: /tv
+              name: htpc-home
+              subPath: media/tv
+            - mountPath: /downloads
+              name: htpc-home
+              subPath: downloads

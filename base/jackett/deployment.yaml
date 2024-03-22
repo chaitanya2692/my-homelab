@@ -20,34 +20,34 @@ spec:
         # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
-      - name: config
-        image: busybox
-        command: ["sh", "-c"]
-        args:
-          - "echo start;
-          [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/ &&  echo '{ \"BasePathOverride\": \"/jackett\"}' > /config/Jackett/ServerConfig.json;
-          echo end;"
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: jackett
+        - name: config
+          image: busybox
+          command: ["sh", "-c"]
+          args:
+            - "echo start;
+            [[ ! -f /config/Jackett/ServerConfig.json ]] && mkdir -p /config/Jackett/ &&  echo '{ \"BasePathOverride\": \"/jackett\"}' > /config/Jackett/ServerConfig.json;
+            echo end;"
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: jackett
       containers:
-      - env:
-        - name: TZ
-          value: UTC
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        image: linuxserver/jackett
-        name: jackett
-        ports:
-        - containerPort: 9117
-          name: webui
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: jackett
-        - mountPath: /downloads
-          name: htpc-home
-          subPath: downloads
+        - env:
+            - name: TZ
+              value: UTC
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          image: linuxserver/jackett
+          name: jackett
+          ports:
+            - containerPort: 9117
+              name: webui
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: jackett
+            - mountPath: /downloads
+              name: htpc-home
+              subPath: downloads

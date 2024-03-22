@@ -1,3 +1,4 @@
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -7,18 +8,18 @@ commonLabels:
   app: htpc
 
 resources:
-- namespace.yaml
-- jackett
-- radarr
-- sonarr
-- bazarr
-- transmission
-- emby
-- ingress-route.yaml
+  - namespace.yaml
+  - jackett
+  - radarr
+  - sonarr
+  - bazarr
+  - transmission
+  - emby
+  - ingress-route.yaml
 
 patchesStrategicMerge:
-- volumes_patch.yaml
-- env_variables_patch.yaml
+  - volumes_patch.yaml
+  - env_variables_patch.yaml
 
 vars:
   - name: SONARR

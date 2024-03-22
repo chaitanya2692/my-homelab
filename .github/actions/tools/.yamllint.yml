@@ -1,0 +1,12 @@
+---
+extends: default
+
+rules:
+  # 80 chars should be enough, but don't fail if a line is longer
+  line-length:
+    max: 800
+    level: warning
+
+ignore:
+  - install_armhf.yaml
+  - install_x86_64.yaml
