@@ -1,13 +1,28 @@
 #!/bin/sh -x
 
-SRCROOT="$( CDPATH='' cd -- "$(dirname "$0")" && pwd -P )"
+# Check if no arguments are provided
+if [ $# -eq 0 ]; then
+    echo "Error: No arguments provided."
+    echo "Usage: $0 armhf or $0 x86"
+    exit 1
+fi
+
 AUTOGENMSG="# This is an auto-generated file. DO NOT EDIT"
 
-# docker run -v ${PWD}:${PWD} registry.k8s.io/kustomize/kustomize:v5.0.0 edit fix "${SRCROOT}/overlays/armhf/kustomization.yaml"
-# docker run -v ${PWD}:${PWD} registry.k8s.io/kustomize/kustomize:v5.0.0 edit fix "${SRCROOT}/overlays/x86/kustomization.yaml"
+echo "${AUTOGENMSG}" > "install_$1.yaml"
 
-echo "${AUTOGENMSG}" > "${SRCROOT}/install_x86_64.yaml"
-docker run -v ${PWD}:${PWD} registry.k8s.io/kustomize/kustomize:v5.0.0 build "${SRCROOT}/overlays/x86" >> "${SRCROOT}/install_x86_64.yaml"
+local_build(){
+    docker run -v ${PWD}:${PWD} registry.k8s.io/kustomize/kustomize:v5.0.0 build "${PWD}/overlays/$1" >> "${PWD}/install_$1.yaml"
+}
 
-echo "${AUTOGENMSG}" > "${SRCROOT}/install_armhf.yaml"
-docker run -v ${PWD}:${PWD} registry.k8s.io/kustomize/kustomize:v5.0.0 build "${SRCROOT}/overlays/armhf" >> "${SRCROOT}/install_armhf.yaml"
+ci_build(){
+    kustomize build "${PWD}/overlays/armhf" >> "${PWD}/install_$1.yaml"
+}
+
+# Check if running in GitHub Actions
+if [ -n "$CI" ]; then
+    ci_build "$1"
+else
+    # If running locally
+    local_build "$1"
+fi
