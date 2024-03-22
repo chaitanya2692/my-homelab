@@ -1,6 +1,6 @@
 ---
   name: Linting and validation
-  on: [pull_request, push]  # yamllint disable-line rule:truthy
+  on: [push]  # yamllint disable-line rule:truthy
   jobs:
     yaml-lint:
       runs-on: ubuntu-latest
