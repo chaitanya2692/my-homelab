@@ -1,5 +1,5 @@
 ---
-name: Linting and validation
+name: CI
 on: [push]  # yamllint disable-line rule:truthy
 jobs:
   yaml-lint:
@@ -12,6 +12,7 @@ jobs:
           config_file: .github/actions/tools/.yamllint.yml
   validate:
     runs-on: ubuntu-latest
+    needs: [yaml-lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -19,3 +20,15 @@ jobs:
         uses: ./.github/actions/tools
       - name: Validate manifests
         run: ./validate.sh
+  update-manifests:
+    needs: [validate]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Setup tools
+        uses: ./.github/actions/tools
+      - name: Update manifests for arm
+        run: ./update-manifest.sh arm
+      - name: Update manifests for x86
+        run: ./update-manifest.sh x86
