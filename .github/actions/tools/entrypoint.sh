@@ -2,25 +2,22 @@
 
 set -eu
 
-KUSTOMIZE_VERSION="5.3.0"
-
 mkdir -p $GITHUB_WORKSPACE/bin
 
-curl -sL https://github.com/mikefarah/yq/releases/download/latest/yq_linux_amd64 -o yq
+#Install yq
+curl -sL https://github.com/mikefarah/yq/releases/download/latest/yq_linux_amd64 -o /bin
+chmod +x $GITHUB_WORKSPACE/bin
+yq -V
 
-cp ./yq $GITHUB_WORKSPACE/bin
-chmod +x $GITHUB_WORKSPACE/bin/yq
+#Install Kustomize
+curl -sL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+cp kustomize $GITHUB_WORKSPACE/bin
+kustomize version
 
-kustomize_url=https://github.com/kubernetes-sigs/kustomize/releases/download && \
-curl -sL ${kustomize_url}/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz | tar xz
-
-cp ./kustomize $GITHUB_WORKSPACE/bin
-chmod +x $GITHUB_WORKSPACE/bin/kustomize
-
-curl -sL https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xz
-
-cp ./kubeval $GITHUB_WORKSPACE/bin
-chmod +x $GITHUB_WORKSPACE/bin/kubeval
+#Install Kubeval
+wget -qO- https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz | tar xvz
+cp kubeval $GITHUB_WORKSPACE/bin
+kubeval --version
 
 echo "$GITHUB_WORKSPACE/bin" >> $GITHUB_PATH
 echo "$RUNNER_WORKSPACE/$(basename $GITHUB_REPOSITORY)/bin" >> $GITHUB_PATH
