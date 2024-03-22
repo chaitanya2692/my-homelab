@@ -9,4 +9,4 @@ rules:
 
 ignore:
   - install_armhf.yaml
-  - install_x86_64.yaml
+  - install_x86.yaml
