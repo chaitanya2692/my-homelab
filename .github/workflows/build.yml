@@ -1,0 +1,16 @@
+---
+  name: Kustomize Build
+  on: [pull_request, push]
+
+  jobs:
+    validate:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4.1.1
+        - name: Setup tools
+          uses: ./.github/actions/tools
+        - name: Update manifests for arm
+          run: ./update-manifest.sh arm
+        - name: Update manifests for x86
+          run: ./update-manifest.sh x86
