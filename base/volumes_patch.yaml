@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,10 +7,10 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -19,10 +20,10 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,10 +33,10 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,10 +46,10 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,10 +59,10 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,9 +72,7 @@ spec:
   template:
     spec:
       volumes:
-      - hostPath:
-          path: /opt/htpc
-          type: DirectoryOrCreate
-        name: htpc-home
-        # persistentVolumeClaim:
-        #   claimName: local-path-pvc
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
