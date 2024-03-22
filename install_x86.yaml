@@ -254,7 +254,7 @@ spec:
           value: "1000"
         - name: GID
           value: "1000"
-        image: emby/embyserver:latest
+        image: linuxserver/emby
         name: emby
         ports:
         - containerPort: 8096
