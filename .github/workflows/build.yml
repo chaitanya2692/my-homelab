@@ -1,6 +1,6 @@
 ---
   name: Kustomize Build
-  on: [pull_request, push]
+  on: [push]
 
   jobs:
     validate:
