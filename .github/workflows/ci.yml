@@ -30,9 +30,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
-      - name: Setup tools
-        uses: ./.github/actions/tools
+      - name: Setup kustomize
+        uses: fluxcd/pkg/actions/kustomize@main
       - name: Update manifests for arm
-        run: ./update-manifest.sh arm
+        run: ./update-manifests.sh arm
       - name: Update manifests for x86
-        run: ./update-manifest.sh x86
+        run: ./update-manifests.sh x86

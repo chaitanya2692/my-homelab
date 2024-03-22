@@ -4,8 +4,14 @@ kind: Deployment
 metadata:
   name: transmission
 spec:
+  selector:
+    matchLabels:
+      run: transmission
   template:
     spec:
+      containers:
+        - name: transmission
+          image: linuxserver/transmission
       volumes:
         - hostPath:
             path: /opt/htpc
@@ -17,8 +23,14 @@ kind: Deployment
 metadata:
   name: radarr
 spec:
+  selector:
+    matchLabels:
+      run: radarr
   template:
     spec:
+      containers:
+        - name: radarr
+          image: linuxserver/radarr
       volumes:
         - hostPath:
             path: /opt/htpc
@@ -30,8 +42,14 @@ kind: Deployment
 metadata:
   name: sonarr
 spec:
+  selector:
+    matchLabels:
+      run: sonarr
   template:
     spec:
+      containers:
+        - name: sonarr
+          image: linuxserver/sonarr
       volumes:
         - hostPath:
             path: /opt/htpc
@@ -43,8 +61,14 @@ kind: Deployment
 metadata:
   name: jackett
 spec:
+  selector:
+    matchLabels:
+      run: jackett
   template:
     spec:
+      containers:
+        - name: jackett
+          image: linuxserver/jackett
       volumes:
         - hostPath:
             path: /opt/htpc
@@ -56,8 +80,14 @@ kind: Deployment
 metadata:
   name: emby
 spec:
+  selector:
+    matchLabels:
+      run: emby
   template:
     spec:
+      containers:
+        - name: emby
+          image: linuxserver/emby
       volumes:
         - hostPath:
             path: /opt/htpc
@@ -69,8 +99,14 @@ kind: Deployment
 metadata:
   name: bazarr
 spec:
+  selector:
+    matchLabels:
+      run: bazarr
   template:
     spec:
+      containers:
+        - name: bazarr
+          image: linuxserver/bazarr
       volumes:
         - hostPath:
             path: /opt/htpc
