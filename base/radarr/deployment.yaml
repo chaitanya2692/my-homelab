@@ -24,10 +24,10 @@ spec:
         image: busybox
         command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /movies"]
         volumeMounts:
-        - mountPath: /config 
+        - mountPath: /config
           name: htpc-home
-          subPath: radarr    
-        - mountPath: /movies 
+          subPath: radarr
+        - mountPath: /movies
           name: htpc-home
           subPath: media/movies
       - name: config
@@ -38,8 +38,8 @@ spec:
           runAsGroup: 1000
         args:
           - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(RADARR)</UrlBase></Config>'> /config/config.xml;echo end;"
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: radarr
       containers:
@@ -71,13 +71,13 @@ spec:
             - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
           initialDelaySeconds: 30
           periodSeconds: 10
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: radarr
-        - mountPath: /movies 
+        - mountPath: /movies
           name: htpc-home
           subPath: media/movies
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads

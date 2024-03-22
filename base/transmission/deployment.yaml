@@ -25,16 +25,16 @@ spec:
         - -c
         - "echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json"
         volumeMounts:
-        - mountPath: /config 
+        - mountPath: /config
           name: htpc-home
           subPath: transmission
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-      containers:    
+      containers:
       - name: transmission
         image: linuxserver/transmission
         env:
@@ -59,11 +59,11 @@ spec:
           name: torrent-udp
           protocol: UDP
         resources: {}
-        volumeMounts: 
-        - mountPath: /config 
+        volumeMounts:
+        - mountPath: /config
           name: htpc-home
           subPath: transmission
-        - mountPath: /downloads 
+        - mountPath: /downloads
           name: htpc-home
           subPath: downloads
         - mountPath: /watch
