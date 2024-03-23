@@ -594,24 +594,6 @@ spec:
         - mountPath: /watch
           name: htpc-home
           subPath: watch
-      initContainers:
-      - command:
-        - sh
-        - -c
-        - 'echo ''{"download-dir": "/downloads", "rpc-whitelist-enabled": false, "rpc-host-whitelist-enabled":
-          false}'' > /config/settings.json'
-        image: busybox
-        name: chown
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: transmission
-        - mountPath: /downloads
-          name: htpc-home
-          subPath: downloads
-        - mountPath: /watch
-          name: htpc-home
-          subPath: watch
       securityContext:
         fsGroup: 1000
       volumes:
