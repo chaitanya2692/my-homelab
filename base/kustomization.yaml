@@ -14,7 +14,7 @@ resources:
   - sonarr
   - bazarr
   - transmission
-  - emby
+  - jellyfin
   - ingress-route.yaml
 
 patchesStrategicMerge:
