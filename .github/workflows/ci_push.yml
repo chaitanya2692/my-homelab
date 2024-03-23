@@ -1,6 +1,6 @@
 ---
-name: CI
-on: [push]  # yamllint disable-line rule:truthy
+name: Pull Request CI
+on: [pull_request]  # yamllint disable-line rule:truthy
 jobs:
   yaml-lint:
     runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
         uses: fluxcd/pkg/actions/kustomize@main
       - name: Validate manifests
         run: ./validate.sh
-  update-manifests:
+  test-update-manifests:
     needs: [validate]
     runs-on: ubuntu-latest
     steps:
