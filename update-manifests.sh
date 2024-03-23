@@ -16,7 +16,7 @@ local_build(){
 }
 
 ci_build(){
-    kustomize build "${PWD}/overlays/armhf" >> "${PWD}/install_$1.yaml"
+    kustomize build "${PWD}/overlays/$1" >> "${PWD}/install_$1.yaml"
 }
 
 # Check if running in GitHub Actions
