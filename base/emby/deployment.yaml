@@ -18,29 +18,29 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - env:
-        - name: TZ
-          value: UTC
-        - name: UID
-          value: "1000"
-        - name: GID
-          value: "1000"
-        image: emby/embyserver
-        name: emby
-        ports:
-        - containerPort: 8096
-          name: webui
-          protocol: TCP
-        - containerPort: 8920
-          name: webui-ssl
-          protocol: TCP
-        volumeMounts: 
-        - mountPath: /config 
-          name: htpc-home
-          subPath: emby
-        - mountPath: /tv 
-          name: htpc-home
-          subPath: media/tv  
-        - mountPath: /movies 
-          name: htpc-home
-          subPath: media/movies
+        - env:
+            - name: TZ
+              value: UTC
+            - name: UID
+              value: "1000"
+            - name: GID
+              value: "1000"
+          image: emby/embyserver
+          name: emby
+          ports:
+            - containerPort: 8096
+              name: webui
+              protocol: TCP
+            - containerPort: 8920
+              name: webui-ssl
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /config
+              name: htpc-home
+              subPath: emby
+            - mountPath: /tv
+              name: htpc-home
+              subPath: media/tv
+            - mountPath: /movies
+              name: htpc-home
+              subPath: media/movies
