@@ -17,23 +17,6 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-      initContainers:
-        - name: chown
-          image: busybox
-          command:
-            - sh
-            - -c
-            - "echo '{\"download-dir\": \"/downloads\", \"rpc-whitelist-enabled\": false, \"rpc-host-whitelist-enabled\": false}' > /config/settings.json"
-          volumeMounts:
-            - mountPath: /config
-              name: htpc-home
-              subPath: transmission
-            - mountPath: /downloads
-              name: htpc-home
-              subPath: downloads
-            - mountPath: /watch
-              name: htpc-home
-              subPath: watch
       containers:
         - name: transmission
           image: linuxserver/transmission
