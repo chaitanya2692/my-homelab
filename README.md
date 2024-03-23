@@ -10,7 +10,10 @@ It includes the following applications:
 * [Bazarr](https://github.com/morpheus65535/bazarr) for subtitles
 * Transmission for torrents
 * [Jackett](https://github.com/Jackett/Jackett) for torrent tracker searching
-* [Emby](https://emby.media/) 
+
+Media servers:
+* For IoT: [Emby](https://emby.media/)
+* For Server: [Jellyfin](https://jellyfin.org/)
 
 Credits:
 1) [htk8s](https://github.com/fabito/htk8s)

@@ -78,16 +78,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emby
+  name: jellyfin
 spec:
   selector:
     matchLabels:
-      run: emby
+      run: jellyfin
   template:
     spec:
       containers:
-        - name: emby
-          image: linuxserver/emby
+        - name: jellyfin
+          image: linuxserver/jellyfin
       volumes:
         - hostPath:
             path: /opt/htpc

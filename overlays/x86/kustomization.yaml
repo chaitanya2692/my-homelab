@@ -16,5 +16,5 @@ images:
     newTag: latest
   - name: linuxserver/transmission
     newTag: latest
-  - name: emby/embyserver
+  - name: linuxserver/jellyfin
     newTag: latest
