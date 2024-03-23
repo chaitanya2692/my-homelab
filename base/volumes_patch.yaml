@@ -1,79 +1,114 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: transmission
 spec:
+  selector:
+    matchLabels:
+      run: transmission
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
+      containers:
+        - name: transmission
+          image: linuxserver/transmission
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: radarr
 spec:
+  selector:
+    matchLabels:
+      run: radarr
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
+      containers:
+        - name: radarr
+          image: linuxserver/radarr
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarr
 spec:
+  selector:
+    matchLabels:
+      run: sonarr
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
+      containers:
+        - name: sonarr
+          image: linuxserver/sonarr
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jackett
 spec:
+  selector:
+    matchLabels:
+      run: jackett
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
+      containers:
+        - name: jackett
+          image: linuxserver/jackett
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: emby
 spec:
+  selector:
+    matchLabels:
+      run: emby
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
+      containers:
+        - name: emby
+          image: linuxserver/emby
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: bazarr
 spec:
+  selector:
+    matchLabels:
+      run: bazarr
   template:
     spec:
-      volumes: 
-      - hostPath: 
-          path: /opt/htpc 
-          type: DirectoryOrCreate 
-        name: htpc-home
-        # persistentVolumeClaim:
-        #   claimName: local-path-pvc
+      containers:
+        - name: bazarr
+          image: linuxserver/bazarr
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
