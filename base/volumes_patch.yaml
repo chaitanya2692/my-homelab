@@ -78,25 +78,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emby
-spec:
-  selector:
-    matchLabels:
-      run: emby
-  template:
-    spec:
-      containers:
-        - name: emby
-          image: linuxserver/emby
-      volumes:
-        - hostPath:
-            path: /opt/htpc
-            type: DirectoryOrCreate
-          name: htpc-home
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: bazarr
 spec:
   selector:
@@ -107,6 +88,25 @@ spec:
       containers:
         - name: bazarr
           image: linuxserver/bazarr
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  selector:
+    matchLabels:
+      run: jellyfin
+  template:
+    spec:
+      containers:
+        - name: jellyfin
+          image: linuxserver/jellyfin
       volumes:
         - hostPath:
             path: /opt/htpc
