@@ -1,0 +1,19 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emby
+spec:
+  selector:
+    matchLabels:
+      run: emby
+  template:
+    spec:
+      containers:
+        - name: emby
+          image: emby/embyserver
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home
