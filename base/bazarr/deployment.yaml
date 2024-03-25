@@ -20,9 +20,11 @@ spec:
       initContainers:
         - name: wait-for-sonarr-and-radarr
           image: busybox
+          imagePullPolicy: IfNotPresent
           command: ['sh', '-c', 'until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;']
         - name: config
           image: busybox
+          imagePullPolicy: IfNotPresent
           command:
             - "sh"
             - "-c"
@@ -89,6 +91,7 @@ spec:
             - name: PGID
               value: "1000"
           image: linuxserver/bazarr
+          imagePullPolicy: IfNotPresent
           name: bazarr
           ports:
             - containerPort: 6767

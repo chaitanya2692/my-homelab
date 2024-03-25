@@ -5,9 +5,15 @@ metadata:
   name: transmission
 spec:
   ports:
-    - port: 9091
-      protocol: TCP
+    - name: web
+      port: 9091
       targetPort: 9091
-      name: webui
+    - name: tcp
+      port: 51413
+      targetPort: 51413
+    - name: udp
+      port: 51413
+      protocol: UDP
+      targetPort: 51413
   selector:
     run: transmission

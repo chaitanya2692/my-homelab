@@ -20,9 +20,10 @@ spec:
       containers:
         - name: transmission
           image: linuxserver/transmission
+          imagePullPolicy: IfNotPresent
           env:
             - name: TZ
-              value: Pacific/Auckland
+              value: "UTC"
             - name: PUID
               value: "1000"
             - name: PGID
