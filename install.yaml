@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    app: htpc
+   app: htpc
   name: htpc
 ---
 apiVersion: v1
