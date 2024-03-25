@@ -100,10 +100,16 @@ metadata:
   namespace: htpc
 spec:
   ports:
-  - name: webui
+  - name: web
     port: 9091
-    protocol: TCP
     targetPort: 9091
+  - name: tcp
+    port: 51413
+    targetPort: 51413
+  - name: udp
+    port: 51413
+    protocol: UDP
+    targetPort: 51413
   selector:
     app: htpc
     run: transmission
@@ -137,6 +143,7 @@ spec:
         - name: PGID
           value: "1000"
         image: linuxserver/bazarr:latest
+        imagePullPolicy: IfNotPresent
         name: bazarr
         ports:
         - containerPort: 6767
@@ -158,6 +165,7 @@ spec:
         - until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr
           &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: wait-for-sonarr-and-radarr
       - command:
         - sh
@@ -214,6 +222,7 @@ spec:
           adaptive_searching = False
           EOF
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: config
         volumeMounts:
         - mountPath: /htpc
@@ -255,6 +264,7 @@ spec:
         - name: PGID
           value: "1000"
         image: linuxserver/jackett:latest
+        imagePullPolicy: IfNotPresent
         name: jackett
         ports:
         - containerPort: 9117
@@ -275,6 +285,7 @@ spec:
         - sh
         - -c
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: config
         volumeMounts:
         - mountPath: /config
@@ -372,6 +383,7 @@ spec:
         - name: PGID
           value: "1000"
         image: linuxserver/radarr:latest
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
@@ -410,6 +422,7 @@ spec:
         - -c
         - chown -R 1000:1000 /config && chown -R 1000:1000 /movies
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: chown
         volumeMounts:
         - mountPath: /config
@@ -425,6 +438,7 @@ spec:
         - sh
         - -c
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: config
         securityContext:
           runAsGroup: 1000
@@ -470,6 +484,7 @@ spec:
         - name: PGID
           value: "1000"
         image: linuxserver/sonarr:latest
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
@@ -508,6 +523,7 @@ spec:
         - -c
         - chown -R 1000:1000 /config && chown -R 1000:1000 /tv
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: chown
         volumeMounts:
         - mountPath: /config
@@ -523,6 +539,7 @@ spec:
         - sh
         - -c
         image: busybox
+        imagePullPolicy: IfNotPresent
         name: config
         securityContext:
           runAsGroup: 1000
