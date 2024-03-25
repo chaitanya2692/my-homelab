@@ -8,5 +8,4 @@ rules:
     level: warning
 
 ignore:
-  - install_armhf.yaml
-  - install_x86.yaml
+  - install.yaml

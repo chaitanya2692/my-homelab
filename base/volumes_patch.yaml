@@ -93,3 +93,22 @@ spec:
             path: /opt/htpc
             type: DirectoryOrCreate
           name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  selector:
+    matchLabels:
+      run: jellyfin
+  template:
+    spec:
+      containers:
+        - name: jellyfin
+          image: linuxserver/jellyfin
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home

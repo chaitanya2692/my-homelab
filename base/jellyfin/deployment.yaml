@@ -3,44 +3,44 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: emby
-  name: emby
+    run: jellyfin
+  name: jellyfin
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      run: emby
+      run: jellyfin
   template:
     metadata:
       labels:
-        run: emby
+        run: jellyfin
     spec:
-      securityContext:
-        fsGroup: 1000
       containers:
         - env:
             - name: TZ
               value: UTC
-            - name: UID
+            - name: PUID
               value: "1000"
-            - name: GID
+            - name: PGID
               value: "1000"
-          image: emby/embyserver
-          name: emby
+          image: linuxserver/jellyfin
+          imagePullPolicy: IfNotPresent
+          name: jellyfin
           ports:
             - containerPort: 8096
-              name: webui
               protocol: TCP
-            - containerPort: 8920
-              name: webui-ssl
-              protocol: TCP
+            - containerPort: 7359
+              protocol: UDP
+            - containerPort: 1900
+              protocol: UDP
           volumeMounts:
             - mountPath: /config
               name: htpc-home
-              subPath: emby
+              subPath: jellyfin
             - mountPath: /tv
               name: htpc-home
               subPath: media/tv
+              readOnly: true
             - mountPath: /movies
               name: htpc-home
+              readOnly: true
               subPath: media/movies
