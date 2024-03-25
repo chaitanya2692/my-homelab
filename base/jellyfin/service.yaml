@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: emby
+  name: jellyfin
 spec:
   ports:
-    - port: 8096
+    - name: webui
+      port: 8096
       protocol: TCP
       targetPort: 8096
-      name: webui
   selector:
-    run: emby
+    run: jellyfin
