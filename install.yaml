@@ -45,6 +45,23 @@ kind: Service
 metadata:
   labels:
     app: htpc
+  name: jellyfin
+  namespace: htpc
+spec:
+  ports:
+  - name: webui
+    port: 8096
+    protocol: TCP
+    targetPort: 8096
+  selector:
+    app: htpc
+    run: jellyfin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htpc
   name: radarr
   namespace: htpc
 spec:
@@ -90,19 +107,6 @@ spec:
   selector:
     app: htpc
     run: transmission
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: jellyfin
-spec:
-  ports:
-  - name: webui
-    port: 8096
-    protocol: TCP
-    targetPort: 8096
-  selector:
-    run: jellyfin
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -278,6 +282,61 @@ spec:
           subPath: jackett
       securityContext:
         fsGroup: 1000
+      volumes:
+      - hostPath:
+          path: /opt/htpc
+          type: DirectoryOrCreate
+        name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htpc
+    run: jellyfin
+  name: jellyfin
+  namespace: htpc
+spec:
+  selector:
+    matchLabels:
+      app: htpc
+      run: jellyfin
+  template:
+    metadata:
+      labels:
+        app: htpc
+        run: jellyfin
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: UTC
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        image: linuxserver/jellyfin:latest
+        imagePullPolicy: IfNotPresent
+        name: jellyfin
+        ports:
+        - containerPort: 8096
+          protocol: TCP
+        - containerPort: 7359
+          protocol: UDP
+        - containerPort: 1900
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /config
+          name: htpc-home
+          subPath: jellyfin
+        - mountPath: /tv
+          name: htpc-home
+          readOnly: true
+          subPath: media/tv
+        - mountPath: /movies
+          name: htpc-home
+          readOnly: true
+          subPath: media/movies
       volumes:
       - hostPath:
           path: /opt/htpc
@@ -543,50 +602,6 @@ spec:
           type: DirectoryOrCreate
         name: htpc-home
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jellyfin
-spec:
-  selector:
-    matchLabels:
-      run: jellyfin
-  template:
-    metadata:
-      labels:
-        run: jellyfin
-    spec:
-      containers:
-      - env:
-        - name: TZ
-          value: UTC
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        image: linuxserver/jellyfin:latest
-        imagePullPolicy: IfNotPresent
-        name: jellyfin
-        ports:
-        - containerPort: 8096
-          protocol: TCP
-        - containerPort: 7359
-          protocol: UDP
-        - containerPort: 1900
-          protocol: UDP
-        volumeMounts:
-        - mountPath: /config
-          name: htpc-home
-          subPath: jellyfin
-        - mountPath: /tv
-          name: htpc-home
-          readOnly: true
-          subPath: media/tv
-        - mountPath: /movies
-          name: htpc-home
-          readOnly: true
-          subPath: media/movies
----
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -597,6 +612,15 @@ metadata:
 spec:
   entryPoints: []
   routes:
+  - kind: Rule
+    match: PathPrefix(`/`)
+    middlewares: []
+    priority: 0
+    services:
+    - kind: Service
+      name: jellyfin
+      namespace: htpc
+      port: 8096
   - kind: Rule
     match: PathPrefix(`/jackett`)
     middlewares: []

@@ -32,7 +32,5 @@ jobs:
         uses: actions/checkout@v4.1.1
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
-      - name: Update manifests for armhf
-        run: ./scripts/update-manifests.sh armhf
-      - name: Update manifests for x86
-        run: ./scripts/update-manifests.sh x86
+      - name: Update manifest
+        run: ./scripts/update-manifests.sh
