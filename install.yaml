@@ -589,6 +589,7 @@ spec:
         - name: HOST_WHITELIST
           value: ""
         image: linuxserver/transmission:latest
+        imagePullPolicy: IfNotPresent
         name: transmission
         ports:
         - containerPort: 9091
