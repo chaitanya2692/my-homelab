@@ -17,7 +17,7 @@ spec:
       containers:
         - env:
             - name: TZ
-              value: UTC
+              value: CET
             - name: PUID
               value: "1000"
             - name: PGID
