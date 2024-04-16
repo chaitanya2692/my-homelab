@@ -8,13 +8,13 @@ commonLabels:
   app: htpc
 
 resources:
-  - namespace.yaml
   - jackett
   - radarr
   - sonarr
   - bazarr
   - transmission
   - jellyfin
+  - home-assistant
   - ingress-route.yaml
 
 patchesStrategicMerge:
