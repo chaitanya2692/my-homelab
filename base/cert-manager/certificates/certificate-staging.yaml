@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-example-com
+spec:
+  secretName: local-example-com-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.external.my-homelab.party"
+  dnsNames:
+    - "external.my-homelab.party"
+    - "*.external.my-homelab.party"

@@ -16,7 +16,7 @@ find . -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
 done
 
 echo "INFO - Validating clusters"
-find . -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
+find . -type f -name '*.yaml' ! -name 'values.yaml' -print0 | while IFS= read -r -d $'\0' file;
   do
     kubeconform "${kubeconform_flags[@]}" "${kubeconform_config[@]}" "${file}"
     if [[ ${PIPESTATUS[0]} != 0 ]]; then
@@ -28,7 +28,7 @@ echo "INFO - Validating kustomize overlays"
 find . -type f -name $kustomize_config -print0 | while IFS= read -r -d $'\0' file;
   do
     echo "INFO - Validating kustomization ${file/%$kustomize_config}"
-    kustomize build "${file/%$kustomize_config}" "${kustomize_flags[@]}" | \
+    kustomize build "${file/%$kustomize_config}" "${kustomize_flags[@]}" --enable-helm | \
       kubeconform "${kubeconform_flags[@]}" "${kubeconform_config[@]}"
     if [[ ${PIPESTATUS[0]} != 0 ]]; then
       exit 1
