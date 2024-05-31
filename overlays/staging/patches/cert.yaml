@@ -7,8 +7,3 @@ spec:
   secretName: local-example-com-staging-tls
   issuerRef:
     name: letsencrypt-staging
-    kind: ClusterIssuer
-  commonName: "*.my-homelab.party"
-  dnsNames:
-    - "my-homelab.party"
-    - "*.my-homelab.party"

@@ -21,8 +21,17 @@ wait_for_crds(){
     done
 }
 
-separate_crds
+deploy(){
+    kubectl apply -f crds.yaml
+    wait_for_crds
+    kubectl apply -f non-crds.yaml
+}
 
-# kubectl apply -f crds.yaml
-# wait_for_crds
-# kubectl apply -f non-crds.yaml
+cleanup(){
+    rm crds.yaml
+    rm non-crds.yaml
+}
+
+separate_crds
+deploy
+cleanup

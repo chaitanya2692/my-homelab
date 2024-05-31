@@ -4,9 +4,7 @@ kind: Certificate
 metadata:
   name: local-example-com
 spec:
-  secretName: local-example-com-staging-tls
   issuerRef:
-    name: letsencrypt-staging
     kind: ClusterIssuer
   commonName: "*.my-homelab.party"
   dnsNames:

@@ -7,8 +7,3 @@ spec:
   secretName: local-example-com-tls
   issuerRef:
     name: letsencrypt-production
-    kind: ClusterIssuer
-  commonName: "*.my-homelab.party"
-  dnsNames:
-    - "my-homelab.party"
-    - "*.my-homelab.party"
