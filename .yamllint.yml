@@ -9,3 +9,5 @@ rules:
 
 ignore:
   - install.yaml
+  - crds.yaml
+  - non-crds.yaml

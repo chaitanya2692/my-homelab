@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - issuers
+  - certificates
+  - role.yaml
+  - rolebinding.yaml
+
+helmCharts:
+  - name: cert-manager
+    repo: https://charts.jetstack.io
+    version: 1.14.5  # helm search repo --regexp 'jetstack/cert-manager[[:space:]]' -o json | jq -r '.[].version'
+    releaseName: cert-manager
+    namespace: htpc
+    includeCRDs: true
+    valuesFile: values.yaml

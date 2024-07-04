@@ -1,36 +1,33 @@
-set -o errexit
-set -o pipefail
+#!/usr/bin/env bash
+set -euo pipefail
 
-# mirror kustomize-controller build options
-kustomize_flags=("--load-restrictor=LoadRestrictionsNone")
-kustomize_config="kustomization.yaml"
+# Set the working directory to the root of the git repository
+cd "$(git rev-parse --show-toplevel)"
 
-# skip Kubernetes Secrets due to SOPS fields failing validation
-kubeconform_flags=("-skip=Secret")
-kubeconform_config=("-strict" "-ignore-missing-schemas" "-verbose")
+# Set necessary environment variables
+KUSTOMIZE_FLAGS="--load-restrictor=LoadRestrictionsNone"
+KUSTOMIZE_CONFIG="kustomization.yaml"
+KUBECONFORM_FLAGS="-skip=Secret"
+KUBECONFORM_CONFIG="-strict -ignore-missing-schemas -verbose"
 
+echo "INFO - Validating YAML files"
 find . -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
-  do
-    echo "INFO - Validating $file"
-    yq e 'true' "$file" > /dev/null
+do
+  echo "INFO - Validating $file"
+  yq e 'true' "$file" > /dev/null
 done
 
-echo "INFO - Validating clusters"
-find . -type f -name '*.yaml' -print0 | while IFS= read -r -d $'\0' file;
-  do
-    kubeconform "${kubeconform_flags[@]}" "${kubeconform_config[@]}" "${file}"
-    if [[ ${PIPESTATUS[0]} != 0 ]]; then
-      exit 1
-    fi
+echo "INFO - Validating Kubernetes manifests"
+find . -type f -name '*.yaml' ! -name 'values.yaml' ! -name '.pre-commit-config.yaml' ! -name '.sops.yaml' -print0 | while IFS= read -r -d $'\0' file; do
+  kubeconform ${KUBECONFORM_FLAGS} ${KUBECONFORM_CONFIG} "${file}"
 done
 
 echo "INFO - Validating kustomize overlays"
-find . -type f -name $kustomize_config -print0 | while IFS= read -r -d $'\0' file;
-  do
-    echo "INFO - Validating kustomization ${file/%$kustomize_config}"
-    kustomize build "${file/%$kustomize_config}" "${kustomize_flags[@]}" | \
-      kubeconform "${kubeconform_flags[@]}" "${kubeconform_config[@]}"
-    if [[ ${PIPESTATUS[0]} != 0 ]]; then
-      exit 1
-    fi
+find . -type f -name ${KUSTOMIZE_CONFIG} -print0 | while IFS= read -r -d $'\0' file; do
+  echo "INFO - Validating kustomization ${file/%$KUSTOMIZE_CONFIG}"
+  kustomize build "${file/%$KUSTOMIZE_CONFIG}" ${KUSTOMIZE_FLAGS} --enable-helm | \
+    kubeconform ${KUBECONFORM_FLAGS} ${KUBECONFORM_CONFIG}
 done
+
+# Code cleanup
+find "$PWD" -maxdepth 3 -type d -name 'charts' -exec rm -rf {} \;

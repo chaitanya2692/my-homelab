@@ -1,6 +1,6 @@
----
 name: Pull Request CI
-on: [pull_request]  # yamllint disable-line rule:truthy
+on: [pull_request] # yamllint disable-line rule:truthy
+
 jobs:
   yaml-lint:
     runs-on: ubuntu-latest
@@ -10,9 +10,20 @@ jobs:
         uses: ibiqlik/action-yamllint@v3.1.1
         with:
           config_file: .yamllint.yml
+
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - name: markdownlint-cli2-action
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          fix: true
+          globs: '**/*.md'
+
   validate:
     runs-on: ubuntu-latest
-    needs: [yaml-lint]
+    needs: [markdownlint, yaml-lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -24,13 +35,27 @@ jobs:
         uses: fluxcd/pkg/actions/kustomize@main
       - name: Validate manifests
         run: ./scripts/validate.sh
-  test-update-manifests:
-    needs: [validate]
+
+  detect-secrets:
+    runs-on: ubuntu-latest
+    needs: [yaml-lint]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: TruffleHog OSS
+        uses: trufflesecurity/trufflehog@v3.79.0
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+
+  test-build:
+    needs: [validate, detect-secrets]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
-      - name: Update manifest
+      - name: Test kustomize build
         run: ./scripts/update-manifests.sh

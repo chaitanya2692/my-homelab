@@ -1,0 +1,12 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: local-example-com
+spec:
+  issuerRef:
+    kind: ClusterIssuer
+  commonName: "*.my-homelab.party"
+  dnsNames:
+    - "my-homelab.party"
+    - "*.my-homelab.party"

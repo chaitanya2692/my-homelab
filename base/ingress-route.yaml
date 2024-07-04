@@ -1,13 +1,24 @@
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: htpc
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
 spec:
-  entryPoints: []
+  entryPoints:
+    - websecure
   routes:
+    - match: Host(`traefik.external.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: traefik-dashboard-basicauth
+          namespace: htpc
+      services:
+        - name: api@internal
+          kind: TraefikService
     - kind: Rule
-      match: PathPrefix(`/`)
+      match: Host(`jellyfin.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -16,7 +27,7 @@ spec:
           namespace: "htpc"
           port: 8096
     - kind: Rule
-      match: PathPrefix(`/jackett`)
+      match: Host(`jackett.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -25,7 +36,7 @@ spec:
           namespace: "htpc"
           port: 9117
     - kind: Rule
-      match: PathPrefix(`/sonarr`)
+      match: Host(`sonarr.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -34,7 +45,7 @@ spec:
           namespace: "htpc"
           port: 8989
     - kind: Rule
-      match: PathPrefix(`/radarr`)
+      match: Host(`radarr.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -43,7 +54,7 @@ spec:
           namespace: "htpc"
           port: 7878
     - kind: Rule
-      match: PathPrefix(`/bazarr`)
+      match: Host(`bazarr.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -52,7 +63,7 @@ spec:
           namespace: "htpc"
           port: 6767
     - kind: Rule
-      match: PathPrefix(`/transmission`)
+      match: Host(`transmission.my-homelab.party`)
       middlewares: []
       priority: 0
       services:
@@ -60,3 +71,5 @@ spec:
           name: transmission
           namespace: "htpc"
           port: 9091
+  tls:
+    secretName: local-example-com-tls
