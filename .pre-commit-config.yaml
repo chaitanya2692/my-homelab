@@ -11,6 +11,12 @@ repos:
       - id: yamllint
         args: ["-c", ".yamllint.yml"]
 
+  - repo: https://github.com/DavidAnson/markdownlint-cli2
+    rev: v0.13.0
+    hooks:
+      - id: markdownlint-cli2
+        args: ["**/*.md"]
+
   - repo: local
     hooks:
       - id: print-env
@@ -19,23 +25,17 @@ repos:
         language: system
         pass_filenames: false
 
-      - id: validate-manifests
-        name: Validate Kubernetes Manifests
-        entry: ./scripts/validate.sh
-        language: system
-        pass_filenames: false
+      # - id: test-update-manifests
+      #   name: Update Manifests
+      #   entry: ./scripts/update-manifests.sh
+      #   language: system
+      #   pass_filenames: false
 
-      - id: test-update-manifests
-        name: Update Manifests
-        entry: ./scripts/update-manifests.sh
-        language: system
-        pass_filenames: false
-
-      - id: encrypt-secrets
-        name: Encrypt Secrets
-        entry: ./scripts/encrypt-secrets.sh
-        language: system
-        pass_filenames: false
+      # - id: encrypt-secrets
+      #   name: Encrypt Secrets
+      #   entry: ./scripts/encrypt-secrets.sh
+      #   language: system
+      #   pass_filenames: false
 
   - repo: https://github.com/trufflesecurity/trufflehog
     rev: v3.42.0

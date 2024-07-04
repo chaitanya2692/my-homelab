@@ -2,7 +2,10 @@
 
 ![htk8s diagrams](system_design.png)
 
-This repository contains the configuration for a Kubernetes-based Home Theater PC (HTPC) setup running on [k3s](https://k3s.io/), a lightweight Kubernetes distribution. The system is designed to provide a comprehensive media management and streaming solution using various open-source applications.
+This repository contains the configuration for a Kubernetes-based Home Theater
+PC (HTPC) setup running on [k3s](https://k3s.io/), a lightweight Kubernetes
+distribution. The system is designed to provide a comprehensive media management
+and streaming solution using various open-source applications.
 
 ## System Components
 
@@ -14,25 +17,33 @@ The setup includes the following applications:
    - [Bazarr](https://github.com/morpheus65535/bazarr): For managing subtitles
 
 2. **Download Management**:
-   - [Transmission](https://transmissionbt.com/): BitTorrent client for downloading media
-   - [Jackett](https://github.com/Jackett/Jackett): For searching and managing torrent trackers
+   - [Transmission](https://transmissionbt.com/): BitTorrent client for
+   downloading media
+   - [Jackett](https://github.com/Jackett/Jackett): For searching and managing
+   torrent trackers
 
 3. **Media Servers**:
-   - [Jellyfin](https://jellyfin.org/): Open-source media server for streaming content
+   - [Jellyfin](https://jellyfin.org/): Open-source media server for streaming
+   content
 
 4. **Infrastructure**:
    - [Traefik](https://traefik.io/): Reverse proxy and load balancer
    - [cert-manager](https://cert-manager.io/): For managing SSL/TLS certificates
-   - [MetalLB](https://metallb.universe.tf/): Load balancer implementation for bare metal Kubernetes clusters
+   - [MetalLB](https://metallb.universe.tf/): Load balancer implementation for
+   bare metal Kubernetes clusters
 
 ## Architecture and System Design
 
-The system is designed using a microservices architecture, with each component running as a separate service within the Kubernetes cluster. Here's a detailed breakdown of the architecture:
+The system is designed using a microservices architecture, with each component
+running as a separate service within the Kubernetes cluster. Here's a detailed
+breakdown of the architecture:
 
 ### 1. Kubernetes Infrastructure
 
-- The system uses k3s as the Kubernetes distribution, providing a lightweight and easy-to-install cluster.
-- Deployments are managed using Kustomize, allowing for easy customization and overlay-based configuration management.
+- The system uses k3s as the Kubernetes distribution, providing a lightweight
+  and easy-to-install cluster.
+- Deployments are managed using Kustomize, allowing for easy customization and
+  overlay-based configuration management.
 - All applications and services are deployed in the `htpc` namespace.
 
 ### 2. Networking and Ingress
@@ -47,7 +58,8 @@ The system is designed using a microservices architecture, with each component r
   - Set up using a Helm chart (version 0.14.5).
 - **cert-manager** automatically manages SSL/TLS certificates:
   - Installed via Helm chart (version 1.14.5).
-  - Configured with ClusterIssuer resources for both staging and production environments.
+  - Configured with ClusterIssuer resources for both staging and production
+  environments.
   - Uses Cloudflare DNS for ACME DNS-01 challenge.
   - Issues wildcard certificates for *.my-homelab.party.
 - Ingress is managed through Traefik IngressRoute custom resources:
@@ -56,8 +68,10 @@ The system is designed using a microservices architecture, with each component r
 
 ### 3. Storage
 
-- Persistent storage is provided using hostPath volumes, mapping to the `/opt/htpc` directory on the host system.
-- Each application has its own subdirectory within this storage, ensuring data persistence and separation:
+- Persistent storage is provided using hostPath volumes, mapping to the
+  `/opt/htpc` directory on the host system.
+- Each application has its own subdirectory within this storage, ensuring data
+  persistence and separation:
   - Transmission: /opt/htpc/transmission
   - Sonarr: /opt/htpc/sonarr
   - Radarr: /opt/htpc/radarr
@@ -68,9 +82,11 @@ The system is designed using a microservices architecture, with each component r
   - Downloads: /opt/htpc/downloads
   - TV Shows: /opt/htpc/media/tv
   - Movies: /opt/htpc/media/movies
-- Volume mounts are configured in each deployment to map these directories to the appropriate locations within containers.
-- A PersistentVolumeClaim named "local-path-pvc" is defined, using the "local-path" storage class, for potential use by applications requiring dynamic provisioning.
-
+- Volume mounts are configured in each deployment to map these directories to
+  the appropriate locations within containers.
+- A PersistentVolumeClaim named "local-path-pvc" is defined, using the
+  "local-path" storage class, for potential use by applications requiring
+  dynamic provisioning.
 
 ### 4. Media Management Workflow
 
@@ -79,37 +95,50 @@ The system is designed using a microservices architecture, with each component r
    - They use Jackett to search across multiple torrent trackers.
 
 2. **Download Process**:
-   - When new content is found, Sonarr/Radarr send download requests to Transmission.
+   - When new content is found, Sonarr/Radarr send download requests to
+   Transmission.
    - Transmission handles the torrent downloads.
 
 3. **Post-Processing**:
-   - Once downloads are complete, Sonarr/Radarr move and rename the files to the appropriate media directories.
-   - Bazarr automatically searches for and downloads subtitles for the new content.
+   - Once downloads are complete, Sonarr/Radarr move and rename the files to
+   the appropriate media directories.
+   - Bazarr automatically searches for and downloads subtitles for the new
+   content.
 
 4. **Media Serving**:
-   - Jellyfin scans the media directories and makes the content available for streaming.
-   - Users can access the Jellyfin interface through a web browser or compatible apps.
+   - Jellyfin scans the media directories and makes the content available for
+   streaming.
+   - Users can access the Jellyfin interface through a web browser or compatible
+   apps.
 
 ### 5. Security and Access
 
-- All services are exposed externally through Traefik, which handles SSL termination.
-- cert-manager is configured to automatically obtain and renew Let's Encrypt certificates.
+- All services are exposed externally through Traefik, which handles SSL
+  termination.
+- cert-manager is configured to automatically obtain and renew Let's Encrypt
+  certificates.
 - Certificates are stored and managed using Cloudflare DNS:
-  - The system is configured to use Cloudflare as the DNS provider for DNS-01 challenge.
+  - The system is configured to use Cloudflare as the DNS provider for DNS-01
+  challenge.
   - A Cloudflare API token is stored as a Kubernetes secret for secure access.
-  - The domain "my-homelab.party" is used for all services, with subdomains for each application.
+  - The domain "my-homelab.party" is used for all services, with subdomains for
+  each application.
 - Basic authentication is set up for the Traefik dashboard for added security.
-- The system uses ClusterIssuer and Certificate custom resources to manage SSL/TLS certificates:
+- The system uses ClusterIssuer and Certificate custom resources to manage
+  SSL/TLS certificates:
   - Staging and production environments have separate issuers.
   - Wildcard certificates are used to cover all subdomains.
-- All sensitive information, including API keys and tokens, are stored as Kubernetes secrets.
+- All sensitive information, including API keys and tokens, are stored as
+  Kubernetes secrets.
 
 ### 6. Configuration Management
 
 - The repository uses a base + overlays structure with Kustomize:
   - `base/` contains the core configurations for all services.
-  - `overlays/` contains environment-specific configurations (staging and production).
-- Environment variables and sensitive data are managed through Kubernetes secrets and ConfigMaps.
+  - `overlays/` contains environment-specific configurations (staging and
+  production).
+- Environment variables and sensitive data are managed through Kubernetes
+  secrets and ConfigMaps.
 
 ### 7. Continuous Integration/Continuous Deployment (CI/CD)
 
@@ -124,20 +153,26 @@ The system is designed using a microservices architecture, with each component r
     - Updates the `install.yaml` manifest file.
     - Commits and pushes changes if the manifest is modified.
 - Scripts in the `scripts/` directory facilitate the CI/CD process:
-  - `update-manifests.sh`: Generates the combined `install.yaml` file using `kustomize`.
+  - `update-manifests.sh`: Generates the combined `install.yaml` file using
+  `kustomize`.
   - `validate.sh`: Runs validation checks on YAML files and Kustomize overlays.
-  - `deploy.sh`: Handles the deployment process, including separating CRDs and waiting for their establishment.
+  - `deploy.sh`: Handles the deployment process, including separating CRDs and
+  waiting for their establishment.
 - The repository uses different configurations for staging and production:
-  - Overlays in `overlays/staging/` and `overlays/production/` allow for environment-specific settings.
+  - Overlays in `overlays/staging/` and `overlays/production/` allow for
+  environment-specific settings.
   - CI processes use the production overlay for generating the final manifest.
-- Image tags are set to "latest" for all applications in both staging and production overlays, allowing for easy updates.
+- Image tags are set to "latest" for all applications in both staging and
+  production overlays, allowing for easy updates.
 
 ## Deployment and Usage
 
 1. Ensure you have a k3s cluster set up.
 2. Clone this repository to your local machine.
-3. Customize the configurations in the `base/` and `overlays/` directories as needed.
-4. Use the provided scripts in the `scripts/` directory to deploy and manage the setup:
+3. Customize the configurations in the `base/` and `overlays/` directories as
+  needed.
+4. Use the provided scripts in the `scripts/` directory to deploy and manage the
+  setup:
    - `update-manifests.sh`: Generates the combined `install.yaml` file.
    - `deploy.sh`: Applies the configurations to your cluster.
    - `validate.sh`: Validates the Kubernetes manifests.

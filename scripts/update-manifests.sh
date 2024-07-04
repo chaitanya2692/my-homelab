@@ -1,9 +1,10 @@
 #!/bin/sh -ex
 
-AUTOGENMSG="# This is an auto-generated file. DO NOT EDIT"
-
-# Initialize install.yaml
-echo "${AUTOGENMSG}" > "install.yaml"
+# Function to check if there are changes in relevant files
+check_for_changes() {
+    git diff --quiet HEAD -- base overlays
+    return $?
+}
 
 # Function to decrypt secrets
 decrypt_secrets() {
@@ -48,12 +49,21 @@ ci_build(){
     echo "Successfully updated install.yaml"
 }
 
-# Check if running in GitHub Actions
-if [ -n "$CI" ]; then
-    ci_build "$1"
+
+# Main execution
+if check_for_changes; then
+    echo "No changes detected in base or overlays. Skipping manifest update."
     exit 0
 else
-    # If running locally
-    local_build "$1"
-    exit 0
+    AUTOGENMSG="# This is an auto-generated file. DO NOT EDIT"
+
+    # Initialize install.yaml
+    echo "${AUTOGENMSG}" > "install.yaml"
+
+    if [ -n "$CI" ]; then
+        ci_build "$1"
+    else
+        local_build "$1"
+    fi
+    exit $?
 fi
