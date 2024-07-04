@@ -59,11 +59,3 @@ jobs:
         uses: fluxcd/pkg/actions/kustomize@main
       - name: Test kustomize build
         run: ./scripts/update-manifests.sh
-
-  conventional-commits-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0
-      - uses: wagoid/commitlint-github-action@v5
