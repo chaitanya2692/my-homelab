@@ -50,7 +50,7 @@ breakdown of the architecture:
 
 - **Traefik** serves as the ingress controller and reverse proxy:
   - Configured using a Helm chart (version 28.0.0) with custom values.
-  - Uses LoadBalancer service type with a specific IP (192.168.1.245).
+  - Uses LoadBalancer service type with a specific IP.
   - Configured to redirect HTTP to HTTPS.
   - Custom middleware is set up for security headers and authentication.
 - **MetalLB** provides a load balancer implementation:
@@ -165,6 +165,37 @@ breakdown of the architecture:
 - Image tags are set to "latest" for all applications in both staging and
   production overlays, allowing for easy updates.
 
+## Secret Management
+
+Sensitive information, such as API keys and tokens, is encrypted using Mozilla
+SOPS and stored in the repository. The encryption is done using age encryption
+with a public key specified in the `.sops.yaml` file.
+
+The `encrypt-secrets.sh` script is used to encrypt sensitive data in YAML files.
+It scans the repository for YAML files containing the `SOPS_SECRET_MARKER`
+comment, encrypts the specified fields (data and stringData), and removes the
+marker comment.
+
+Encrypted secrets are stored in the respective service directories, such as
+`base/cert-manager/issuers/secret-cloudflare-token.yaml`. These secrets are
+decrypted during the deployment process using the `SOPS_AGE_KEY_FILE`
+environment variable, which points to the age key file.
+
+## Pre-commit Hooks
+
+The repository uses pre-commit hooks to ensure code quality and consistency.
+The hooks are defined in the `.pre-commit-config.yaml` file and include:
+
+- `trailing-whitespace`: Trims trailing whitespace.
+- `end-of-file-fixer`: Ensures files end with a newline.
+- `yamllint`: Lints YAML files using the rules defined in `.yamllint.yml`.
+- `markdownlint-cli2`: Lints Markdown files.
+- `trufflehog`: Scans for secrets and sensitive information.
+- Custom hooks:
+  - `print-env`: Prints the pre-commit environment variables to a log file.
+  - `test-update-manifests`: Tests the manifest update process.
+  - `encrypt-secrets`: Encrypts sensitive data in YAML files.
+
 ## Deployment and Usage
 
 1. Ensure you have a k3s cluster set up.
@@ -179,4 +210,5 @@ breakdown of the architecture:
 
 ## Credits
 
-This project is inspired by and builds upon [htk8s](https://github.com/fabito/htk8s).
+This project is inspired by and builds upon
+[htk8s](https://github.com/fabito/htk8s).
