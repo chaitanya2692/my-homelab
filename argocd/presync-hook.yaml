@@ -1,4 +1,3 @@
----
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -9,7 +8,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: argocd-decrypt-secrets  # We'll create this service account
+      serviceAccountName: argocd-decrypt-secrets
       containers:
         - name: decrypt-secrets
           image: mozilla/sops:v3.7.3
@@ -17,25 +16,25 @@ spec:
           args:
             - |
               set -e
-              for file in $(find base -name '*.yaml' -or -name '*.yml'); do
-                if grep -q "sops:" "$file" && grep -q 'kind: Secret' "$file"; then
-                  echo "Decrypting $file"
-                  sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file"
-                  sed -i '1s/^/# SOPS_SECRET_MARKER\n/' "$file"
-                  sed -i '1s/^/---\n/' "$file"
-                fi
+              SOPS_AGE_KEY_FILE=/keys/keys.txt
+              AGE_PUBLIC_KEY=$(grep -oP "public key: \K(.*)" "$SOPS_AGE_KEY_FILE")
+              kubectl get secrets -n htpc -o json | jq -r '.items[] | select(.data | to_entries[] | select(.value | contains("BEGIN AGE ENCRYPTED FILE"))) | .metadata.name' | while read -r secret_name; do
+                echo "Decrypting secret: $secret_name"
+                kubectl get secret $secret_name -n htpc -o yaml | sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file" | kubectl apply -f -
               done
           volumeMounts:
-            - name: app-source
-              mountPath: /app
+            - name: argocd-home
+              mountPath: /argo
             - name: sops-key
-              mountPath: /etc/sops/age/keys.txt
-              subPath: age-key.txt
+              mountPath: /keys
       restartPolicy: Never
       volumes:
-        - name: app-source
-          emptyDir: {}
+        - name: argocd-home
+          hostPath:
+            path: /opt/argocd
+            type: DirectoryOrCreate
         - name: sops-key
-          secret:
-            secretName: sops-age-key
+          hostPath:
+            path: /home/chaitanya2692
+            type: Directory
   backoffLimit: 3
