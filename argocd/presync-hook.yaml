@@ -17,8 +17,8 @@ spec:
           args:
             - |
               set -e
-              for file in $(find /app -name '*.yaml' -or -name '*.yml'); do
-                if grep -q "sops:" "$file"; then
+              for file in $(find base -name '*.yaml' -or -name '*.yml'); do
+                if grep -q "sops:" "$file" && grep -q 'kind: Secret' "$file"; then
                   echo "Decrypting $file"
                   sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file"
                   sed -i '1s/^/# SOPS_SECRET_MARKER\n/' "$file"
