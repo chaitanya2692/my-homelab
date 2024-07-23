@@ -2,8 +2,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    run: argocd-server
   name: argocd-server
 spec:
+  selector:
+    matchLabels:
+      run: argocd-server
   template:
     spec:
       containers:
