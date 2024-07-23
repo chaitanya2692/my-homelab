@@ -8,13 +8,13 @@ spec:
     - web
     - websecure
   routes:
-  - kind: Rule
-    match: Host(`argocd.my-homelab.party`)
-    priority: 0
-    services:
-    - kind: Service
-      name: argocd-server
-      namespace: argocd
-      port: http
+    - kind: Rule
+      match: Host(`argocd.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: argocd-server
+          namespace: argocd
+          port: http
   tls:
     secretName: local-example-com-tls

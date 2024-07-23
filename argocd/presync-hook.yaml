@@ -11,31 +11,31 @@ spec:
     spec:
       serviceAccountName: argocd-decrypt-secrets  # We'll create this service account
       containers:
-      - name: decrypt-secrets
-        image: mozilla/sops:v3.7.3
-        command: ["/bin/sh", "-c"]
-        args:
-        - |
-          set -e
-          for file in $(find /app -name '*.yaml' -or -name '*.yml'); do
-            if grep -q "sops:" "$file"; then
-              echo "Decrypting $file"
-              sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file"
-              sed -i '1s/^/# SOPS_SECRET_MARKER\n/' "$file"
-              sed -i '1s/^/---\n/' "$file"
-            fi
-          done
-        volumeMounts:
-        - name: app-source
-          mountPath: /app
-        - name: sops-key
-          mountPath: /etc/sops/age/keys.txt
-          subPath: age-key.txt
+        - name: decrypt-secrets
+          image: mozilla/sops:v3.7.3
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              for file in $(find /app -name '*.yaml' -or -name '*.yml'); do
+                if grep -q "sops:" "$file"; then
+                  echo "Decrypting $file"
+                  sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file"
+                  sed -i '1s/^/# SOPS_SECRET_MARKER\n/' "$file"
+                  sed -i '1s/^/---\n/' "$file"
+                fi
+              done
+          volumeMounts:
+            - name: app-source
+              mountPath: /app
+            - name: sops-key
+              mountPath: /etc/sops/age/keys.txt
+              subPath: age-key.txt
       restartPolicy: Never
       volumes:
-      - name: app-source
-        emptyDir: {}
-      - name: sops-key
-        secret:
-          secretName: sops-age-key
+        - name: app-source
+          emptyDir: {}
+        - name: sops-key
+          secret:
+            secretName: sops-age-key
   backoffLimit: 3
