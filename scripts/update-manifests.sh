@@ -6,28 +6,6 @@ check_for_changes() {
     return $?
 }
 
-# Function to decrypt secrets
-decrypt_secrets() {
-    local dir="$1"
-    if [ -z "${SOPS_AGE_KEY_FILE:-}" ]; then
-        echo "Error: SOPS_AGE_KEY_FILE environment variable is not set."
-        exit 1
-    fi
-    if [ ! -f "$SOPS_AGE_KEY_FILE" ]; then
-        echo "Error: Age key file not found at $SOPS_AGE_KEY_FILE"
-        exit 1
-    fi
-    AGE_PUBLIC_KEY=$(grep -oP "public key: \K(.*)" "$SOPS_AGE_KEY_FILE")
-    find "$dir" -type f -name '*.yaml' | while read -r file; do
-        if grep -q 'sops:' "$file"; then
-            echo "Decrypting $file"
-            sops --decrypt --age "$AGE_PUBLIC_KEY" --encrypted-regex '^(data|stringData)$' --in-place "$file"
-            sed -i '1s/^/# SOPS_SECRET_MARKER\n/' "$file"
-            sed -i '1s/^/---\n/' "$file"
-        fi
-    done
-}
-
 local_build(){
     # Build command
     kustomize build "${PWD}/overlays/staging" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
@@ -38,9 +16,6 @@ local_build(){
 }
 
 ci_build(){
-    # Decrypt secrets in production overlay
-    decrypt_secrets "${PWD}/overlays/production"
-
     # Build command
     kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"

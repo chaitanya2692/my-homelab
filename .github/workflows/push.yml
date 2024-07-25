@@ -33,6 +33,8 @@ jobs:
         uses: fluxcd/pkg/actions/kubeconform@main
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
+      - name: Setup ksops
+        run: source <(curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh)
       - name: Validate manifests
         run: ./scripts/validate.sh
 
