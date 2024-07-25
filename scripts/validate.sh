@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 # Set necessary environment variables
-KUSTOMIZE_FLAGS="--load-restrictor=LoadRestrictionsNone"
+KUSTOMIZE_FLAGS="--load-restrictor=LoadRestrictionsNone --enable-helm --enable-alpha-plugins --enable-exec"
 KUSTOMIZE_CONFIG="kustomization.yaml"
 KUBECONFORM_FLAGS="-skip=Secret"
 KUBECONFORM_CONFIG="-strict -ignore-missing-schemas -verbose"
@@ -25,7 +25,7 @@ done
 echo "INFO - Validating kustomize overlays"
 find . -type f -name ${KUSTOMIZE_CONFIG} -print0 | while IFS= read -r -d $'\0' file; do
   echo "INFO - Validating kustomization ${file/%$KUSTOMIZE_CONFIG}"
-  kustomize build "${file/%$KUSTOMIZE_CONFIG}" ${KUSTOMIZE_FLAGS} --enable-helm --enable-alpha-plugins --enable-exec | \
+  kustomize build "${file/%$KUSTOMIZE_CONFIG}" ${KUSTOMIZE_FLAGS} | \
     kubeconform ${KUBECONFORM_FLAGS} ${KUBECONFORM_CONFIG}
 done
 
