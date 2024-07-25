@@ -29,11 +29,8 @@ decrypt_secrets() {
 }
 
 local_build(){
-    # Decrypt secrets in staging overlay
-    decrypt_secrets "${PWD}/base"
-
     # Build command
-    kustomize build "${PWD}/overlays/staging" --enable-helm >> "${PWD}/install.yaml"
+    kustomize build "${PWD}/overlays/staging" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"
 
     # Code cleanup
@@ -45,7 +42,7 @@ ci_build(){
     decrypt_secrets "${PWD}/overlays/production"
 
     # Build command
-    kustomize build "${PWD}/overlays/production" --enable-helm >> "${PWD}/install.yaml"
+    kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"
 }
 

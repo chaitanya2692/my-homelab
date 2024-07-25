@@ -4,4 +4,6 @@ kind: Kustomization
 
 resources:
   - cluster-issuer.yaml
-  - secret-cloudflare-token.yaml
+
+generators:
+  - secret-generator.yaml
