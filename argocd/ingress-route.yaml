@@ -14,7 +14,6 @@ spec:
       services:
         - kind: Service
           name: argocd-server
-          namespace: argocd
           port: http
   tls:
     secretName: local-example-com-tls
