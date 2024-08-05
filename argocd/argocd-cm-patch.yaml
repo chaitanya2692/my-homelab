@@ -4,4 +4,4 @@ kind: ConfigMap
 metadata:
   name: argocd-cm
 data:
-  kustomize.buildOptions: --enable-helm
+  kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
