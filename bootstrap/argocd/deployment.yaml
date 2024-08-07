@@ -31,7 +31,7 @@ spec:
               name: custom-tools
               subPath: ksops
             - mountPath: /.config/sops/age/keys.txt
-              name: age-key
+              name: sops-age
               subPath: key.txt
           env:
             - name: XDG_CONFIG_HOME
@@ -42,6 +42,8 @@ spec:
         - name: custom-tools
           emptyDir: {}
         - name: sops-age
-          hostPath:
-            path: /home/chaitanya2692/key.txt
-            type: File
+          secret:
+            secretName: sops-age-key
+            items:
+              - key: key.txt
+                path: key.txt

@@ -1,6 +1,6 @@
 ---
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: htpc
   namespace: argocd
@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/chaitanya2692/my-homelab.git
-    targetRevision: add-argocd
+    targetRevision: main
     path: overlays/staging
     directory:
       recurse: true
@@ -22,23 +22,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
----
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: argocd
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/argoproj/argo-cd.git
-    targetRevision: main
-    path: argocd
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: argocd
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
