@@ -22,7 +22,7 @@ files_encrypted=0
 # Find all YAML files
 while IFS= read -r -d '' file; do
     # Check if the file contains the secret marker
-    if grep -q 'SOPS_SECRET_MARKER' "$file"; then
+    if grep -q 'SOPS_SECRET_MARKER' "$file" && grep -q 'kind: Secret' "$file"; then
         echo "Encrypting $file"
         if sops --encrypt --age "$(grep -oP "public key: \K(.*)" "$SOPS_AGE_KEY_FILE")" --encrypted-regex '^(data|stringData)$' --in-place "$file"; then
             # Remove the SOPS_SECRET_MARKER and add YAML separator if not present
