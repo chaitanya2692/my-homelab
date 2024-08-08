@@ -9,7 +9,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`traefik.external.my-homelab.party`)
+    - match: Host(`traefik.my-homelab.party`)
       kind: Rule
       middlewares:
         - name: traefik-dashboard-basicauth
@@ -24,7 +24,7 @@ spec:
       services:
         - kind: Service
           name: jellyfin
-          namespace: "htpc"
+          namespace: htpc
           port: 8096
     - kind: Rule
       match: Host(`jackett.my-homelab.party`)
@@ -33,7 +33,7 @@ spec:
       services:
         - kind: Service
           name: jackett
-          namespace: "htpc"
+          namespace: htpc
           port: 9117
     - kind: Rule
       match: Host(`sonarr.my-homelab.party`)
@@ -42,7 +42,7 @@ spec:
       services:
         - kind: Service
           name: sonarr
-          namespace: "htpc"
+          namespace: htpc
           port: 8989
     - kind: Rule
       match: Host(`radarr.my-homelab.party`)
@@ -51,7 +51,7 @@ spec:
       services:
         - kind: Service
           name: radarr
-          namespace: "htpc"
+          namespace: htpc
           port: 7878
     - kind: Rule
       match: Host(`bazarr.my-homelab.party`)
@@ -60,7 +60,7 @@ spec:
       services:
         - kind: Service
           name: bazarr
-          namespace: "htpc"
+          namespace: htpc
           port: 6767
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
@@ -69,7 +69,7 @@ spec:
       services:
         - kind: Service
           name: transmission
-          namespace: "htpc"
+          namespace: htpc
           port: 9091
   tls:
-    secretName: local-example-com-tls
+    secretName: local-example-com-staging-tls
