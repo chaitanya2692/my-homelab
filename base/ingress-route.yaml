@@ -72,4 +72,4 @@ spec:
           namespace: htpc
           port: 9091
   tls:
-    secretName: local-example-com-staging-tls
+    secretName: local-example-com-tls
