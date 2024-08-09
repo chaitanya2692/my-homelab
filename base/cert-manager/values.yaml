@@ -9,3 +9,8 @@ podDnsConfig:
   nameservers:
     - 1.1.1.1
     - 9.9.9.9
+
+# Add the following section
+extraEnv:
+  - name: TZ
+    value: CET
