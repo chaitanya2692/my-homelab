@@ -4,4 +4,6 @@ kind: Kustomization
 
 resources:
   - middleware.yaml
-  - secret-dashboard.yaml
+
+generators:
+  - secret-generator.yaml
