@@ -6,6 +6,8 @@ globalArguments:
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=INFO"
+  - "--entrypoints.web.address=:80"
+  - "--entrypoints.websecure.address=:443"
 
 deployment:
   enabled: true
@@ -13,16 +15,18 @@ deployment:
 
 ports:
   web:
+    port: 80
     redirectTo:
       port: websecure
       priority: 10
   websecure:
+    port: 443
     tls:
       enabled: true
 
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
 
 providers:
   kubernetesCRD:
@@ -44,7 +48,6 @@ service:
   spec:
     loadBalancerIP: 192.168.1.245
 
-# Add the following section
 env:
   - name: TZ
     value: "CET"
