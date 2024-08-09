@@ -10,10 +10,6 @@ additionalArguments:
 deployment:
   enabled: true
   replicas: 1
-  annotations: {}
-  podAnnotations: {}
-  additionalContainers: []
-  initContainers: []
 
 ports:
   web:
@@ -45,12 +41,8 @@ rbac:
 service:
   enabled: true
   type: LoadBalancer
-  annotations: {}
-  labels: {}
   spec:
     loadBalancerIP: 192.168.1.245
-  loadBalancerSourceRanges: []
-  externalIPs: []
 
 # Add the following section
 env:
