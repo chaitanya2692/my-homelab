@@ -16,7 +16,7 @@ images:
     newTag: latest
   - name: linuxserver/transmission
     newTag: latest
-  - name: linuxserver/jellyfin
+  - name: jellyfin/jellyfin:10.9.9
     newTag: latest
 
 patches:

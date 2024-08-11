@@ -5,9 +5,10 @@ globalArguments:
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--log.level=INFO"
+  - "--log.level=DEBUG"
   - "--entrypoints.web.address=:80"
   - "--entrypoints.websecure.address=:443"
+  - "--entrypoints.jellyfin-https.address=:8920"
 
 deployment:
   enabled: true
@@ -18,26 +19,26 @@ ports:
     port: 80
     redirectTo:
       port: websecure
-      priority: 10
+    protocol: TCP
   websecure:
     port: 443
     tls:
       enabled: true
-
-ingressRoute:
-  dashboard:
-    enabled: true
+    protocol: TCP
+  jellyfin-https:
+    port: 8920
+    tls:
+      enabled: true
+    protocol: TCP
 
 providers:
   kubernetesCRD:
     enabled: true
     ingressClass: traefik-external
+    allowCrossNamespace: true
     allowExternalNameServices: true
   kubernetesIngress:
-    enabled: true
-    allowExternalNameServices: true
-    publishedService:
-      enabled: false
+    enabled: false
 
 rbac:
   enabled: true

@@ -106,7 +106,7 @@ spec:
     spec:
       containers:
         - name: jellyfin
-          image: linuxserver/jellyfin
+          image: jellyfin/jellyfin:10.9.9
       volumes:
         - hostPath:
             path: /opt/htpc

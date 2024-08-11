@@ -4,8 +4,9 @@ kind: Service
 metadata:
   name: jellyfin
 spec:
+  type: ClusterIP
   ports:
-    - name: webui
+    - name: http
       port: 8096
       protocol: TCP
       targetPort: 8096

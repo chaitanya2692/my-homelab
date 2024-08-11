@@ -11,3 +11,4 @@ spec:
   dnsNames:
     - "my-homelab.party"
     - "*.my-homelab.party"
+  secretName: local-example-com-tls

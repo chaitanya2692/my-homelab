@@ -22,6 +22,8 @@ spec:
       middlewares:
         - name: homelab-auth
           namespace: htpc
+        - name: jellyfin-headers
+          namespace: htpc
       priority: 0
       services:
         - kind: Service
