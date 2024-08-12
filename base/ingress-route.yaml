@@ -8,6 +8,7 @@ metadata:
 spec:
   entryPoints:
     - websecure
+    - websecure-local
   routes:
     - match: Host(`traefik.my-homelab.party`)
       kind: Rule
@@ -19,11 +20,6 @@ spec:
           kind: TraefikService
     - kind: Rule
       match: Host(`jellyfin.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
-        - name: jellyfin-headers
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
@@ -86,4 +82,4 @@ spec:
           namespace: htpc
           port: 9091
   tls:
-    secretName: local-example-com-tls
+    secretName: local-example-com-staging-tls

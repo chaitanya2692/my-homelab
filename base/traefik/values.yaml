@@ -8,7 +8,7 @@ additionalArguments:
   - "--log.level=DEBUG"
   - "--entrypoints.web.address=:80"
   - "--entrypoints.websecure.address=:443"
-  - "--entrypoints.jellyfin-https.address=:8920"
+  - "--entrypoints.websecure-local.address=:8443"
 
 deployment:
   enabled: true
@@ -24,11 +24,19 @@ ports:
     port: 443
     tls:
       enabled: true
+      domains:
+        - main: my-homelab.party
+          sans:
+            - "*.my-homelab.party"
     protocol: TCP
-  jellyfin-https:
-    port: 8920
+  websecure-local:
+    port: 8443
     tls:
       enabled: true
+      domains:
+        - main: my-homelab.party
+          sans:
+            - "*.my-homelab.party"
     protocol: TCP
 
 providers:
