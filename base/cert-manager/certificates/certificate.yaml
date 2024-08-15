@@ -9,6 +9,4 @@ spec:
     name: letsencrypt-issuer
   commonName: "*.my-homelab.party"
   dnsNames:
-    - "my-homelab.party"
     - "*.my-homelab.party"
-  secretName: local-example-com-tls

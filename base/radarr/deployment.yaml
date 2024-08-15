@@ -16,8 +16,6 @@ spec:
         run: radarr
     spec:
       securityContext:
-        # runAsUser: 1000
-        # runAsGroup: 1000
         fsGroup: 1000
       initContainers:
         - name: chown
@@ -52,8 +50,7 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-          image: linuxserver/radarr
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: radarr
           ports:
             - containerPort: 7878
