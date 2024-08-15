@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: sonarr
 spec:
+  type: ClusterIP
   ports:
     - port: 8989
       protocol: TCP

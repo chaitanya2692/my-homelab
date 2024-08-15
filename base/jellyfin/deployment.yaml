@@ -18,15 +18,13 @@ spec:
         - env:
             - name: TZ
               value: CET
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-          image: linuxserver/jellyfin
+          image: jellyfin/jellyfin:10.9.9
           imagePullPolicy: IfNotPresent
           name: jellyfin
           ports:
             - containerPort: 8096
+              protocol: TCP
+            - containerPort: 8920
               protocol: TCP
             - containerPort: 7359
               protocol: UDP
