@@ -5,5 +5,3 @@ metadata:
   name: local-example-com
 spec:
   secretName: local-example-com-tls
-  issuerRef:
-    name: letsencrypt-production

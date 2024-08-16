@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: transmission
 spec:
+  type: ClusterIP
   ports:
     - name: web
       port: 9091

@@ -6,7 +6,7 @@ metadata:
 spec:
   issuerRef:
     kind: ClusterIssuer
+    name: letsencrypt-issuer
   commonName: "*.my-homelab.party"
   dnsNames:
-    - "my-homelab.party"
     - "*.my-homelab.party"

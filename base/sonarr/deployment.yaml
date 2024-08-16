@@ -50,8 +50,7 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-          image: linuxserver/sonarr
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: sonarr
           ports:
             - containerPort: 8989

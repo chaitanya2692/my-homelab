@@ -40,8 +40,7 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-          image: linuxserver/jackett
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           name: jackett
           ports:
             - containerPort: 9117

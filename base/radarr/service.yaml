@@ -4,6 +4,7 @@ kind: Service
 metadata:
   name: radarr
 spec:
+  type: ClusterIP
   ports:
     - port: 7878
       protocol: TCP

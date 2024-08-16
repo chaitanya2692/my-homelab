@@ -5,20 +5,7 @@ kind: Kustomization
 resources:
   - ../../base
 
-images:
-  - name: linuxserver/jackett
-    newTag: latest
-  - name: linuxserver/sonarr
-    newTag: latest
-  - name: linuxserver/radarr
-    newTag: latest
-  - name: linuxserver/bazarr
-    newTag: latest
-  - name: linuxserver/transmission
-    newTag: latest
-  - name: linuxserver/jellyfin
-    newTag: latest
-
 patches:
   - path: patches/cert.yaml
   - path: patches/issuer.yaml
+  - path: patches/ingress-route.yaml
