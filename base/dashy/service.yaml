@@ -5,7 +5,7 @@ metadata:
   name: dashy
 spec:
   selector:
-    app: dashy
+    run: dashy
   ports:
     - protocol: TCP
       port: 4000
