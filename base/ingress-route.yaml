@@ -12,9 +12,6 @@ spec:
   routes:
     - match: Host(`traefik.my-homelab.party`)
       kind: Rule
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       services:
         - name: api@internal
           kind: TraefikService
@@ -52,9 +49,6 @@ spec:
           port: 7878
     - kind: Rule
       match: Host(`bazarr.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
@@ -63,9 +57,6 @@ spec:
           port: 6767
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
@@ -74,6 +65,9 @@ spec:
           port: 9091
     - kind: Rule
       match: Host(`dashy.my-homelab.party`)
+      middlewares:
+        - name: homelab-auth
+          namespace: htpc
       priority: 0
       services:
         - kind: Service

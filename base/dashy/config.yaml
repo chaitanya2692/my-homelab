@@ -18,7 +18,7 @@ data:
       layout: "auto"
       iconSize: "medium"
     sections:
-      - name: "HTPC Services"
+      - name: "Home Theater"
         icon: "fas fa-play-circle"
         items:
           - title: "Jellyfin"
@@ -45,3 +45,10 @@ data:
             description: "Torrent Client"
             icon: https://www.google.com/s2/favicons?domain=https://transmissionbt.com/&sz=256
             url: "https://transmission.my-homelab.party"
+      - name: "Infrastructure"
+        icon: "fas fa-network-wired"
+        items:
+          - title: "Traefik"
+            description: "Reverse Proxy"
+            icon: https://djeqr6to3dedg.cloudfront.net/repo-logos/library/traefik/live/logo-1720462302224.png
+            url: "https://traefik.my-homelab.party"
