@@ -79,3 +79,10 @@ spec:
           name: nextcloud
           namespace: htpc
           port: 80
+      match: Host(`dashy.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: dashy
+          namespace: htpc
+          port: 4000
