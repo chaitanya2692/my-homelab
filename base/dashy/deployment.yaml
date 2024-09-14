@@ -16,20 +16,20 @@ spec:
         run: dashy
     spec:
       containers:
-      - name: dashy
-        image: lissy93/dashy:latest
-        ports:
-        - containerPort: 4000
-        env:
-        - name: TZ
-          value: "CET"
-        - name: PORT
-          value: "4000"
-        volumeMounts:
-        - name: dashy-config
-          mountPath: /app/user-data/conf.yml
-          subPath: conf.yml
+        - name: dashy
+          image: lissy93/dashy:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: TZ
+              value: "CET"
+            - name: PORT
+              value: "4000"
+          volumeMounts:
+            - name: dashy-config
+              mountPath: /app/user-data/conf.yml
+              subPath: conf.yml
       volumes:
-      - name: dashy-config
-        configMap:
-          name: dashy-config
+        - name: dashy-config
+          configMap:
+            name: dashy-config
