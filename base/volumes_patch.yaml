@@ -112,3 +112,22 @@ spec:
             path: /opt/htpc
             type: DirectoryOrCreate
           name: htpc-home
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashy
+spec:
+  selector:
+    matchLabels:
+      app: dashy
+  template:
+    spec:
+      containers:
+        - name: dashy
+          image: lissy93/dashy:latest
+      volumes:
+        - hostPath:
+            path: /opt/htpc
+            type: DirectoryOrCreate
+          name: htpc-home

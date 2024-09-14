@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dashy-config
+data:
+  conf.yml: |
+    pageInfo:
+      title: My Home Lab Dashboard
+    sections:
+      - name: HTPC Services
+        icon: fas fa-play-circle
+        items:
+          - title: Jellyfin
+            description: Media Server
+            icon: fas fa-film
+            url: https://jellyfin.my-homelab.party
+          - title: Sonarr
+            description: TV Show Manager
+            icon: fas fa-tv
+            url: https://sonarr.my-homelab.party
+          - title: Radarr
+            description: Movie Manager
+            icon: fas fa-film
+            url: https://radarr.my-homelab.party
+          - title: Bazarr
+            description: Subtitle Manager
+            icon: fas fa-closed-captioning
+            url: https://bazarr.my-homelab.party
+          - title: Jackett
+            description: Torrent Indexer
+            icon: fas fa-search
+            url: https://jackett.my-homelab.party
+          - title: Transmission
+            description: Torrent Client
+            icon: fas fa-exchange-alt
+            url: https://transmission.my-homelab.party

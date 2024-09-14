@@ -16,6 +16,7 @@ resources:
   - cert-manager
   - traefik
   - metallb
+  - dashy
   - ingress-route.yaml
 
 
