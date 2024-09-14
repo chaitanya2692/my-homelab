@@ -120,7 +120,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: dashy
+      run: dashy
   template:
     spec:
       containers:

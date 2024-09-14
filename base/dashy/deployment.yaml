@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dashy
   labels:
-    app: dashy
+    run: dashy
+  name: dashy
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dashy
+      run: dashy
   template:
     metadata:
       labels:
-        app: dashy
+        run: dashy
     spec:
       containers:
       - name: dashy
@@ -27,7 +27,7 @@ spec:
           value: "4000"
         volumeMounts:
         - name: dashy-config
-          mountPath: /app/public/conf.yml
+          mountPath: /app/user-data/conf.yml
           subPath: conf.yml
       volumes:
       - name: dashy-config

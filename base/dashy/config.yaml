@@ -6,32 +6,42 @@ metadata:
 data:
   conf.yml: |
     pageInfo:
-      title: My Home Lab Dashboard
+      title: "Dashy"
+      description: "Welcome to your new dashboard!"
+      navLinks:
+        - title: "GitHub"
+          path: "https://github.com/Lissy93/dashy"
+        - title: "Documentation"
+          path: "https://dashy.to/docs"
+    appConfig:
+      theme: "one-dark"
+      layout: "auto"
+      iconSize: "medium"
     sections:
-      - name: HTPC Services
-        icon: fas fa-play-circle
+      - name: "HTPC Services"
+        icon: "fas fa-play-circle"
         items:
-          - title: Jellyfin
-            description: Media Server
-            icon: fas fa-film
-            url: https://jellyfin.my-homelab.party
-          - title: Sonarr
-            description: TV Show Manager
-            icon: fas fa-tv
-            url: https://sonarr.my-homelab.party
-          - title: Radarr
-            description: Movie Manager
-            icon: fas fa-film
-            url: https://radarr.my-homelab.party
-          - title: Bazarr
-            description: Subtitle Manager
-            icon: fas fa-closed-captioning
-            url: https://bazarr.my-homelab.party
-          - title: Jackett
-            description: Torrent Indexer
-            icon: fas fa-search
-            url: https://jackett.my-homelab.party
-          - title: Transmission
-            description: Torrent Client
-            icon: fas fa-exchange-alt
-            url: https://transmission.my-homelab.party
+          - title: "Jellyfin"
+            description: "Media Server"
+            icon: https://www.google.com/s2/favicons?domain=https://jellyfin.org/&sz=256
+            url: "https://jellyfin.my-homelab.party"
+          - title: "Sonarr"
+            description: "TV Show Manager"
+            icon: https://www.google.com/s2/favicons?domain=https://sonarr.tv/&sz=256
+            url: "https://sonarr.my-homelab.party"
+          - title: "Radarr"
+            description: "Movie Manager"
+            icon: https://www.google.com/s2/favicons?domain=https://radarr.video/&sz=256
+            url: "https://radarr.my-homelab.party"
+          - title: "Bazarr"
+            description: "Subtitle Manager"
+            icon: https://www.google.com/s2/favicons?domain=https://www.bazarr.media/&sz=256
+            url: "https://bazarr.my-homelab.party"
+          - title: "Jackett"
+            description: "Torrent Indexer"
+            icon: https://user-images.githubusercontent.com/27040483/28728094-99f3e3f6-73c7-11e7-8f8d-28912dc6ac0d.png
+            url: "https://jackett.my-homelab.party"
+          - title: "Transmission"
+            description: "Torrent Client"
+            icon: https://www.google.com/s2/favicons?domain=https://transmissionbt.com/&sz=256
+            url: "https://transmission.my-homelab.party"
