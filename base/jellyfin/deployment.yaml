@@ -18,7 +18,6 @@ spec:
         - env:
             - name: TZ
               value: CET
-          image: jellyfin/jellyfin:10.9.9
           imagePullPolicy: IfNotPresent
           name: jellyfin
           ports:

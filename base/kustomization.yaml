@@ -16,6 +16,7 @@ resources:
   - cert-manager
   - traefik
   - metallb
+  - nextcloud
   - ingress-route.yaml
 
 
@@ -52,4 +53,6 @@ images:
   - name: linuxserver/transmission
     newTag: latest
   - name: jellyfin/jellyfin
-    newTag: 10.9.9
+    newTag: latest
+  - name: nextcloud
+    newTag: latest

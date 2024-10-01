@@ -72,3 +72,11 @@ spec:
           name: transmission
           namespace: htpc
           port: 9091
+    - kind: Rule
+      match: Host(`nextcloud.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: nextcloud
+          namespace: htpc
+          port: 80

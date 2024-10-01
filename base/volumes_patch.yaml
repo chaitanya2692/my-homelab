@@ -14,7 +14,7 @@ spec:
           image: linuxserver/transmission
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home
 ---
@@ -33,7 +33,7 @@ spec:
           image: linuxserver/radarr
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home
 ---
@@ -52,7 +52,7 @@ spec:
           image: linuxserver/sonarr
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home
 ---
@@ -71,7 +71,7 @@ spec:
           image: linuxserver/jackett
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home
 ---
@@ -90,7 +90,7 @@ spec:
           image: linuxserver/bazarr
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home
 ---
@@ -106,9 +106,9 @@ spec:
     spec:
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.9.9
+          image: jellyfin/jellyfin
       volumes:
         - hostPath:
-            path: /opt/htpc
+            path: /mnt/usb/htpc
             type: DirectoryOrCreate
           name: htpc-home

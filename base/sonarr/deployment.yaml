@@ -18,40 +18,24 @@ spec:
       securityContext:
         fsGroup: 1000
       initContainers:
-        - name: chown
+        - name: check-config-dir
           image: busybox
-          imagePullPolicy: IfNotPresent
-          command: ["sh", "-c", "chown -R 1000:1000 /config && chown -R 1000:1000 /tv"]
-          volumeMounts:
-            - mountPath: /config
-              name: htpc-home
-              subPath: sonarr
-            - mountPath: /tv
-              name: htpc-home
-              subPath: media/tv
-        - name: config
-          image: busybox
-          imagePullPolicy: IfNotPresent
-          command: ["sh", "-c"]
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-          args:
-            - "echo start;[[ ! -f /config/config.xml ]] && echo '<Config><UrlBase>/$(SONARR)</UrlBase></Config>'> /config/config.xml;echo end;"
+          command: ['sh', '-c', 'if [ ! -d /config ]; then mkdir -p /config && chmod 775 /config; fi']
           volumeMounts:
             - mountPath: /config
               name: htpc-home
               subPath: sonarr
       containers:
-        - env:
+        - name: sonarr
+          image: linuxserver/sonarr:latest
+          env:
             - name: TZ
               value: CET
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
-          imagePullPolicy: Always
-          name: sonarr
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8989
               name: webui
