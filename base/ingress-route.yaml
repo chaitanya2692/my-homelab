@@ -52,9 +52,6 @@ spec:
           port: 7878
     - kind: Rule
       match: Host(`bazarr.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
@@ -63,9 +60,6 @@ spec:
           port: 6767
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service

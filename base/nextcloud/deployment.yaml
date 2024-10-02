@@ -2,8 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  labels:
+    run: nextcloud
   name: nextcloud
-  namespace: htpc
 spec:
   replicas: 1
   selector:
@@ -14,17 +15,6 @@ spec:
       labels:
         run: nextcloud
     spec:
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 0
-        runAsGroup: 0
-      initContainers:
-        - name: volume-permissions
-          image: busybox
-          command: ["sh", "-c", "chown -R 33:33 /var/www/html"]
-          volumeMounts:
-            - name: nextcloud-data
-              mountPath: /var/www/html
       containers:
         - name: nextcloud
           image: nextcloud:latest
@@ -32,9 +22,9 @@ spec:
             - containerPort: 80
               name: webui
           volumeMounts:
-            - name: nextcloud-data
-              mountPath: /var/www/html/data
+            - name: nextcloud-storage
+              mountPath: /var/www/html
       volumes:
-        - name: nextcloud-data
+        - name: nextcloud-storage
           persistentVolumeClaim:
             claimName: nextcloud-pvc

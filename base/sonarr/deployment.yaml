@@ -15,26 +15,17 @@ spec:
       labels:
         run: sonarr
     spec:
-      securityContext:
-        fsGroup: 1000
       initContainers:
         - name: check-config-dir
           image: busybox
-          command: ['sh', '-c', 'if [ ! -d /config ]; then mkdir -p /config && chmod 775 /config; fi']
+          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/sonarr</UrlBase></Config>" > /config/config.xml']
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: sonarr
       containers:
         - name: sonarr
           image: linuxserver/sonarr:latest
-          env:
-            - name: TZ
-              value: CET
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8989
@@ -56,12 +47,16 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: sonarr
-            - mountPath: /tv
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /tv
               subPath: media/tv
-            - mountPath: /downloads
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /downloads
               subPath: downloads
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc

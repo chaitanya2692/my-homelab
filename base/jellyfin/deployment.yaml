@@ -15,11 +15,9 @@ spec:
         run: jellyfin
     spec:
       containers:
-        - env:
-            - name: TZ
-              value: CET
+        - name: jellyfin
+          image: jellyfin/jellyfin:latest
           imagePullPolicy: IfNotPresent
-          name: jellyfin
           ports:
             - containerPort: 8096
               protocol: TCP
@@ -30,14 +28,13 @@ spec:
             - containerPort: 1900
               protocol: UDP
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
-              subPath: jellyfin
-            - mountPath: /tv
-              name: htpc-home
-              subPath: media/tv
-              readOnly: true
-            - mountPath: /movies
-              name: htpc-home
-              readOnly: true
-              subPath: media/movies
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: jellyfin/config
+            - name: arr-stack-storage
+              mountPath: /media
+              subPath: media
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc

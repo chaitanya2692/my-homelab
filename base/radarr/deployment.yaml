@@ -15,15 +15,13 @@ spec:
       labels:
         run: radarr
     spec:
-      securityContext:
-        fsGroup: 1000
       initContainers:
         - name: check-config-dir
           image: busybox
-          command: ['sh', '-c', 'if [ ! -d /config ]; then mkdir -p /config && chmod 775 /config; fi']
+          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/radarr</UrlBase></Config>" > /config/config.xml']
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: radarr
       containers:
         - name: radarr
@@ -32,16 +30,6 @@ spec:
           ports:
             - containerPort: 7878
               name: webui
-          env:
-            - name: TZ
-              value: CET
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-          # securityContext:
-          #   runAsUser: 1000
-          #   runAsGroup: 1000
           livenessProbe:
             exec:
               command:
@@ -59,12 +47,16 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: radarr
-            - mountPath: /movies
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /movies
               subPath: media/movies
-            - mountPath: /downloads
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /downloads
               subPath: downloads
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc
