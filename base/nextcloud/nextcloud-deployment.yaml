@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: nextcloud
   labels:
     run: nextcloud
-  name: nextcloud
 spec:
   replicas: 1
   selector:
@@ -20,11 +20,19 @@ spec:
           image: nextcloud:latest
           ports:
             - containerPort: 80
-              name: webui
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
+          env:
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: REDIS_HOST
+              value: redis
           volumeMounts:
-            - name: nextcloud-storage
+            - name: nextcloud-data
+              subPath: nextcloud
               mountPath: /var/www/html
       volumes:
-        - name: nextcloud-storage
+        - name: nextcloud-data
           persistentVolumeClaim:
             claimName: nextcloud-pvc

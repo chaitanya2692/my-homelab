@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    run: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: redis
+  template:
+    metadata:
+      labels:
+        run: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:latest
+          args: ["--requirepass", "$(REDIS_HOST_PASSWORD)"]
+          ports:
+            - containerPort: 6379
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - redis-cli -a $REDIS_HOST_PASSWORD ping | grep PONG
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: nextcloud-storage
+              subPath: redis
+              mountPath: /data
+      volumes:
+        - name: nextcloud-storage
+          persistentVolumeClaim:
+            claimName: nextcloud-pvc

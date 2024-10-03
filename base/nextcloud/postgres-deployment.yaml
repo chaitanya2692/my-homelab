@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    run: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: postgres
+  template:
+    metadata:
+      labels:
+        run: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U $POSTGRES_USER -d $POSTGRES_DB
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            failureThreshold: 5
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: nextcloud-data
+              subPath: postgres
+      volumes:
+        - name: nextcloud-data
+          persistentVolumeClaim:
+            claimName: nextcloud-pvc
