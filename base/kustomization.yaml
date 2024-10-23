@@ -17,8 +17,9 @@ resources:
   - metallb
   - nextcloud
   - ingress-route.yaml
-  - persistent-volume.yaml
-  - persistent-volume-claim.yaml
+  # - persistent-volume.yaml
+  # - persistent-volume-claim.yaml
+  - storage.yaml
   - storageclass.yaml
 
 
@@ -54,6 +55,4 @@ images:
   - name: linuxserver/transmission
     newTag: latest
   - name: jellyfin/jellyfin
-    newTag: latest
-  - name: nextcloud
     newTag: latest

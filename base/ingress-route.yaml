@@ -69,6 +69,11 @@ spec:
     - kind: Rule
       match: Host(`nextcloud.my-homelab.party`)
       priority: 0
+      middlewares:
+        - name: nextcloud-securityheaders
+        - name: nextcloud-redirectregex1
+        - name: nextcloud-redirectregex2
+        - name: nextcloud-compress
       services:
         - kind: Service
           name: nextcloud

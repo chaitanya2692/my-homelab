@@ -1,4 +1,3 @@
----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -10,30 +9,50 @@ resources:
   - redis-deployment.yaml
   - redis-service.yaml
   - backups-deployment.yaml
+  - middleware.yaml
 
 configMapGenerator:
   - name: nextcloud-env
     literals:
-      - POSTGRES_DB=nextcloud
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=password
-      - NEXTCLOUD_ADMIN_USER=admin
-      - NEXTCLOUD_ADMIN_PASSWORD=password
-      - REDIS_HOST=redis
-      - REDIS_HOST_PASSWORD=password
+      # Nextcloud Admin Credentials
+      - NEXTCLOUD_ADMIN_USER=nextcloudadmin        # Changed from USERNAME to USER
+      - NEXTCLOUD_ADMIN_PASSWORD=nextcloudpassword
+
+      # Database Configuration
+      - POSTGRES_DB=nextclouddb                    # Added for automatic install
+      - POSTGRES_USER=nextclouduser                # Added for automatic install
+      - POSTGRES_PASSWORD=nextcloud_password       # Added for automatic install
+      - NEXTCLOUD_DB_NAME=nextclouddb             # Kept for backwards compatibility
+      - NEXTCLOUD_DB_USER=nextclouduser           # Kept for backwards compatibility
+      - NEXTCLOUD_DB_PASSWORD=nextcloud_password   # Kept for backwards compatibility
+
+      # Redis Configuration
+      - NEXTCLOUD_REDIS_PASSWORD=redis_password
+      - REDIS_HOST_PASSWORD=redis_password         # Added for consistency
+
+      # Instance Configuration
       - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.my-homelab.party
+      - TRUSTED_PROXIES=192.168.1.0/24
       - OVERWRITEPROTOCOL=https
-      - BACKUP_INIT_SLEEP=3600
-      - BACKUP_INTERVAL=86400
-      - NEXTCLOUD_DB_NAME=nextcloud
-      - NEXTCLOUD_DB_USER=admin
-      - POSTGRES_BACKUPS_PATH=/backups/postgres
-      - DATA_BACKUPS_PATH=/backups/data
-      - POSTGRES_BACKUP_NAME=nextcloud-db-backup
-      - DATA_BACKUP_NAME=nextcloud-data-backup
-      - DATA_PATH=/var/www/html
+      - OVERWRITECLIURL=https://nextcloud.my-homelab.party
+      - NEXTCLOUD_HOSTNAME=nextcloud.my-homelab.party
+      - NEXTCLOUD_TIMEZONE=CET
+      - NEXTCLOUD_UPDATE=1
+
+      # PHP Configuration
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_UPLOAD_LIMIT=512M
+
+      # Backup Configuration
+      - BACKUP_INIT_SLEEP=30m
+      - BACKUP_INTERVAL=24h
       - POSTGRES_BACKUP_PRUNE_DAYS=7
       - DATA_BACKUP_PRUNE_DAYS=7
+      - POSTGRES_BACKUPS_PATH=/srv/nextcloud-postgres/backups
+      - DATA_BACKUPS_PATH=/srv/nextcloud-application-data/backups
+      - DATA_PATH=/var/www/html
+      - POSTGRES_BACKUP_NAME=nextcloud-postgres-backup
+      - DATA_BACKUP_NAME=nextcloud-application-data-backup
 
 generatorOptions:
   disableNameSuffixHash: true

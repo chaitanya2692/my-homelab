@@ -15,33 +15,103 @@ spec:
       labels:
         run: nextcloud-backups
     spec:
+      securityContext:
+        fsGroup: 999
+        runAsUser: 999
+        runAsGroup: 999
       containers:
-        - name: backups
-          image: postgres:13
+        - name: nextcloud-backups
+          image: postgres:16
           command:
             - /bin/sh
             - -c
           args:
             - |
-              sleep $BACKUP_INIT_SLEEP
+              sh -c 'sleep $BACKUP_INIT_SLEEP &&
               while true; do
-                su postgres -c "pg_dump -h postgres -p 5432 -d $POSTGRES_DB -U $POSTGRES_USER" | gzip > $POSTGRES_BACKUPS_PATH/$POSTGRES_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").gz
-                su www-data -c "tar -zcpf $DATA_BACKUPS_PATH/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz $DATA_PATH"
-                find $POSTGRES_BACKUPS_PATH -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS -delete
-                find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS -delete
-                sleep $BACKUP_INTERVAL
-              done
-          envFrom:
-            - configMapRef:
-                name: nextcloud-env
+                pg_dump -h postgres -p 5432 -d $NEXTCLOUD_DB_NAME -U $NEXTCLOUD_DB_USER | gzip > $POSTGRES_BACKUPS_PATH/$POSTGRES_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").gz &&
+                tar -zcpf $DATA_BACKUPS_PATH/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz $DATA_PATH &&
+                find $POSTGRES_BACKUPS_PATH -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS | xargs rm -f &&
+                find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
+                sleep $BACKUP_INTERVAL; done'
+          env:
+            - name: NEXTCLOUD_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_DB_NAME
+            - name: NEXTCLOUD_DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_DB_USER
+            - name: PGPASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_DB_PASSWORD
+            - name: BACKUP_INIT_SLEEP
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: BACKUP_INIT_SLEEP
+            - name: BACKUP_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: BACKUP_INTERVAL
+            - name: POSTGRES_BACKUP_PRUNE_DAYS
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: POSTGRES_BACKUP_PRUNE_DAYS
+            - name: DATA_BACKUP_PRUNE_DAYS
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: DATA_BACKUP_PRUNE_DAYS
+            - name: POSTGRES_BACKUPS_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: POSTGRES_BACKUPS_PATH
+            - name: DATA_BACKUPS_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: DATA_BACKUPS_PATH
+            - name: DATA_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: DATA_PATH
+            - name: POSTGRES_BACKUP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: POSTGRES_BACKUP_NAME
+            - name: DATA_BACKUP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: DATA_BACKUP_NAME
           volumeMounts:
-            - name: nextcloud-storage
+            - name: nextcloud-data
               mountPath: /var/www/html
-              subPath: html
-            - name: nextcloud-storage
-              mountPath: /backups
-              subPath: backups
+              subPath: nextcloud
+            - name: database-backups
+              mountPath: /srv/nextcloud-postgres/backups
+              subPath: postgres-backups
+            - name: data-backups
+              mountPath: /srv/nextcloud-application-data/backups
+              subPath: nextcloud-backups
       volumes:
-        - name: nextcloud-storage
+        - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-pvc
+            claimName: nextcloud-data-pvc
+        - name: database-backups
+          persistentVolumeClaim:
+            claimName: nextcloud-database-backups-pvc
+        - name: data-backups
+          persistentVolumeClaim:
+            claimName: nextcloud-data-backups-pvc

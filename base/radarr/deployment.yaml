@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,25 +26,40 @@ spec:
         - name: radarr
           image: linuxserver/radarr:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           ports:
             - containerPort: 7878
               name: webui
+          startupProbe:
+            httpGet:
+              path: /radarr/
+              port: 7878
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 30
+            timeoutSeconds: 5
           livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - curl "http://localhost:7878/radarr/api/health?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-            initialDelaySeconds: 30
+            httpGet:
+              path: /radarr/
+              port: 7878
+            initialDelaySeconds: 60
             periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
           readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - curl "http://localhost:7878/radarr/api/system/status?ApiKey=$(sed -ne '/ApiKey/{s/.*<ApiKey>\(.*\)<\/ApiKey>.*/\1/p;q;}' </config/config.xml)"
-            initialDelaySeconds: 30
+            httpGet:
+              path: /radarr/
+              port: 7878
+            initialDelaySeconds: 60
             periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
