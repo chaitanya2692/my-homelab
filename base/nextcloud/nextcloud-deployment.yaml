@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  labels:
+    run: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: nextcloud
+  template:
+    metadata:
+      labels:
+        run: nextcloud
+    spec:
+      # securityContext:
+      #   fsGroup: 33
+      initContainers:
+        - name: wait-for-db
+          image: busybox:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until nc -z redis 6379 && nc -z postgres 5432; do
+                echo "Waiting for Redis and PostgreSQL..."
+                sleep 5
+              done
+      containers:
+        - name: nextcloud
+          image: nextcloud:30
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_HOST_PORT
+              value: "6379"
+            - name: OVERWRITEPROTOCOL
+              value: "https"
+            - name: TRUSTED_PROXIES
+              value: "192.168.1.0/24"
+            - name: NC_setup_create_db_user
+              value: "false"
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_REDIS_PASSWORD
+          volumeMounts:
+            - name: nextcloud-data
+              subPath: nextcloud
+              mountPath: /var/www/html
+      volumes:
+        - name: nextcloud-data
+          persistentVolumeClaim:
+            claimName: nextcloud-data-pvc

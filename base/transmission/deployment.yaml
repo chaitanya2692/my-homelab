@@ -15,18 +15,10 @@ spec:
       labels:
         run: transmission
     spec:
-      securityContext:
-        fsGroup: 1000
       containers:
         - name: transmission
+          image: linuxserver/transmission:latest
           imagePullPolicy: IfNotPresent
-          env:
-            - name: TZ
-              value: "CET"
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
           ports:
             - containerPort: 9091
               name: webui
@@ -37,14 +29,17 @@ spec:
             - containerPort: 51413
               name: torrent-udp
               protocol: UDP
-          resources: {}
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: transmission
-            - mountPath: /downloads
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /downloads
               subPath: downloads
-            - mountPath: /watch
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /watch
               subPath: watch
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc

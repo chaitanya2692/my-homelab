@@ -8,7 +8,7 @@ check_for_changes() {
 
 local_build(){
     # Build command
-    kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
+    kustomize build "${PWD}/overlays/staging" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"
 
     # Code cleanup

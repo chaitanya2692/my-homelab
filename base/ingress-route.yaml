@@ -52,9 +52,6 @@ spec:
           port: 7878
     - kind: Rule
       match: Host(`bazarr.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
@@ -63,12 +60,22 @@ spec:
           port: 6767
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
-      middlewares:
-        - name: homelab-auth
-          namespace: htpc
       priority: 0
       services:
         - kind: Service
           name: transmission
           namespace: htpc
           port: 9091
+    - kind: Rule
+      match: Host(`nextcloud.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: nextcloud-securityheaders
+        - name: nextcloud-redirectregex1
+        - name: nextcloud-redirectregex2
+        - name: nextcloud-compress
+      services:
+        - kind: Service
+          name: nextcloud
+          namespace: htpc
+          port: 80
