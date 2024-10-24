@@ -55,8 +55,8 @@ spec:
               value: "https"
             - name: TRUSTED_PROXIES
               value: "192.168.1.0/24"
-            - name: OVERWRITECLIURL
-              value: https://nextcloud.my-homelab.party
+            - name: NC_setup_create_db_user
+              value: "false"
             - name: REDIS_HOST_PASSWORD
               valueFrom:
                 configMapKeyRef:
