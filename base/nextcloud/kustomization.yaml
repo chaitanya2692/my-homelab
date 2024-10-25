@@ -15,33 +15,16 @@ configMapGenerator:
   - name: nextcloud-env
     literals:
       # Nextcloud Admin Credentials
-      - NEXTCLOUD_ADMIN_USER=nextcloudadmin        # Changed from USERNAME to USER
+      - NEXTCLOUD_ADMIN_USER=nextcloudadmin
       - NEXTCLOUD_ADMIN_PASSWORD=nextcloudpassword
 
       # Database Configuration
-      - POSTGRES_DB=nextclouddb                    # Added for automatic install
-      - POSTGRES_USER=nextclouduser                # Added for automatic install
-      - POSTGRES_PASSWORD=nextcloud_password       # Added for automatic install
-      - NEXTCLOUD_DB_NAME=nextclouddb             # Kept for backwards compatibility
-      - NEXTCLOUD_DB_USER=nextclouduser           # Kept for backwards compatibility
-      - NEXTCLOUD_DB_PASSWORD=nextcloud_password   # Kept for backwards compatibility
+      - NEXTCLOUD_DB_NAME=nextclouddb
+      - NEXTCLOUD_DB_USER=nextclouduser
+      - NEXTCLOUD_DB_PASSWORD=nextcloud_password
 
       # Redis Configuration
-      - NEXTCLOUD_REDIS_PASSWORD=redis_password
-      - REDIS_HOST_PASSWORD=redis_password         # Added for consistency
-
-      # Instance Configuration
-      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.my-homelab.party
-      - TRUSTED_PROXIES=192.168.1.0/24
-      - OVERWRITEPROTOCOL=https
-      - OVERWRITECLIURL=https://nextcloud.my-homelab.party
-      - NEXTCLOUD_HOSTNAME=nextcloud.my-homelab.party
-      - NEXTCLOUD_TIMEZONE=CET
-      - NEXTCLOUD_UPDATE=1
-
-      # PHP Configuration
-      - PHP_MEMORY_LIMIT=512M
-      - PHP_UPLOAD_LIMIT=512M
+      - REDIS_HOST_PASSWORD=redis_password
 
       # Backup Configuration
       - BACKUP_INIT_SLEEP=30m

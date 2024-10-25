@@ -30,84 +30,26 @@ spec:
                 find $POSTGRES_BACKUPS_PATH -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS | xargs rm -f &&
                 find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
                 sleep $BACKUP_INTERVAL; done'
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
           env:
-            - name: NEXTCLOUD_DB_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: NEXTCLOUD_DB_NAME
-            - name: NEXTCLOUD_DB_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: NEXTCLOUD_DB_USER
             - name: PGPASSWORD
               valueFrom:
                 configMapKeyRef:
                   name: nextcloud-env
                   key: NEXTCLOUD_DB_PASSWORD
-            - name: BACKUP_INIT_SLEEP
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: BACKUP_INIT_SLEEP
-            - name: BACKUP_INTERVAL
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: BACKUP_INTERVAL
-            - name: POSTGRES_BACKUP_PRUNE_DAYS
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: POSTGRES_BACKUP_PRUNE_DAYS
-            - name: DATA_BACKUP_PRUNE_DAYS
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: DATA_BACKUP_PRUNE_DAYS
-            - name: POSTGRES_BACKUPS_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: POSTGRES_BACKUPS_PATH
-            - name: DATA_BACKUPS_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: DATA_BACKUPS_PATH
-            - name: DATA_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: DATA_PATH
-            - name: POSTGRES_BACKUP_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: POSTGRES_BACKUP_NAME
-            - name: DATA_BACKUP_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: DATA_BACKUP_NAME
           volumeMounts:
             - name: nextcloud-data
               mountPath: /var/www/html
               subPath: nextcloud
-            - name: database-backups
+            - name: nextcloud-data
               mountPath: /srv/nextcloud-postgres/backups
               subPath: postgres-backups
-            - name: data-backups
+            - name: nextcloud-data
               mountPath: /srv/nextcloud-application-data/backups
               subPath: nextcloud-backups
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-data-pvc
-        - name: database-backups
-          persistentVolumeClaim:
-            claimName: nextcloud-database-backups-pvc
-        - name: data-backups
-          persistentVolumeClaim:
-            claimName: nextcloud-data-backups-pvc
+            claimName: nextcloud-pvc

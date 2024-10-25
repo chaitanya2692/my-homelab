@@ -58,13 +58,9 @@ spec:
             failureThreshold: 5
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: postgres-data
+              name: nextcloud-data
               subPath: postgres
-            - name: init-script
-              mountPath: /docker-entrypoint-initdb.d
       volumes:
-        - name: postgres-data
+        - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-postgres-pvc
-        - name: init-script
-          emptyDir: {}
+            claimName: nextcloud-pvc

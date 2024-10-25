@@ -21,12 +21,9 @@ spec:
           args: ["--requirepass", "$(REDIS_HOST_PASSWORD)"]
           ports:
             - containerPort: 6379
-          env:
-            - name: REDIS_HOST_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: NEXTCLOUD_REDIS_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: nextcloud-env
           readinessProbe:
             exec:
               command:
@@ -36,10 +33,10 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
-            - name: redis-data
+            - name: nextcloud-data
               subPath: redis
               mountPath: /data
       volumes:
-        - name: redis-data
+        - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: redis-data-pvc
+            claimName: nextcloud-pvc

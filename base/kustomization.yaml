@@ -17,9 +17,8 @@ resources:
   - metallb
   - nextcloud
   - ingress-route.yaml
-  # - persistent-volume.yaml
-  # - persistent-volume-claim.yaml
-  - storage.yaml
+  - persistent-volume.yaml
+  - persistent-volume-claim.yaml
   - storageclass.yaml
 
 

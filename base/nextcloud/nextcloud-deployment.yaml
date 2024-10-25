@@ -14,8 +14,6 @@ spec:
       labels:
         run: nextcloud
     spec:
-      # securityContext:
-      #   fsGroup: 33
       initContainers:
         - name: wait-for-db
           image: busybox:latest
@@ -51,22 +49,46 @@ spec:
               value: "redis"
             - name: REDIS_HOST_PORT
               value: "6379"
-            - name: OVERWRITEPROTOCOL
-              value: "https"
-            - name: TRUSTED_PROXIES
-              value: "192.168.1.0/24"
             - name: NC_setup_create_db_user
               value: "false"
-            - name: REDIS_HOST_PASSWORD
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: "nextcloud.my-homelab.party"
+            - name: TRUSTED_PROXIES
+              value: "192.168.1.0/24"
+            - name: OVERWRITEPROTOCOL
+              value: "https"
+            - name: OVERWRITECLIURL
+              value: "https://nextcloud.my-homelab.party"
+            - name: NEXTCLOUD_HOSTNAME
+              value: "nextcloud.my-homelab.party"
+            - name: NEXTCLOUD_TIMEZONE
+              value: "CET"
+            - name: NEXTCLOUD_UPDATE
+              value: "1"
+            - name: PHP_MEMORY_LIMIT
+              value: "512M"
+            - name: PHP_UPLOAD_LIMIT
+              value: "512M"
+            - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
                   name: nextcloud-env
-                  key: NEXTCLOUD_REDIS_PASSWORD
+                  key: NEXTCLOUD_DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_DB_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-env
+                  key: NEXTCLOUD_DB_PASSWORD
           volumeMounts:
             - name: nextcloud-data
-              subPath: nextcloud
+              subPath: nextcloud/app
               mountPath: /var/www/html
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-data-pvc
+            claimName: nextcloud-pvc
