@@ -7,25 +7,47 @@ set -e
 echo "Updating and upgrading the system..."
 sudo apt update && sudo apt upgrade -y
 
-# Install essential tools
-echo "Installing essential tools..."
-sudo apt install -y curl wget git unzip jq
+# Install essential tools and build dependencies
+echo "Installing essential tools and build dependencies..."
+sudo apt install -y curl wget git unzip jq build-essential
 
 # Function to check if a command exists
 command_exists() {
     command -v "$1" &> /dev/null
 }
 
+# Install Homebrew if not already installed
+if command_exists brew; then
+    echo "Homebrew is already installed"
+else
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add Homebrew to PATH
+    echo "Adding Homebrew to PATH..."
+    echo >> ~/.bashrc
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    # Install GCC via Homebrew
+    echo "Installing GCC via Homebrew..."
+    brew install gcc
+fi
+
+# Check and install kubeconform
+if command_exists kubeconform; then
+    echo "kubeconform is already installed"
+else
+    echo "Installing kubeconform..."
+    brew install kubeconform
+fi
+
 # Check and install k9s
 if command_exists k9s; then
     echo "k9s is already installed"
 else
     echo "Installing k9s..."
-    K9S_VERSION=$(curl -s https://api.github.com/repos/derailed/k9s/releases/latest | grep -Po '"tag_name": "v\K[^"]*')
-    curl -Lo k9s.tar.gz "https://github.com/derailed/k9s/releases/download/v${K9S_VERSION}/k9s_Linux_amd64.tar.gz"
-    tar -xzf k9s.tar.gz
-    sudo mv k9s /usr/local/bin/
-    rm k9s.tar.gz LICENSE README.md
+    brew install derailed/k9s/k9s
 fi
 
 # Install Docker
@@ -53,8 +75,7 @@ if command_exists kustomize; then
     echo "kustomize is already installed"
 else
     echo "Installing kustomize..."
-    curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
-    sudo mv kustomize /usr/local/bin/
+    brew install kustomize
 fi
 
 # Check and install SOPS
@@ -76,13 +97,13 @@ else
     curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | bash
 fi
 
-# Check and install ksops
+# Check and install age
 if command_exists age; then
     echo "age is already installed"
 else
     echo "Installing age..."
     sudo apt install age
-    mkdir ~/.sops
+    mkdir -p ~/.sops
     # The key needs to be present in home folder before the next step
     if [ ! -f ~/key.txt ]; then
         echo "AGE Key not found."
