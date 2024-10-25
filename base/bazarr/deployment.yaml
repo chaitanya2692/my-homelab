@@ -15,8 +15,6 @@ spec:
       labels:
         run: bazarr
     spec:
-      securityContext:
-        fsGroup: 1000
       initContainers:
         - name: wait-for-sonarr-and-radarr
           image: busybox
@@ -80,28 +78,26 @@ spec:
               adaptive_searching = False
               EOF
           volumeMounts:
-            - mountPath: /htpc
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /htpc
       containers:
-        - env:
-            - name: TZ
-              value: CET
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
+        - name: bazarr
+          image: linuxserver/bazarr:latest
           imagePullPolicy: IfNotPresent
-          name: bazarr
           ports:
             - containerPort: 6767
               name: webui
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: bazarr
-            - mountPath: /movies
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /movies
               subPath: media/movies
-            - mountPath: /tv
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /tv
               subPath: media/tv
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc

@@ -4,7 +4,6 @@ kind: Kustomization
 
 namespace: htpc
 
-
 resources:
   - namespace.yaml
   - jackett
@@ -16,7 +15,11 @@ resources:
   - cert-manager
   - traefik
   - metallb
+  - nextcloud
   - ingress-route.yaml
+  - persistent-volume.yaml
+  - persistent-volume-claim.yaml
+  - storageclass.yaml
 
 
 vars:
@@ -37,7 +40,6 @@ labels:
       app: htpc
 
 patches:
-  - path: volumes_patch.yaml
   - path: env.yaml
 
 images:
@@ -52,4 +54,4 @@ images:
   - name: linuxserver/transmission
     newTag: latest
   - name: jellyfin/jellyfin
-    newTag: 10.9.9
+    newTag: latest
