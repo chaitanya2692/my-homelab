@@ -1,7 +1,9 @@
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - secret
   - nextcloud-deployment.yaml
   - nextcloud-service.yaml
   - postgres-deployment.yaml
@@ -14,17 +16,8 @@ resources:
 configMapGenerator:
   - name: nextcloud-env
     literals:
-      # Nextcloud Admin Credentials
-      - NEXTCLOUD_ADMIN_USER=nextcloudadmin
-      - NEXTCLOUD_ADMIN_PASSWORD=nextcloudpassword
-
       # Database Configuration
       - NEXTCLOUD_DB_NAME=nextclouddb
-      - NEXTCLOUD_DB_USER=nextclouduser
-      - NEXTCLOUD_DB_PASSWORD=nextcloud_password
-
-      # Redis Configuration
-      - REDIS_HOST_PASSWORD=redis_password
 
       # Backup Configuration
       - BACKUP_INIT_SLEEP=30m

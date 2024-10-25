@@ -33,11 +33,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-env
+            - secretRef:
+                name: nextcloud-credentials
           env:
             - name: PGPASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
+                secretKeyRef:
+                  name: nextcloud-credentials
                   key: NEXTCLOUD_DB_PASSWORD
           volumeMounts:
             - name: nextcloud-data

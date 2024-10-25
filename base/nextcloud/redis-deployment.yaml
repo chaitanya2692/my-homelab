@@ -24,6 +24,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-env
+            - secretRef:
+                name: nextcloud-credentials
           readinessProbe:
             exec:
               command:

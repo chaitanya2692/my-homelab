@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -40,6 +41,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-env
+            - secretRef:
+                name: nextcloud-credentials
           env:
             - name: POSTGRES_HOST
               value: "postgres"
@@ -76,13 +79,13 @@ spec:
                   key: NEXTCLOUD_DB_NAME
             - name: POSTGRES_USER
               valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
+                secretKeyRef:
+                  name: nextcloud-credentials
                   key: NEXTCLOUD_DB_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
+                secretKeyRef:
+                  name: nextcloud-credentials
                   key: NEXTCLOUD_DB_PASSWORD
           volumeMounts:
             - name: nextcloud-data
