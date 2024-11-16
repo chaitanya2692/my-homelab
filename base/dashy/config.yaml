@@ -52,3 +52,10 @@ data:
             description: "Reverse Proxy"
             icon: https://djeqr6to3dedg.cloudfront.net/repo-logos/library/traefik/live/logo-1720462302224.png
             url: "https://traefik.my-homelab.party"
+      - name: "Storage"
+        icon: "fa-solid fa-database"
+        items:
+          - title: "Nextcloud"
+            description: "File browser and more"
+            icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/refs/heads/main/svg/nextcloud-white.svg
+            url: "https://nextcloud.my-homelab.party"

@@ -28,3 +28,18 @@ spec:
   selector:
     matchLabels:
       type: nextcloud
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: utils-pvc
+spec:
+  storageClassName: usb-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 14Gi
+  selector:
+    matchLabels:
+      type: utils

@@ -76,6 +76,7 @@ spec:
           name: nextcloud
           namespace: htpc
           port: 80
+    - kind: Rule
       match: Host(`dashy.my-homelab.party`)
       middlewares:
         - name: homelab-auth
