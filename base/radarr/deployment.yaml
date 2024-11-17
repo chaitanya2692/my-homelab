@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,6 +23,13 @@ spec:
             - name: arr-stack-storage
               mountPath: /config
               subPath: radarr
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /movies && chown -R 911:911 /movies"]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /movies
+              subPath: media/movies
       containers:
         - name: radarr
           image: linuxserver/radarr:latest

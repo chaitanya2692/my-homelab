@@ -2,13 +2,13 @@
 
 # Function to check if there are changes in relevant files
 check_for_changes() {
-    git diff --quiet HEAD -- base overlays
+    git diff --quiet HEAD -- base overlays scripts
     return $?
 }
 
 local_build(){
     # Build command
-    kustomize build "${PWD}/overlays/staging" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
+    kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"
 
     # Code cleanup
