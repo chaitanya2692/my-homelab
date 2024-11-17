@@ -53,7 +53,7 @@ data:
             icon: https://djeqr6to3dedg.cloudfront.net/repo-logos/library/traefik/live/logo-1720462302224.png
             url: "https://traefik.my-homelab.party"
       - name: "Storage"
-        icon: "fa-solid fa-database"
+        icon: "fas fa-cloud"
         items:
           - title: "Nextcloud"
             description: "File browser and more"
