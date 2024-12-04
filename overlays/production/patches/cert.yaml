@@ -4,4 +4,8 @@ kind: Certificate
 metadata:
   name: cluster-certificate
 spec:
+<<<<<<< HEAD
   secretName: production-certificate-secret
+=======
+  secretName: production-certificate
+>>>>>>> 09ff2bf (Initial commit)
