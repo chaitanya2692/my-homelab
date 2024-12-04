@@ -34,6 +34,9 @@ spec:
         - name: sonarr
           image: linuxserver/sonarr:latest
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: global-env
           resources:
             requests:
               memory: "256Mi"

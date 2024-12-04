@@ -3,7 +3,6 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: nextcloud-securityheaders
-  namespace: htpc
 spec:
   headers:
     stsSeconds: 15552000
@@ -22,7 +21,6 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: nextcloud-redirectregex1
-  namespace: htpc
 spec:
   redirectRegex:
     permanent: true
@@ -33,7 +31,6 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: nextcloud-redirectregex2
-  namespace: htpc
 spec:
   redirectRegex:
     permanent: true
@@ -44,6 +41,5 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: nextcloud-compress
-  namespace: htpc
 spec:
   compress: {}

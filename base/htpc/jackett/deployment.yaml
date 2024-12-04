@@ -32,6 +32,9 @@ spec:
         - name: jackett
           image: linuxserver/jackett:latest
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: global-env
           ports:
             - containerPort: 9117
               name: webui

@@ -19,6 +19,9 @@ spec:
         - name: transmission
           image: linuxserver/transmission:latest
           imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: global-env
           ports:
             - containerPort: 9091
               name: webui
