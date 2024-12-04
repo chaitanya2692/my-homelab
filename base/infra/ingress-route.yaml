@@ -1,0 +1,16 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: infra
+  namespace: infra
+spec:
+  entryPoints:
+    - websecure
+    - websecure-local
+  routes:
+    - match: Host(`traefik.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService

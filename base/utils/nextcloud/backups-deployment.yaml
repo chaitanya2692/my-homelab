@@ -33,6 +33,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-env
+            - configMapRef:
+                name: global-env
             - secretRef:
                 name: nextcloud-credentials
           env:
