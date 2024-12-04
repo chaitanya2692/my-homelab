@@ -1,47 +1,52 @@
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: sonarr
-  name: sonarr
+    run: radarr
+  name: radarr
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: sonarr
+      run: radarr
   template:
     metadata:
       labels:
-        run: sonarr
+        run: radarr
     spec:
       securityContext:
         fsGroup: 1000
       initContainers:
         - name: check-config-dir
           image: busybox
-          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/sonarr</UrlBase></Config>" > /config/config.xml']
+          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/radarr</UrlBase></Config>" > /config/config.xml']
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
-              subPath: sonarr
+              subPath: radarr
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "mkdir -p /data/media/tv /data/torrents/tv-sonarr && chown -R 1000:1000 /data"]
+          command: ["sh", "-c", "mkdir -p /data/media/movies /data/torrents/radarr && chown -R 1000:1000 /data"]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /data
               subPath: data
       containers:
-        - name: sonarr
-          image: linuxserver/sonarr:latest
+        - name: radarr
+          image: linuxserver/radarr:latest
           imagePullPolicy: IfNotPresent
+<<<<<<< HEAD:base/radarr/deployment.yaml
           env:
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
+=======
+          envFrom:
+            - configMapRef:
+                name: global-env
+>>>>>>> 09ff2bf (Initial commit):base/htpc/radarr/deployment.yaml
           resources:
             requests:
               memory: "256Mi"
@@ -50,37 +55,36 @@ spec:
               memory: "512Mi"
               cpu: "500m"
           ports:
-            - containerPort: 8989
+            - containerPort: 7878
               name: webui
           startupProbe:
             httpGet:
-              path: /sonarr/
-              port: 8989
+              path: /radarr/
+              port: 7878
             initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 30
             timeoutSeconds: 5
           livenessProbe:
             httpGet:
-              path: /sonarr/
-              port: 8989
+              path: /radarr/
+              port: 7878
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /sonarr/
-              port: 8989
+              path: /radarr/
+              port: 7878
             initialDelaySeconds: 60
             periodSeconds: 10
             failureThreshold: 3
             timeoutSeconds: 5
-          #TODO: Mount downloads and media as the same mount volume. Not separate
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
-              subPath: sonarr
+              subPath: radarr
             - name: arr-stack-storage
               mountPath: /data
               subPath: data

@@ -2,9 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: htpc
-
 resources:
+<<<<<<< HEAD
   - namespace.yaml
   - prowlarr
   - radarr
@@ -21,7 +20,17 @@ resources:
   - persistent-volume.yaml
   - persistent-volume-claim.yaml
   - storageclass.yaml
+=======
+  - htpc
+  - infra
+  - utils
+  - cluster
+>>>>>>> 09ff2bf (Initial commit)
 
+configMapGenerator:
+  - name: global-env
+    literals:
+      - TZ=CET
 
 vars:
   - name: SONARR
@@ -39,9 +48,6 @@ labels:
   - includeSelectors: true
     pairs:
       app: htpc
-
-patches:
-  - path: env.yaml
 
 images:
   - name: linuxserver/prowlarr
