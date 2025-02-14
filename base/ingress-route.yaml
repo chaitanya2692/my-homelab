@@ -8,68 +8,82 @@ metadata:
 spec:
   entryPoints:
     - websecure
+    - websecure-local
   routes:
-    - match: Host(`traefik.external.my-homelab.party`)
+    - match: Host(`traefik.my-homelab.party`)
       kind: Rule
-      middlewares:
-        - name: traefik-dashboard-basicauth
-          namespace: htpc
       services:
         - name: api@internal
           kind: TraefikService
     - kind: Rule
       match: Host(`jellyfin.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: jellyfin
-          namespace: "htpc"
+          namespace: htpc
           port: 8096
     - kind: Rule
       match: Host(`jackett.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: jackett
-          namespace: "htpc"
+          namespace: htpc
           port: 9117
     - kind: Rule
       match: Host(`sonarr.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: sonarr
-          namespace: "htpc"
+          namespace: htpc
           port: 8989
     - kind: Rule
       match: Host(`radarr.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: radarr
-          namespace: "htpc"
+          namespace: htpc
           port: 7878
     - kind: Rule
       match: Host(`bazarr.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: bazarr
-          namespace: "htpc"
+          namespace: htpc
           port: 6767
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
-      middlewares: []
       priority: 0
       services:
         - kind: Service
           name: transmission
-          namespace: "htpc"
+          namespace: htpc
           port: 9091
-  tls:
-    secretName: local-example-com-tls
+    - kind: Rule
+      match: Host(`nextcloud.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: nextcloud-securityheaders
+        - name: nextcloud-redirectregex1
+        - name: nextcloud-redirectregex2
+        - name: nextcloud-compress
+      services:
+        - kind: Service
+          name: nextcloud
+          namespace: htpc
+          port: 80
+    - kind: Rule
+      match: Host(`dashy.my-homelab.party`)
+      middlewares:
+        - name: homelab-auth
+          namespace: htpc
+      priority: 0
+      services:
+        - kind: Service
+          name: dashy
+          namespace: htpc
+          port: 4000

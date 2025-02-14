@@ -15,13 +15,11 @@ spec:
       labels:
         run: bazarr
     spec:
-      securityContext:
-        fsGroup: 1000
       initContainers:
         - name: wait-for-sonarr-and-radarr
           image: busybox
           imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', 'until wget -qO- sonarr:8989/sonarr &> /dev/null && wget -qO- radarr:7878/radarr &> /dev/null; do echo waiting for sonarr and radarr; sleep 2; done;']
+          command: ['sh', '-c', 'echo "Waiting for Radarr to be ready..."; sleep 60']
         - name: config
           image: busybox
           imagePullPolicy: IfNotPresent
@@ -80,29 +78,26 @@ spec:
               adaptive_searching = False
               EOF
           volumeMounts:
-            - mountPath: /htpc
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /htpc
       containers:
-        - env:
-            - name: TZ
-              value: CET
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
-          image: linuxserver/bazarr
+        - name: bazarr
+          image: linuxserver/bazarr:latest
           imagePullPolicy: IfNotPresent
-          name: bazarr
           ports:
             - containerPort: 6767
               name: webui
           volumeMounts:
-            - mountPath: /config
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /config
               subPath: bazarr
-            - mountPath: /movies
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /movies
               subPath: media/movies
-            - mountPath: /tv
-              name: htpc-home
+            - name: arr-stack-storage
+              mountPath: /tv
               subPath: media/tv
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc

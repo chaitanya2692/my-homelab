@@ -1,5 +1,6 @@
+---
 name: Pull Request CI
-on: [pull_request] # yamllint disable-line rule:truthy
+on: [pull_request]  # yamllint disable-line rule:truthy
 
 jobs:
   yaml-lint:
@@ -33,7 +34,15 @@ jobs:
         uses: fluxcd/pkg/actions/kubeconform@main
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
+      - name: Setup ksops
+        run: source <(curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh)
+      - name: Setup AGE key
+        run: |
+          echo "${{ secrets.AGE_KEY }}" > /tmp/age-key.txt
+          chmod 600 /tmp/age-key.txt
       - name: Validate manifests
+        env:
+          SOPS_AGE_KEY_FILE: /tmp/age-key.txt
         run: ./scripts/validate.sh
 
   detect-secrets:
@@ -57,5 +66,13 @@ jobs:
         uses: actions/checkout@v4.1.1
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
+      - name: Setup ksops
+        run: source <(curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh)
+      - name: Setup AGE key
+        run: |
+          echo "${{ secrets.AGE_KEY }}" > /tmp/age-key.txt
+          chmod 600 /tmp/age-key.txt
       - name: Test kustomize build
+        env:
+          SOPS_AGE_KEY_FILE: /tmp/age-key.txt
         run: ./scripts/update-manifests.sh
