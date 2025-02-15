@@ -2,50 +2,71 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: arr-stack-pv
-  labels:
-    type: arr-stack
+  name: htpc-pv
 spec:
   storageClassName: cluster-storage
   capacity:
-    storage: 14Gi
+    storage: 100Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: /opt/htpc/arr-stack
-    type: DirectoryOrCreate
+  storageClassName: local-storage
+  local:
+    path: /opt/htpc/htpc
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master # Replace with your node name
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nextcloud-pv
-  labels:
-    type: nextcloud
+  name: infra-pv
 spec:
   storageClassName: cluster-storage
   capacity:
-    storage: 14Gi
+    storage: 50Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: /opt/htpc/nextcloud
-    type: DirectoryOrCreate
+  storageClassName: local-storage
+  local:
+    path: /opt/htpc/infra
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master # Replace with your node name
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: utils-pv
-  labels:
-    type: utils
 spec:
   storageClassName: cluster-storage
   capacity:
-    storage: 14Gi
+    storage: 50Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  hostPath:
+  storageClassName: local-storage
+  local:
     path: /opt/htpc/utils
-    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - k8s-master # Replace with your node name
