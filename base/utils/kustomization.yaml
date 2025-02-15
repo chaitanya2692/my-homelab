@@ -8,3 +8,4 @@ resources:
   - dashy
   - nextcloud
   - ingress-route.yaml
+  - namespace.yaml
