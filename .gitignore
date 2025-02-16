@@ -2,3 +2,8 @@ temp*.yaml
 .vscode
 .git
 charts
+crds.yaml
+non-crds.yaml
+install.yaml
+*.sh
+*.log
