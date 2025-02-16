@@ -36,9 +36,6 @@ spec:
             - name: arr-stack-storage
               mountPath: /downloads
               subPath: downloads
-            - name: arr-stack-storage
-              mountPath: /watch
-              subPath: watch
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:

@@ -33,10 +33,6 @@ data:
             description: "Movie Manager"
             icon: https://www.google.com/s2/favicons?domain=https://radarr.video/&sz=256
             url: "https://radarr.my-homelab.party"
-          - title: "Bazarr"
-            description: "Subtitle Manager"
-            icon: https://www.google.com/s2/favicons?domain=https://www.bazarr.media/&sz=256
-            url: "https://bazarr.my-homelab.party"
           - title: "Jackett"
             description: "Torrent Indexer"
             icon: https://user-images.githubusercontent.com/27040483/28728094-99f3e3f6-73c7-11e7-8f8d-28912dc6ac0d.png

@@ -25,11 +25,14 @@ spec:
               subPath: radarr
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "mkdir -p /movies && chown -R 911:911 /movies"]
+          command: ["sh", "-c", "chown -R 911:911 /config && chown -R 911:911 /movies"]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /movies
               subPath: media/movies
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: radarr
       containers:
         - name: radarr
           image: linuxserver/radarr:latest

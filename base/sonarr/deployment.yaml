@@ -25,11 +25,14 @@ spec:
               subPath: sonarr
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "mkdir -p /tv && chown -R 911:911 /tv"]
+          command: ["sh", "-c", "chown -R 911:911 /config && chown -R 911:911 /tv"]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /tv
               subPath: media/tv
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: sonarr
       containers:
         - name: sonarr
           image: linuxserver/sonarr:latest
