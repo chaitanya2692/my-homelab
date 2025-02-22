@@ -7,3 +7,4 @@ non-crds.yaml
 install.yaml
 *.sh
 *.log
+*.txt

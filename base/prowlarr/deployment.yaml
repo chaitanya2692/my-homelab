@@ -15,10 +15,17 @@ spec:
       labels:
         run: prowlarr
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: prowlarr
           image: linuxserver/prowlarr:latest
           imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
           ports:
             - containerPort: 9696
               name: webui
