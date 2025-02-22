@@ -15,6 +15,7 @@ resources:
   - traefik
   - metallb
   - nextcloud
+  - flaresolverr
   - dashy
   - ingress-route.yaml
   - persistent-volume.yaml
