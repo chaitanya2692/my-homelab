@@ -4,10 +4,11 @@ kind: IngressRoute
 metadata:
   name: infra
   namespace: infra
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
     - websecure
-    - websecure-local
   routes:
     - match: Host(`traefik.my-homelab.party`)
       kind: Rule

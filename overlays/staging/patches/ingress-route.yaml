@@ -6,8 +6,4 @@ metadata:
   namespace: infra
 spec:
   tls:
-<<<<<<< HEAD
     secretName: staging-certificate-secret
-=======
-    secretName: staging-certificate
->>>>>>> 09ff2bf (Initial commit)
