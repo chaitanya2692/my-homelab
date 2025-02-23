@@ -6,7 +6,7 @@ metadata:
   labels:
     type: arr-stack
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
@@ -23,7 +23,7 @@ metadata:
   labels:
     type: nextcloud
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
@@ -40,7 +40,7 @@ metadata:
   labels:
     type: utils
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
