@@ -37,17 +37,13 @@ spec:
         - name: sonarr
           image: linuxserver/sonarr:latest
           imagePullPolicy: IfNotPresent
-<<<<<<< HEAD:base/sonarr/deployment.yaml
           env:
+            - name: TZ
+              value: "CET"
             - name: PUID
               value: "1000"
             - name: PGID
               value: "1000"
-=======
-          envFrom:
-            - configMapRef:
-                name: global-env
->>>>>>> 09ff2bf (Initial commit):base/htpc/sonarr/deployment.yaml
           resources:
             requests:
               memory: "256Mi"
@@ -93,4 +89,4 @@ spec:
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
-            claimName: arr-stack-pvc
+            claimName: htpc-pvc

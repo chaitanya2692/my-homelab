@@ -9,7 +9,7 @@ resources:
 helmCharts:
   - name: traefik
     repo: https://helm.traefik.io/traefik
-    version: 30.0.2
+    version: 34.4.0
     releaseName: traefik
     includeCRDs: true
     valuesFile: values.yaml
