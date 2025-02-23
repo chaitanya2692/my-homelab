@@ -5,4 +5,4 @@ metadata:
   name: htpc
 spec:
   tls:
-    secretName: local-example-com-tls
+    secretName: production-certificate-secret

@@ -5,4 +5,4 @@ metadata:
   name: htpc
 spec:
   tls:
-    secretName: local-example-com-staging-tls
+    secretName: staging-certificate-secret
