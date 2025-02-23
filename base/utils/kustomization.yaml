@@ -9,3 +9,4 @@ resources:
   - nextcloud
   - ingress-route.yaml
   - namespace.yaml
+  - persistent-volume-claim.yaml
