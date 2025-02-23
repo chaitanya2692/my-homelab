@@ -19,9 +19,6 @@ spec:
         - name: dashy
           image: lissy93/dashy:latest
           imagePullPolicy: IfNotPresent
-          envFrom:
-            - configMapRef:
-                name: global-env
           ports:
             - containerPort: 4000
           env:

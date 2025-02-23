@@ -22,9 +22,6 @@ spec:
           image: postgres:16
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: global-env
           env:
             - name: POSTGRES_DB
               valueFrom:
@@ -66,4 +63,4 @@ spec:
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-pvc
+            claimName: utils-pvc

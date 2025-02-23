@@ -24,8 +24,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-env
-            - configMapRef:
-                name: global-env
             - secretRef:
                 name: nextcloud-credentials
           readinessProbe:
@@ -43,4 +41,4 @@ spec:
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-pvc
+            claimName: utils-pvc

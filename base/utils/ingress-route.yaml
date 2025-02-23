@@ -2,12 +2,13 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: utils
+  name: ingressroute
   namespace: utils
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
     - websecure
-    - websecure-local
   routes:
     - kind: Rule
       match: Host(`nextcloud.my-homelab.party`)
@@ -25,6 +26,7 @@ spec:
       match: Host(`dashy.my-homelab.party`)
       middlewares:
         - name: homelab-auth
+          namespace: infra
       priority: 0
       services:
         - kind: Service
