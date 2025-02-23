@@ -6,9 +6,6 @@ globalArguments:
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
   - "--log.level=DEBUG"
-  - "--entrypoints.web.address=:80"
-  - "--entrypoints.websecure.address=:443"
-  - "--entrypoints.websecure-local.address=:8443"
 
 deployment:
   enabled: true
@@ -16,34 +13,21 @@ deployment:
 
 ports:
   web:
-    port: 80
-    redirectTo:
-      port: websecure
-    protocol: TCP
+    redirections:
+      entrypoint:
+        to: websecure
+        priority: 10
   websecure:
-    port: 443
+    http3:
+      enabled: true
+    advertisedPort: 443
     tls:
       enabled: true
-      domains:
-        - main: my-homelab.party
-          sans:
-            - "*.my-homelab.party"
-    protocol: TCP
-  websecure-local:
-    port: 8443
-    tls:
-      enabled: true
-      domains:
-        - main: my-homelab.party
-          sans:
-            - "*.my-homelab.party"
-    protocol: TCP
 
 providers:
   kubernetesCRD:
     enabled: true
     ingressClass: traefik-external
-    allowCrossNamespace: true
     allowExternalNameServices: true
   kubernetesIngress:
     enabled: false

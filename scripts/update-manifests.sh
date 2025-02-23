@@ -12,7 +12,7 @@ build(){
     echo "Successfully updated install.yaml"
 
     # Code cleanup
-    find "$PWD" -maxdepth 3 -type d -name 'charts' -exec rm -rf {} \;
+    find "$PWD" -maxdepth 4 -type d -name 'charts' -exec rm -rf {} \;
 }
 
 # Main execution

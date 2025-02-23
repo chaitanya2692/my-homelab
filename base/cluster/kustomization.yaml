@@ -4,5 +4,4 @@ kind: Kustomization
 
 resources:
  - persistent-volume.yaml
-#  - persistent-volume-claim.yaml
  - storageclass.yaml

@@ -1,4 +1,9 @@
 ---
+global:
+  leaderElection:
+    namespace: "infra"
+namespace: "infra"
+clusterResourceNamespace: infra
 installCRDs: true
 replicaCount: 1
 extraArgs:
