@@ -4,7 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: arr-stack-pvc
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   accessModes:
     - ReadWriteOnce
   resources:
@@ -19,7 +19,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: nextcloud-pvc
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   accessModes:
     - ReadWriteOnce
   resources:
@@ -34,7 +34,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: utils-pvc
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   accessModes:
     - ReadWriteOnce
   resources:

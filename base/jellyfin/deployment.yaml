@@ -14,6 +14,14 @@ spec:
       labels:
         run: jellyfin
     spec:
+      # initContainers:
+      #   - name: fix-permissions
+      #     image: busybox
+      #     command: ["sh", "-c", "chown -R 911:911 /data/media"]
+      #     volumeMounts:
+      #       - name: arr-stack-storage
+      #         mountPath: /data/media
+      #         subPath: media
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:latest
@@ -32,8 +40,8 @@ spec:
               mountPath: /config
               subPath: jellyfin/config
             - name: arr-stack-storage
-              mountPath: /media
-              subPath: media
+              mountPath: /data/media
+              subPath: data/media
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:

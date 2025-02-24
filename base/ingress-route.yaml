@@ -48,13 +48,13 @@ spec:
           namespace: htpc
           port: 7878
     - kind: Rule
-      match: Host(`bazarr.my-homelab.party`)
+      match: Host(`prowlarr.my-homelab.party`)
       priority: 0
       services:
         - kind: Service
-          name: bazarr
+          name: prowlarr
           namespace: htpc
-          port: 6767
+          port: 9696
     - kind: Rule
       match: Host(`transmission.my-homelab.party`)
       priority: 0
@@ -87,3 +87,11 @@ spec:
           name: dashy
           namespace: htpc
           port: 4000
+    - kind: Rule
+      match: Host(`flaresolverr.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: flaresolverr
+          namespace: htpc
+          port: 8191

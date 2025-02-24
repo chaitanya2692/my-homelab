@@ -6,14 +6,14 @@ metadata:
   labels:
     type: arr-stack
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/usb/htpc/arr-stack
+    path: /opt/htpc/arr-stack
     type: DirectoryOrCreate
 ---
 apiVersion: v1
@@ -23,14 +23,14 @@ metadata:
   labels:
     type: nextcloud
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/usb/htpc/nextcloud
+    path: /opt/htpc/nextcloud
     type: DirectoryOrCreate
 ---
 apiVersion: v1
@@ -40,12 +40,12 @@ metadata:
   labels:
     type: utils
 spec:
-  storageClassName: usb-storage
+  storageClassName: cluster-storage
   capacity:
     storage: 14Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/usb/htpc/utils
+    path: /opt/htpc/utils
     type: DirectoryOrCreate

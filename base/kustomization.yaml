@@ -6,16 +6,16 @@ namespace: htpc
 
 resources:
   - namespace.yaml
-  - jackett
+  - prowlarr
   - radarr
   - sonarr
-  - bazarr
   - transmission
   - jellyfin
   - cert-manager
   - traefik
   - metallb
   - nextcloud
+  - flaresolverr
   - dashy
   - ingress-route.yaml
   - persistent-volume.yaml
@@ -44,15 +44,11 @@ patches:
   - path: env.yaml
 
 images:
-  - name: linuxserver/jackett
+  - name: linuxserver/prowlarr
     newTag: latest
   - name: linuxserver/sonarr
     newTag: latest
   - name: linuxserver/radarr
     newTag: latest
-  - name: linuxserver/bazarr
-    newTag: latest
   - name: linuxserver/transmission
-    newTag: latest
-  - name: jellyfin/jellyfin
     newTag: latest

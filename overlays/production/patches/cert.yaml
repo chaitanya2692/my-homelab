@@ -2,6 +2,6 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: local-example-com
+  name: cluster-certificate
 spec:
-  secretName: local-example-com-tls
+  secretName: production-certificate-secret

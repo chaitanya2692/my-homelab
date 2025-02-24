@@ -15,10 +15,19 @@ spec:
       labels:
         run: transmission
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: transmission
           image: linuxserver/transmission:latest
           imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: download-dir
+              value: "/data/torrents"
           ports:
             - containerPort: 9091
               name: webui
@@ -32,13 +41,13 @@ spec:
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
-              subPath: transmission
+              subPath: transmission/config
             - name: arr-stack-storage
-              mountPath: /downloads
-              subPath: downloads
+              mountPath: /data
+              subPath: data
             - name: arr-stack-storage
               mountPath: /watch
-              subPath: watch
+              subPath: transmission/watch
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:

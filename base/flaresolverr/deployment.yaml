@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: flaresolverr
+  name: flaresolverr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: flaresolverr
+  template:
+    metadata:
+      labels:
+        run: flaresolverr
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: flaresolverr
+          image: ghcr.io/flaresolverr/flaresolverr:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+            - containerPort: 9696
+              name: webui
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: flaresolverr
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: arr-stack-pvc
