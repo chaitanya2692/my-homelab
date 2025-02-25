@@ -5,4 +5,3 @@ metadata:
   name: cluster-certificate
 spec:
   secretName: production-certificate-secret
-
