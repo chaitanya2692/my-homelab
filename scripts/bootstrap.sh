@@ -135,14 +135,25 @@ if command_exists pre-commit; then
     echo "pre-commit is already installed"
 else
     echo "Installing pre-commit..."
-    pip3 install pre-commit --break-system-packages
+    sudo apt-get install pre-commit
     pre-commit install
+fi
+
+# Install K3s if not already installed
+if sudo k3s kubectl get node &> /dev/null; then
+    echo "K3s is already installed"
+else
+    echo "Installing K3s..."
+    curl -fL https://get.k3s.io | sh -s - --disable servicelb
 fi
 
 # Set up environment variables
 echo "Setting up environment variables..."
-if ! grep -q "KUBECONFIG=/etc/rancher/k3s/k3s.yaml" ~/.bashrc; then
-    echo "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml" >> ~/.bashrc
+if ! grep -q "KUBECONFIG=~/.kube/config" ~/.bashrc; then
+    mkdir -p ~/.kube
+    sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+    sudo chown $(id -u):$(id -g) ~/.kube/config
+    echo "export KUBECONFIG=~/.kube/config" >> ~/.bashrc
 fi
 if ! grep -q "PATH=$PATH:/usr/local/bin" ~/.bashrc; then
     echo "export PATH=$PATH:/usr/local/bin" >> ~/.bashrc

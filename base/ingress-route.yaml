@@ -24,14 +24,6 @@ spec:
           namespace: htpc
           port: 8096
     - kind: Rule
-      match: Host(`jackett.my-homelab.party`)
-      priority: 0
-      services:
-        - kind: Service
-          name: jackett
-          namespace: htpc
-          port: 9117
-    - kind: Rule
       match: Host(`sonarr.my-homelab.party`)
       priority: 0
       services:
