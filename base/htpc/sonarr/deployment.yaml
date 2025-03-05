@@ -78,7 +78,6 @@ spec:
             periodSeconds: 10
             failureThreshold: 3
             timeoutSeconds: 5
-          #TODO: Mount downloads and media as the same mount volume. Not separate
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config

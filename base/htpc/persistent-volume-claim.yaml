@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
+      storage: 500Gi
   selector:
     matchLabels:
       type: arr-stack

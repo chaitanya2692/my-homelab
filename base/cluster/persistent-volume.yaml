@@ -8,7 +8,7 @@ metadata:
 spec:
   storageClassName: cluster-storage
   capacity:
-    storage: 100Gi
+    storage: 500Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -42,7 +42,7 @@ metadata:
 spec:
   storageClassName: cluster-storage
   capacity:
-    storage: 100Gi
+    storage: 200Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
