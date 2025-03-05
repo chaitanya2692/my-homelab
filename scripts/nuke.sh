@@ -7,6 +7,9 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Namespaces to clean up
+NAMESPACES=("htpc" "infra" "utils")
+
 log() {
     echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] $1${NC}"
 }
@@ -59,42 +62,47 @@ clean_docker() {
 main() {
     log "Starting cleanup process..."
 
-    # Delete all resources in the htpc namespace
-    if kubectl get namespace htpc >/dev/null 2>&1; then
-        log "Deleting resources in htpc namespace..."
-
-        # Delete all resources from install.yaml
-        if [ -f "install.yaml" ]; then
-            kubectl delete -f install.yaml --timeout=60s --wait=false || true
-            log "Resources from install.yaml deleted"
-        else
-            warn "install.yaml not found, skipping resource deletion"
-        fi
-
-        # Wait for namespace deletion (up to 120 seconds)
-        for i in {1..12}; do
-            if ! kubectl get namespace htpc >/dev/null 2>&1; then
-                break
-            fi
-            log "Waiting for namespace deletion... attempt $i/12"
-            sleep 5
-        done
-
-        # Force delete namespace if still exists
-        if kubectl get namespace htpc >/dev/null 2>&1; then
-            warn "Namespace still exists, attempting force deletion..."
-            force_delete_namespace htpc
-        fi
+    # Delete resources from install.yaml if it exists
+    if [ -f "install.yaml" ]; then
+        log "Deleting resources from install.yaml..."
+        kubectl delete -f install.yaml --timeout=60s --wait=false || true
+        log "Resources from install.yaml deleted"
     else
-        warn "Namespace htpc not found, skipping resource deletion"
+        warn "install.yaml not found, skipping resource deletion"
     fi
+
+    # Clean up each namespace
+    for namespace in "${NAMESPACES[@]}"; do
+        if kubectl get namespace "$namespace" >/dev/null 2>&1; then
+            log "Processing namespace: $namespace"
+
+            # Wait for namespace deletion (up to 60 seconds)
+            for i in {1..12}; do
+                if ! kubectl get namespace "$namespace" >/dev/null 2>&1; then
+                    break
+                fi
+                log "Waiting for $namespace namespace deletion... attempt $i/12"
+                sleep 5
+            done
+
+            # Force delete namespace if still exists
+            if kubectl get namespace "$namespace" >/dev/null 2>&1; then
+                warn "Namespace $namespace still exists, attempting force deletion..."
+                force_delete_namespace "$namespace"
+            fi
+        else
+            warn "Namespace $namespace not found, skipping"
+        fi
+    done
 
     # Clean Docker resources
     clean_docker
 
     # Optionally clean physical storage (commented out for safety)
     # warn "To clean physical storage, uncomment and run:"
-    # warn "sudo rm -rf /mnt/usb/htpc"
+    # warn "sudo rm -rf /opt/cluster/htpc"
+    # warn "sudo rm -rf /opt/cluster/infra"
+    # warn "sudo rm -rf /opt/cluster/utils"
 
     log "Cleanup completed successfully"
 }
