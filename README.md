@@ -15,12 +15,15 @@ The setup includes the following applications:
    - [Sonarr](https://sonarr.tv/): For managing TV shows
    - [Radarr](https://radarr.video/): For managing movies
    - [Bazarr](https://github.com/morpheus65535/bazarr): For managing subtitles
+   - [Prowlarr](https://prowlarr.com/): For managing indexers and trackers
 
 2. **Download Management**:
    - [Transmission](https://transmissionbt.com/): BitTorrent client for
    downloading media
    - [Jackett](https://github.com/Jackett/Jackett): For searching and managing
    torrent trackers
+   - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr): Proxy server to
+   bypass Cloudflare protection
 
 3. **Media Servers**:
    - [Jellyfin](https://jellyfin.org/): Open-source media server for streaming
@@ -31,6 +34,9 @@ The setup includes the following applications:
    - [cert-manager](https://cert-manager.io/): For managing SSL/TLS certificates
    - [MetalLB](https://metallb.universe.tf/): Load balancer implementation for
    bare metal Kubernetes clusters
+5. **Utilities**:
+   - [Dashy](https://dashy.to/): Dashboard for accessing all services
+   - [Nextcloud](https://nextcloud.com/): File hosting and collaboration platform
 
 ## Architecture and System Design
 
@@ -49,15 +55,16 @@ breakdown of the architecture:
 ### 2. Networking and Ingress
 
 - **Traefik** serves as the ingress controller and reverse proxy:
-  - Configured using a Helm chart (version 28.0.0) with custom values.
+  - Installed using a Helm chart (version 34.4.0).
   - Uses LoadBalancer service type with a specific IP (192.168.1.245).
   - Configured to redirect HTTP to HTTPS.
   - Custom middleware is set up for security headers and authentication.
 - **MetalLB** provides a load balancer implementation:
+  - - Installed using a Helm chart (version 0.14.9).
   - Configured to use the IP range 192.168.1.240/28.
   - Set up using a Helm chart (version 0.14.5).
 - **cert-manager** automatically manages SSL/TLS certificates:
-  - Installed via Helm chart (version 1.14.5).
+  - Installed via Helm chart (version 1.17.1).
   - Configured with ClusterIssuer resources for both staging and production
   environments.
   - Uses Cloudflare DNS for ACME DNS-01 challenge.
@@ -68,25 +75,16 @@ breakdown of the architecture:
 
 ### 3. Storage
 
-- Persistent storage is provided using hostPath volumes, mapping to the
-  `/opt/htpc` directory on the host system.
-- Each application has its own subdirectory within this storage, ensuring data
-  persistence and separation:
-  - Transmission: /opt/htpc/transmission
-  - Sonarr: /opt/htpc/sonarr
-  - Radarr: /opt/htpc/radarr
-  - Jackett: /opt/htpc/jackett
-  - Bazarr: /opt/htpc/bazarr
-  - Jellyfin: /opt/htpc/jellyfin
-- Shared directories are used for downloads and media:
-  - Downloads: /opt/htpc/downloads
-  - TV Shows: /opt/htpc/media/tv
-  - Movies: /opt/htpc/media/movies
-- Volume mounts are configured in each deployment to map these directories to
-  the appropriate locations within containers.
-- A PersistentVolumeClaim named "local-path-pvc" is defined, using the
-  "local-path" storage class, for potential use by applications requiring
-  dynamic provisioning.
+- Storage is managed using a StorageClass named `cluster-storage` with no provisioner
+- Three PersistentVolumes are defined, mapping to host directories:
+  - `htpc-pv`: 500GB for media apps, mounted at `/opt/cluster/htpc`
+  - `infra-pv`: 100GB for infrastructure, mounted at `/opt/cluster/infra`
+  - `utils-pv`: 200GB for utility apps, mounted at `/opt/cluster/utils`
+- Corresponding PersistentVolumeClaims are defined in each namespace:
+  - `htpc-pvc` in htpc namespace
+  - `infra-pvc` in infra namespace
+  - `utils-pvc` in utils namespace
+- Volume mounts are configured in each deployment to map these directories appropriately
 
 ### 4. Media Management Workflow
 
@@ -165,6 +163,19 @@ breakdown of the architecture:
 - Image tags are set to "latest" for all applications in both staging and
   production overlays, allowing for easy updates.
 
+### 8. Utility Applications
+
+- **Dashy** provides a centralized dashboard:
+  - Custom configured with links to all deployed services
+  - Organized into sections for Media, Infrastructure and Storage
+  - Protected with basic authentication
+
+- **Nextcloud** provides file storage and collaboration:
+  - Uses PostgreSQL database for data persistence
+  - Redis cache for improved performance
+  - Automated backups for both database and application data
+  - Custom security headers and redirects configured via Traefik middleware
+
 ## Deployment and Usage
 
 1. Ensure you have a k3s cluster set up.
@@ -172,10 +183,20 @@ breakdown of the architecture:
 3. Customize the configurations in the `base/` and `overlays/` directories as
   needed.
 4. Use the provided scripts in the `scripts/` directory to deploy and manage the
-  setup:
+   setup:
+   - `bootstrap.sh`: Initializes the required libraries needed in ubuntu to deploy
+   the cluster.
+   - `validate.sh`: Validates Kubernetes manifests:
+     - Runs kubeconform validation on staging overlay
+     - Runs kubeconform validation on production overlay
+     - Skips CRD validation and missing schemas
    - `update-manifests.sh`: Generates the combined `install.yaml` file.
    - `deploy.sh`: Applies the configurations to your cluster.
-   - `validate.sh`: Validates the Kubernetes manifests.
+   - `nuke.sh`: Completely removes all resources:
+     - Deletes resources from install.yaml
+     - Force deletes stuck namespaces if needed
+     - Cleans up Docker resources
+     - Optionally cleans physical storage
 
 ## Credits
 
