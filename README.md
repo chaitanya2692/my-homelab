@@ -14,13 +14,13 @@ The setup includes the following applications:
 1. **Media Management**:
    - [Sonarr](https://sonarr.tv/): For managing TV shows
    - [Radarr](https://radarr.video/): For managing movies
-   - [Prowlarr](https://prowlarr.com/): For managing indexers and trackers
 
 2. **Download Management**:
    - [Transmission](https://transmissionbt.com/): BitTorrent client for
    downloading media
    - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr): Proxy server to
    bypass Cloudflare protection
+   - [Prowlarr](https://prowlarr.com/): For managing indexers and trackers
 
 3. **Media Servers**:
    - [Jellyfin](https://jellyfin.org/): Open-source media server for streaming
@@ -31,6 +31,7 @@ The setup includes the following applications:
    - [cert-manager](https://cert-manager.io/): For managing SSL/TLS certificates
    - [MetalLB](https://metallb.universe.tf/): Load balancer implementation for
    bare metal Kubernetes clusters
+
 5. **Utilities**:
    - [Dashy](https://dashy.to/): Dashboard for accessing all services
    - [Nextcloud](https://nextcloud.com/): File hosting and collaboration platform
