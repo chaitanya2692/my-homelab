@@ -14,14 +14,11 @@ The setup includes the following applications:
 1. **Media Management**:
    - [Sonarr](https://sonarr.tv/): For managing TV shows
    - [Radarr](https://radarr.video/): For managing movies
-   - [Bazarr](https://github.com/morpheus65535/bazarr): For managing subtitles
    - [Prowlarr](https://prowlarr.com/): For managing indexers and trackers
 
 2. **Download Management**:
    - [Transmission](https://transmissionbt.com/): BitTorrent client for
    downloading media
-   - [Jackett](https://github.com/Jackett/Jackett): For searching and managing
-   torrent trackers
    - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr): Proxy server to
    bypass Cloudflare protection
 
@@ -50,7 +47,8 @@ breakdown of the architecture:
   and easy-to-install cluster.
 - Deployments are managed using Kustomize, allowing for easy customization and
   overlay-based configuration management.
-- All applications and services are deployed in the `htpc` namespace.
+- All applications and services are deployed into three namespaces `htpc`, `infra`
+and `utils`.
 
 ### 2. Networking and Ingress
 
@@ -69,7 +67,7 @@ breakdown of the architecture:
   environments.
   - Uses Cloudflare DNS for ACME DNS-01 challenge.
   - Issues wildcard certificates for *.my-homelab.party.
-- Ingress is managed through Traefik IngressRoute custom resources:
+- Ingress is managed through **Traefik IngressRoute** custom resources:
   - Each application (Jellyfin, Jackett, Sonarr, etc.) has its own route.
   - The Traefik dashboard is also exposed with basic authentication.
 
@@ -186,17 +184,10 @@ breakdown of the architecture:
    setup:
    - `bootstrap.sh`: Initializes the required libraries needed in ubuntu to deploy
    the cluster.
-   - `validate.sh`: Validates Kubernetes manifests:
-     - Runs kubeconform validation on staging overlay
-     - Runs kubeconform validation on production overlay
-     - Skips CRD validation and missing schemas
+   - `validate.sh`: Validates Kubernetes manifests via kubeconform.
    - `update-manifests.sh`: Generates the combined `install.yaml` file.
    - `deploy.sh`: Applies the configurations to your cluster.
-   - `nuke.sh`: Completely removes all resources:
-     - Deletes resources from install.yaml
-     - Force deletes stuck namespaces if needed
-     - Cleans up Docker resources
-     - Optionally cleans physical storage
+   - `nuke.sh`: Completely removes all resources from all deployed namespaces.
 
 ## Credits
 
