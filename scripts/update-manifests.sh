@@ -6,21 +6,14 @@ check_for_changes() {
     return $?
 }
 
-local_build(){
+build(){
     # Build command
-    kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
+    kustomize build "${PWD}/overlays/staging" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     echo "Successfully updated install.yaml"
 
     # Code cleanup
     find "$PWD" -maxdepth 3 -type d -name 'charts' -exec rm -rf {} \;
 }
-
-ci_build(){
-    # Build command
-    kustomize build "${PWD}/overlays/production" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
-    echo "Successfully updated install.yaml"
-}
-
 
 # Main execution
 if check_for_changes; then
@@ -31,11 +24,6 @@ else
 
     # Initialize install.yaml
     echo "${AUTOGENMSG}" > "install.yaml"
-
-    if [ -n "$CI" ]; then
-        ci_build "$1"
-    else
-        local_build "$1"
-    fi
+    build "$1"
     exit $?
 fi
