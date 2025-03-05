@@ -1,0 +1,47 @@
+---
+globalArguments:
+  - "--global.sendanonymoususage=false"
+  - "--global.checknewversion=false"
+
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+  - "--log.level=DEBUG"
+
+deployment:
+  enabled: true
+  replicas: 1
+
+ports:
+  web:
+    redirections:
+      entrypoint:
+        to: websecure
+        priority: 10
+  websecure:
+    http3:
+      enabled: true
+    advertisedPort: 443
+    tls:
+      enabled: true
+
+providers:
+  kubernetesCRD:
+    enabled: true
+    ingressClass: traefik-external
+    allowExternalNameServices: true
+    allowCrossNamespace: true
+  kubernetesIngress:
+    enabled: false
+
+rbac:
+  enabled: true
+
+service:
+  enabled: true
+  type: LoadBalancer
+  spec:
+    loadBalancerIP: 192.168.1.245
+
+env:
+  - name: TZ
+    value: "CET"

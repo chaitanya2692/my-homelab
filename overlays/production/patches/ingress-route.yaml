@@ -2,7 +2,9 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: htpc
+  name: ingressroute
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
 spec:
   tls:
     secretName: production-certificate-secret

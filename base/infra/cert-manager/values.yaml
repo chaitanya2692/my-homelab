@@ -1,0 +1,21 @@
+---
+global:
+  leaderElection:
+    namespace: "infra"
+namespace: "infra"
+clusterResourceNamespace: infra
+installCRDs: true
+replicaCount: 1
+extraArgs:
+  - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
+  - --dns01-recursive-nameservers-only
+podDnsPolicy: None
+podDnsConfig:
+  nameservers:
+    - 1.1.1.1
+    - 9.9.9.9
+
+# Add the following section
+extraEnv:
+  - name: TZ
+    value: CET

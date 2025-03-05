@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: transmission
+  name: transmission
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: transmission
+  template:
+    metadata:
+      labels:
+        run: transmission
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: transmission
+          image: linuxserver/transmission:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "CET"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: download-dir
+              value: "/data/torrents"
+          ports:
+            - containerPort: 9091
+              name: webui
+              protocol: TCP
+            - containerPort: 51413
+              name: torrent-tcp
+              protocol: TCP
+            - containerPort: 51413
+              name: torrent-udp
+              protocol: UDP
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: transmission/config
+            - name: arr-stack-storage
+              mountPath: /data
+              subPath: data
+            - name: arr-stack-storage
+              mountPath: /watch
+              subPath: transmission/watch
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: htpc-pvc

@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: dashy
+  name: dashy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: dashy
+  template:
+    metadata:
+      labels:
+        run: dashy
+    spec:
+      containers:
+        - name: dashy
+          image: lissy93/dashy:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4000
+          env:
+            - name: TZ
+              value: "CET"
+            - name: PORT
+              value: "4000"
+          volumeMounts:
+            - name: dashy-config
+              mountPath: /app/user-data/conf.yml
+              subPath: conf.yml
+            - name: dashy-data
+              mountPath: /app/user-data
+              subPath: dashy
+      volumes:
+        - name: dashy-data
+          persistentVolumeClaim:
+            claimName: utils-pvc
+        - name: dashy-config
+          configMap:
+            name: dashy-config

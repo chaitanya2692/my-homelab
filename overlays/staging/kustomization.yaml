@@ -9,3 +9,5 @@ patches:
   - path: patches/cert.yaml
   - path: patches/issuer.yaml
   - path: patches/ingress-route.yaml
+    target:
+      kind: IngressRoute

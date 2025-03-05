@@ -1,0 +1,34 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroute
+  namespace: utils
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`nextcloud.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: nextcloud-securityheaders
+        - name: nextcloud-redirectregex1
+        - name: nextcloud-redirectregex2
+        - name: nextcloud-compress
+      services:
+        - kind: Service
+          name: nextcloud
+          port: 80
+    - kind: Rule
+      match: Host(`dashy.my-homelab.party`)
+      middlewares:
+        - name: homelab-auth
+          namespace: infra
+      priority: 0
+      services:
+        - kind: Service
+          name: dashy
+          port: 4000

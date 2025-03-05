@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: utils-pvc
+spec:
+  storageClassName: cluster-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+  selector:
+    matchLabels:
+      type: utils
