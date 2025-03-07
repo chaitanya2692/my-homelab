@@ -11,3 +11,4 @@ patches:
   - path: patches/ingress-route.yaml
     target:
       kind: IngressRoute
+      name: ingressroute
