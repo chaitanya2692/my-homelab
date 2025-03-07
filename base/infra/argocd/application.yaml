@@ -17,3 +17,8 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: traefik.io
+      kind: IngressRoute
+      jsonPointers:
+        - /metadata/namespace
