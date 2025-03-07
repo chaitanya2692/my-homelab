@@ -9,7 +9,7 @@ resources:
   - application.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# patches:
+patches:
 #   - path: server-patch.yaml
-#   - path: configmap.yaml
+  - path: configmap.yaml
 #   - path: deployment.yaml
