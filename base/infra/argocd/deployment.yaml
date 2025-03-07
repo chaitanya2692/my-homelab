@@ -4,6 +4,9 @@ kind: Deployment
 metadata:
   name: argocd-repo-server
 spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: argocd-repo-server
   template:
     spec:
       initContainers:
