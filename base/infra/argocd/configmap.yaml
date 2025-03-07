@@ -9,3 +9,10 @@ metadata:
 data:
   # kustomize.buildOptions: --enable-helm --enable-alpha-plugins --enable-exec
   kustomize.buildOptions: --enable-alpha-plugins
+  resource.exclusions: |
+    - apiGroups:
+      - kustomize.config.k8s.io
+      kinds:
+      - Kustomization
+      clusters:
+      - "*"
