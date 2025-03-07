@@ -10,7 +10,9 @@ spec:
     targetRevision: add-argocd-again
     path: overlays/staging
     directory:
-      recurse: false
+      recurse: true
+    kustomize:
+      path: .
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
