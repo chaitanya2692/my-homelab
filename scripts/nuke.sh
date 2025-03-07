@@ -8,7 +8,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Namespaces to clean up
-NAMESPACES=("htpc" "infra" "utils")
+NAMESPACES=("htpc" "infra" "utils" "argocd")
 
 log() {
     echo -e "${GREEN}[$(date +'%Y-%m-%d %H:%M:%S')] $1${NC}"
@@ -77,7 +77,7 @@ main() {
             log "Processing namespace: $namespace"
 
             # Wait for namespace deletion (up to 60 seconds)
-            for i in {1..12}; do
+            for i in {1..2}; do
                 if ! kubectl get namespace "$namespace" >/dev/null 2>&1; then
                     break
                 fi

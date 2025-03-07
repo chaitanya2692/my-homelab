@@ -1,0 +1,19 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: argocd-server
+    spec:
+      containers:
+        - name: argocd-server
+          command: ["/usr/local/bin/argocd-server"]
+          args:
+            - "--staticassets"
+            - "/shared/app"
+            - "--insecure"
+            - "--disable-auth"
