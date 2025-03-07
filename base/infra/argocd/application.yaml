@@ -14,11 +14,7 @@ spec:
       include: '*.yaml'
   destination:
     server: https://kubernetes.default.svc
+    namespace: argocd
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
-  ignoreDifferences:
-    - group: traefik.io
-      kind: IngressRoute
-      jsonPointers:
-        - /metadata/namespace
