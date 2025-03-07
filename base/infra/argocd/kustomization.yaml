@@ -7,7 +7,6 @@ namespace: argocd
 resources:
   - ingress-route.yaml
   - application.yaml
-  - namespace.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 # patches:
