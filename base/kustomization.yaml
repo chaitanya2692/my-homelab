@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - htpc
   - infra
-  # - utils
+  - utils
   - cluster
