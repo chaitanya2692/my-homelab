@@ -9,8 +9,6 @@ spec:
     repoURL: https://github.com/chaitanya2692/my-homelab.git
     targetRevision: add-argocd-again
     path: overlays/staging
-    directory:
-      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
