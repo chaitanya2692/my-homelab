@@ -1,4 +1,6 @@
 ---
+namespace: infra
+
 globalArguments:
   - "--global.sendanonymoususage=false"
   - "--global.checknewversion=false"
@@ -10,6 +12,7 @@ additionalArguments:
 deployment:
   enabled: true
   replicas: 1
+  namespaceOverride: infra
 
 ports:
   web:

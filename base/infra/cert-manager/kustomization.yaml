@@ -15,3 +15,7 @@ helmCharts:
     releaseName: cert-manager
     includeCRDs: true
     valuesFile: values.yaml
+  - name: reflector
+    repo: https://emberstack.github.io/helm-charts
+    version: v9.0.320
+    releaseName: reflector

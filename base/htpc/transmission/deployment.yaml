@@ -50,6 +50,13 @@ spec:
             - name: arr-stack-storage
               mountPath: /watch
               subPath: transmission/watch
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
