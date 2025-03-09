@@ -45,4 +45,4 @@ echo "ArgoCD secret password:"
 kubectl get secrets/argocd-initial-admin-secret -n argocd --template={{.data.password}} | base64 -d
 echo ""
 
-kubectl port-forward svc/argocd-server -n argocd --address 0.0.0.0 8080:443
+# kubectl port-forward svc/argocd-server -n argocd --address 0.0.0.0 8080:443
