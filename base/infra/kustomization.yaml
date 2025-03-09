@@ -9,4 +9,5 @@ resources:
   - traefik
   - ingress-route.yaml
   - namespace.yaml
-  - persistent-volume-claim.yaml
+  # Add PVC back when in use
+  # - persistent-volume-claim.yaml
