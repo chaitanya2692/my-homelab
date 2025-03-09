@@ -1,26 +1,25 @@
 kustomize build "${PWD}/base/infra/argocd" --enable-helm --enable-alpha-plugins --enable-exec >> install_argocd.yaml
 
-# Install cert-manager CRDs if not present
-echo "Checking cert-manager CRDs..."
-if ! kubectl get crd certificaterequests.cert-manager.io &> /dev/null; then
-    echo "Installing cert-manager CRDs..."
-    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.17.1/cert-manager.crds.yaml
-else
-    echo "cert-manager CRDs already exist"
-fi
+# # Install cert-manager CRDs if not present
+# echo "Checking cert-manager CRDs..."
+# if ! kubectl get crd certificaterequests.cert-manager.io &> /dev/null; then
+#     echo "Installing cert-manager CRDs..."
+#     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.17.1/cert-manager.crds.yaml
+# else
+#     echo "cert-manager CRDs already exist"
+# fi
 
-# Install Traefik CRDs if not present
-echo "Checking Traefik CRDs..."
-if ! kubectl get crd ingressroutes.traefik.io &> /dev/null; then
-    echo "Installing Traefik CRDs..."
-    kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/refs/heads/master/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-else
-    echo "Traefik CRDs already exist"
-fi
-
+# # Install Traefik CRDs if not present
+# echo "Checking Traefik CRDs..."
+# if ! kubectl get crd ingressroutes.traefik.io &> /dev/null; then
+#     echo "Installing Traefik CRDs..."
+#     kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/refs/heads/master/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+# else
+#     echo "Traefik CRDs already exist"
+# fi
 
 kubectl create namespace argocd
-# kubectl create secret generic sops-age --from-file=/home/chaitanya/.sops/key.txt -n argocd
+kubectl create secret generic sops-age --from-file=/home/chaitanya/.sops/key.txt -n argocd
 kubectl apply -n argocd -f install_argocd.yaml
 
 wait_for_pods() {

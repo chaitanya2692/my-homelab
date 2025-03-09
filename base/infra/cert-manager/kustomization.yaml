@@ -2,6 +2,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: infra
+
 resources:
   - issuers
   - certificates
@@ -13,7 +15,7 @@ helmCharts:
     repo: https://charts.jetstack.io
     version: 1.17.1  # helm search repo --regexp 'jetstack/cert-manager[[:space:]]' -o json | jq -r '.[].version'
     releaseName: cert-manager
-    includeCRDs: true
+    # includeCRDs: true
     valuesFile: values.yaml
   - name: reflector
     repo: https://emberstack.github.io/helm-charts
