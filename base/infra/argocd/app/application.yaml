@@ -9,11 +9,14 @@ spec:
     repoURL: https://github.com/chaitanya2692/my-homelab.git
     targetRevision: add-argocd-again
     path: overlays/staging
-    # plugin:
-    #   name: ksops
+  ignoreDifferences:
+    - kind: CustomResourceDefinition
+      name: bgppeers.metallb.io
+      jsonPointers:
+        - /spec/conversion/webhook/clientConfig/caBundle
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: htpc
   syncPolicy:
     automated:
       prune: true
@@ -21,3 +24,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true

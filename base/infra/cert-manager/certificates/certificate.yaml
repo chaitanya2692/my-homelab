@@ -9,9 +9,9 @@ spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "htpc,infra,utils"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "argocd,htpc,infra,utils"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
-      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "htpc,infra,utils"
+      reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "argocd,htpc,infra,utils"
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-issuer
