@@ -44,7 +44,7 @@ spec:
       source:
         repoURL: https://github.com/chaitanya2692/my-homelab.git
         targetRevision: add-argocd-again
-        path: overlays/staging
+        path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{path}}"
