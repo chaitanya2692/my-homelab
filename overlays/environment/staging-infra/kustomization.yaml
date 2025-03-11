@@ -3,7 +3,11 @@ apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 patches:
   # Certificate patch
-  - patch: |-
+  - target:
+      kind: Certificate
+      name: cluster-certificate
+      namespace: infra
+    patch: |-
       apiVersion: cert-manager.io/v1
       kind: Certificate
       metadata:
@@ -12,7 +16,10 @@ patches:
       spec:
         secretName: staging-certificate-secret
   # ClusterIssuer patch
-  - patch: |-
+  - target:
+      kind: ClusterIssuer
+      name: letsencrypt-issuer
+    patch: |-
       apiVersion: cert-manager.io/v1
       kind: ClusterIssuer
       metadata:

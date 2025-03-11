@@ -5,7 +5,7 @@ ENVIRONMENT=${1:-staging}
 
 # Function to check if there are changes in relevant files
 check_for_changes() {
-    git diff --quiet HEAD -- base overlays scripts
+    git diff --quiet HEAD -- argocd base overlays scripts
     return $?
 }
 
@@ -25,6 +25,7 @@ build() {
 
     # Build each overlay separately
     for app in htpc utils infra argocd; do
+        echo "---" >> "${PWD}/install.yaml"
         kustomize build "${PWD}/overlays/${app}" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     done
 
