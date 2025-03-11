@@ -1,6 +1,14 @@
 #!/bin/env bash
 set -euo pipefail
 
+###########################################
+# Encrypt Secrets Script
+# This script encrypts YAML files containing the SOPS_SECRET_MARKER
+# using SOPS and Age. It checks for the presence of the marker,
+# encrypts the file, and updates the file in place.
+# It requires the SOPS_AGE_KEY_FILE environment variable to be set.
+###########################################
+
 # Check if SOPS_AGE_KEY_FILE is set
 if [ -z "${SOPS_AGE_KEY_FILE:-}" ]; then
     echo "Error: SOPS_AGE_KEY_FILE environment variable is not set."

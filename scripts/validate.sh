@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+###########################################
+# Validate Script
+# This script validates YAML files and Kubernetes manifests.
+# It uses yq for YAML validation and kubeconform for Kubernetes
+# manifest validation. It also validates kustomize overlays.
+###########################################
+
 # Set the working directory to the root of the git repository
 cd "$(git rev-parse --show-toplevel)"
 

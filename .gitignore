@@ -3,7 +3,6 @@
 charts
 crds.yaml
 non-crds.yaml
-install.yaml
-*.sh
+install*.yaml
 *.log
 *.txt

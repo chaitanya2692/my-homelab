@@ -9,5 +9,7 @@ resources:
   - metallb
   - traefik
   - ingress-route.yaml
-  - namespace.yaml
-  - persistent-volume-claim.yaml
+  - persistent-volume.yaml
+  - storageclass.yaml
+  # Add PVC back when in use
+  # - persistent-volume-claim.yaml
