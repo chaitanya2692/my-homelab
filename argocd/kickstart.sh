@@ -3,7 +3,7 @@ set -e
 
 # Step 1: Build and apply CRDs
 echo "Building and applying CRDs..."
-kustomize build "${PWD}/base/infra/argocd/crds" --enable-helm --enable-alpha-plugins --enable-exec > crds.yaml
+kustomize build "${PWD}/argocd/crds" --enable-helm --enable-alpha-plugins --enable-exec > crds.yaml
 kubectl apply -f crds.yaml
 
 # Wait for the ArgoCD Application CRD to be established
@@ -17,7 +17,7 @@ kubectl create secret generic sops-age --from-file=/home/chaitanya/.sops/key.txt
 
 # Step 3: Build and apply the rest of the application
 echo "Building and applying ArgoCD application resources..."
-kustomize build "${PWD}/base/infra/argocd/app" --enable-helm --enable-alpha-plugins --enable-exec > install_argocd.yaml
+kustomize build "${PWD}/argocd/app" --enable-helm --enable-alpha-plugins --enable-exec > install_argocd.yaml
 kubectl apply -n argocd -f install_argocd.yaml
 
 # Step 4: Wait for all pods to be running

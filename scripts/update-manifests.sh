@@ -11,7 +11,7 @@ check_for_changes() {
 
 update_environment() {
     local env=$1
-    for app in htpc utils infra; do
+    for app in htpc utils infra argocd; do
         sed -i "s|components/.*|components/${env}  # Change to ${env} for ${env} environment|" "${PWD}/overlays/${app}/kustomization.yaml"
     done
 }
@@ -24,7 +24,7 @@ build() {
     update_environment "${ENVIRONMENT}"
 
     # Build each overlay separately
-    for app in htpc utils infra; do
+    for app in htpc utils infra argocd; do
         kustomize build "${PWD}/overlays/${app}" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     done
 
