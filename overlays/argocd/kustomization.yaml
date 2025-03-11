@@ -5,4 +5,4 @@ resources:
   - ../../argocd
 
 components:
-  - ../environment/staging-ingress # Change to production-ingress for production
+  - ../environment/production-ingress # Change to staging-ingress for staging

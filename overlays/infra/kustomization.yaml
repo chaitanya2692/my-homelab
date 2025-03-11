@@ -5,5 +5,5 @@ resources:
   - ../../base/infra
 
 components:
-  - ../environment/staging-infra # Change to production-infra for production
-  - ../environment/staging-ingress # Change to production-ingress for production
+  - ../environment/production-infra # Change to staging-infra for staging
+  - ../environment/production-ingress # Change to staging-ingress for staging
