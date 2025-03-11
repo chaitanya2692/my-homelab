@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/chaitanya2692/my-homelab.git
     targetRevision: add-argocd-again
-    path: overlays/staging
+    path: base/infra/argocd
   ignoreDifferences:
     - kind: CustomResourceDefinition
       name: bgppeers.metallb.io
@@ -33,6 +33,7 @@ spec:
   generators:
     - list:
         elements:
+          - path: cluster
           - path: htpc
           - path: utils
           - path: infra
