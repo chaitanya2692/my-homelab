@@ -1,7 +1,15 @@
 #!/bin/bash
 set -e
 
-# Step 1: Build and apply CRDs
+###########################################
+# Kickstart Script
+# This script sets up the ArgoCD environment by building and applying
+# CRDs, creating necessary namespaces and secrets, and deploying the
+# ArgoCD application. It waits for all pods to be running and displays
+# the initial admin password for ArgoCD.
+###########################################
+
+# Build and apply CRDs
 echo "Building and applying CRDs..."
 kustomize build "${PWD}/argocd/crds" --enable-helm --enable-alpha-plugins --enable-exec > crds.yaml
 kubectl apply -f crds.yaml
@@ -10,17 +18,17 @@ kubectl apply -f crds.yaml
 echo "Waiting for the ArgoCD Application CRD to be established..."
 kubectl wait --for=condition=Established --timeout=60s crd/applications.argoproj.io
 
-# Step 2: Ensure the argocd namespace exists and create the sops secret
+# Ensure the argocd namespace exists and create the sops secret
 echo "Creating namespace and sops secret..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 kubectl create secret generic sops-age --from-file=/home/chaitanya/.sops/key.txt -n argocd --dry-run=client -o yaml | kubectl apply -f -
 
-# Step 3: Build and apply the rest of the application
+# Build and apply the rest of the application
 echo "Building and applying ArgoCD application resources..."
 kustomize build "${PWD}/argocd/app" --enable-helm --enable-alpha-plugins --enable-exec > install_argocd.yaml
 kubectl apply -n argocd -f install_argocd.yaml
 
-# Step 4: Wait for all pods to be running
+# Wait for all pods to be running
 wait_for_pods() {
     echo "Waiting for pods in argocd namespace to be running..."
     while true; do

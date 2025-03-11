@@ -1,5 +1,13 @@
 #!/bin/sh -ex
 
+###########################################
+# Deploy Script
+# This script handles the deployment process for the Kubernetes
+# cluster. It separates CRDs from other resources, applies them,
+# and waits for their establishment before proceeding.
+# It also cleans up temporary files created during the process.
+###########################################
+
 AUTOGENMSG="# This is an auto-generated file. DO NOT EDIT"
 
 separate_crds(){

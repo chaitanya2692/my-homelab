@@ -1,5 +1,13 @@
 #!/bin/bash
 
+###########################################
+# Bootstrap Script
+# This script installs necessary tools and dependencies
+# for setting up the Kubernetes-based HTPC environment.
+# It includes installations for k3s, Helm, kustomize, SOPS,
+# ksops, age, yq, pip, pre-commit, and Docker.
+###########################################
+
 # Exit immediately if a command exits with a non-zero status
 set -e
 

@@ -1,5 +1,12 @@
 #!/bin/sh -ex
 
+###########################################
+# Delete Deployment Script
+# This script deletes the Kubernetes deployment for the specified
+# environment. It removes CRDs, namespaces, and other resources.
+# It also cleans up temporary files created during the process.
+###########################################
+
 # Default to staging if no environment is specified
 ENVIRONMENT=${1:-staging}
 
@@ -27,6 +34,7 @@ build() {
 
     # Build each overlay separately
     for app in htpc utils infra argocd; do
+        echo "---" >> "${PWD}/install.yaml"
         kustomize build "${PWD}/overlays/${app}" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     done
 }

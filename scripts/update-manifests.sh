@@ -1,5 +1,13 @@
 #!/bin/sh -ex
 
+###########################################
+# Update Manifests Script
+# This script generates the combined install.yaml file using
+# kustomize. It updates the environment in kustomization files
+# and builds each overlay separately. It also checks for changes
+# in relevant files before proceeding.
+###########################################
+
 # Default to staging if no environment is specified
 ENVIRONMENT=${1:-staging}
 
