@@ -17,6 +17,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
         - name: transmission
           image: linuxserver/transmission:latest
@@ -57,6 +58,9 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "1000m"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
