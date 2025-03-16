@@ -7,5 +7,7 @@ namespace: utils
 resources:
   - dashy
   - nextcloud
+  - immich
+  - tandoor
   - ingress-route.yaml
   - persistent-volume-claim.yaml
