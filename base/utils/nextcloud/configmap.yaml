@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-config
+data:
+  custom-config.php: |
+    <?php
+    $CONFIG = array(
+      // System settings
+      'maintenance_window_start' => 1,
+      'default_phone_region' => 'SE',
+      'skeletondirectory' => '',
+
+
+      // Background jobs
+      'files_no_background_scan' => true,
+
+      // Cleanup and maintenance
+      'filesystem_check_changes' => 1,
+    );
