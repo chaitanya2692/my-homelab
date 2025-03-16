@@ -6,6 +6,7 @@ resources:
   - secret
   - nextcloud-deployment.yaml
   - nextcloud-service.yaml
+  - nextcloud-cronjob.yaml
   - postgres-deployment.yaml
   - postgres-service.yaml
   - redis-deployment.yaml
