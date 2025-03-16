@@ -4,7 +4,9 @@ kind: CronJob
 metadata:
   name: nextcloud-cron
 spec:
-  schedule: "*/5 * * * *" # Run every 5 minutes
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:
@@ -41,6 +43,8 @@ kind: CronJob
 metadata:
   name: nextcloud-maintenance
 spec:
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
   schedule: "0 2 * * *" # Run at 2 AM daily
   jobTemplate:
     spec:
