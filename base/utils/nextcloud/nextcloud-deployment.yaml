@@ -101,3 +101,6 @@ spec:
         - name: nextcloud-config
           configMap:
             name: nextcloud-config
+            items:
+              - key: config.php
+                path: config.php
