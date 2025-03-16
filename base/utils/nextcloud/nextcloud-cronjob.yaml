@@ -1,0 +1,56 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-cron
+spec:
+  schedule: "*/5 * * * *" # Run every 5 minutes
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nextcloud-cron
+              image: nextcloud:30
+              command:
+                - /bin/sh
+                - -c
+                - php -f /var/www/html/cron.php
+              volumeMounts:
+                - name: nextcloud-data
+                  subPath: nextcloud/app
+                  mountPath: /var/www/html
+          restartPolicy: OnFailure
+          volumes:
+            - name: nextcloud-data
+              persistentVolumeClaim:
+                claimName: utils-pvc
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-maintenance
+spec:
+  schedule: "0 2 * * *" # Run at 2 AM daily
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nextcloud-maintenance
+              image: nextcloud:30
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  php occ maintenance:repair --include-expensive
+                  php occ db:add-missing-indices
+              volumeMounts:
+                - name: nextcloud-data
+                  subPath: nextcloud/app
+                  mountPath: /var/www/html
+          restartPolicy: OnFailure
+          volumes:
+            - name: nextcloud-data
+              persistentVolumeClaim:
+                claimName: utils-pvc

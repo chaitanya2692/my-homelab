@@ -1,0 +1,177 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tandoor
+  namespace: utils
+  labels:
+    app: tandoor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tandoor
+  template:
+    metadata:
+      labels:
+        app: tandoor
+    spec:
+      restartPolicy: Always
+      serviceAccount: recipes
+      serviceAccountName: recipes
+      initContainers:
+        - name: init-chmod-data
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: secret-key
+            - name: DB_ENGINE
+              value: django.db.backends.postgresql
+            - name: POSTGRES_HOST
+              value: tandoor-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: tandoor
+            - name: POSTGRES_DB
+              value: tandoor
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: postgresql-postgres-password
+          image: vabene1111/recipes
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              source venv/bin/activate
+              echo "Updating database"
+              python manage.py migrate
+              python manage.py collectstatic_js_reverse
+              python manage.py collectstatic --noinput
+              echo "Setting media file attributes"
+              chown -R 65534:65534 /opt/recipes/mediafiles
+              find /opt/recipes/mediafiles -type d | xargs -r chmod 755
+              find /opt/recipes/mediafiles -type f | xargs -r chmod 644
+              echo "Done"
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /opt/recipes/mediafiles
+              name: media
+              # mount as subPath due to lost+found on ext4 pvc
+              subPath: tandoor/media
+            - mountPath: /opt/recipes/staticfiles
+              name: static
+              # mount as subPath due to lost+found on ext4 pvc
+              subPath: tandoor/static
+      containers:
+        - name: recipes-nginx
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+              name: http
+            - containerPort: 8080
+              protocol: TCP
+              name: gunicorn
+          resources:
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          volumeMounts:
+            - mountPath: tandoor/media
+              name: media
+              # mount as subPath due to lost+found on ext4 pvc
+              subPath: files
+            - mountPath: tandoor/static
+              name: static
+              # mount as subPath due to lost+found on ext4 pvc
+              subPath: files
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx-config
+              readOnly: true
+        - name: tandoor
+          image: vabene1111/recipes
+          imagePullPolicy: IfNotPresent
+          command:
+            - /opt/recipes/venv/bin/gunicorn
+            - -b
+            - :8080
+            - --access-logfile
+            - "-"
+            - --error-logfile
+            - "-"
+            - --log-level
+            - INFO
+            - recipes.wsgi
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 64Mi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DEBUG
+              value: "0"
+            - name: ALLOWED_HOSTS
+              value: "*"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: secret-key
+            - name: DB_ENGINE
+              value: django.db.backends.postgresql
+            - name: POSTGRES_HOST
+              value: tandoor-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: tandoor
+            - name: POSTGRES_DB
+              value: tandoor
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: postgresql-password
+          volumeMounts:
+            - mountPath: /opt/recipes/mediafiles
+              name: data
+              subPath: tandoor/media
+            - mountPath: /opt/recipes/staticfiles
+              name: data
+              subPath: tandoor/static
+          securityContext:
+            runAsUser: 65534
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: utils-pvc
+        - name: nginx-config
+          configMap:
+            name: recipes-nginx-config
