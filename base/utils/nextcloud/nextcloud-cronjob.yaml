@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
             - name: nextcloud-cron
-              image: nextcloud:30
+              image: nextcloud:latest
               command:
                 - /bin/sh
                 - -c
@@ -38,7 +38,7 @@ spec:
         spec:
           containers:
             - name: nextcloud-maintenance
-              image: nextcloud:30
+              image: nextcloud:latest
               command:
                 - /bin/sh
                 - -c
