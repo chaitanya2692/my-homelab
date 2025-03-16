@@ -1,0 +1,37 @@
+env:
+  REDIS_HOSTNAME: immich-redis-master
+  DB_HOSTNAME: immich-postgresql
+  DB_USERNAME: immich
+  DB_DATABASE_NAME: immich
+  IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
+
+immich:
+  persistence:
+    library:
+      existingClaim: utils-pvc
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+
+server:
+  enabled: true
+  image:
+    repository: ghcr.io/immich-app/immich-server
+    pullPolicy: IfNotPresent
+
+machine-learning:
+  enabled: true
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    pullPolicy: IfNotPresent
+  env:
+    TRANSFORMERS_CACHE: /cache
+  persistence:
+    cache:
+      enabled: true
+      size: 10Gi
+      type: emptyDir
+      accessMode: ReadWriteMany
