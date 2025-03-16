@@ -9,6 +9,9 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
           containers:
             - name: nextcloud-cron
               image: nextcloud:latest
@@ -36,6 +39,9 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
           containers:
             - name: nextcloud-maintenance
               image: nextcloud:latest
