@@ -19,6 +19,13 @@ spec:
                 - /bin/sh
                 - -c
                 - php -f /var/www/html/cron.php
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "500m"
               volumeMounts:
                 - name: nextcloud-data
                   subPath: nextcloud/app
@@ -49,8 +56,27 @@ spec:
                 - /bin/sh
                 - -c
                 - |
+                  php occ maintenance:mode --on
                   php occ maintenance:repair --include-expensive
                   php occ db:add-missing-indices
+                  php occ db:convert-filecache-bigint
+                  php occ files:scan-app-data
+                  php occ files:cleanup
+                  php occ files:scan --all
+                  php occ maintenance:mimetype:update-js
+                  php occ maintenance:mode --off
+                  php occ config:system:set maintenance_window_start_time --value="02:00"
+                  php occ config:system:set default_phone_region --value="SE"
+                  php occ config:system:set skeletondirectory --value=''
+                  php occ update:check
+                  php occ status
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "500m"
               volumeMounts:
                 - name: nextcloud-data
                   subPath: nextcloud/app
