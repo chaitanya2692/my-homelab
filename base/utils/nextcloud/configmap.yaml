@@ -12,7 +12,6 @@ data:
       'default_phone_region' => 'SE',
       'skeletondirectory' => '',
 
-
       // Background jobs
       'files_no_background_scan' => true,
 
