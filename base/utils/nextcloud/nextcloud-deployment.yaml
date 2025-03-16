@@ -92,8 +92,8 @@ spec:
               subPath: nextcloud/app
               mountPath: /var/www/html
             - name: nextcloud-config
-              mountPath: /var/www/html/config/config.php
-              subPath: config.php
+              mountPath: /var/www/html/config/custom.config.php
+              subPath: custom.config.php
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:

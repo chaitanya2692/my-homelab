@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: nextcloud-config
 data:
-  config.php: |
+  custom.config.php: |
     <?php
     $CONFIG = array(
       // System settings
