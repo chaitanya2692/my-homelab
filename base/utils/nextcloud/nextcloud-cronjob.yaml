@@ -1,0 +1,39 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nextcloud-cron
+spec:
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          securityContext:
+            runAsUser: 33
+            runAsGroup: 33
+          containers:
+            - name: nextcloud-cron
+              image: nextcloud:latest
+              command:
+                - /bin/sh
+                - -c
+                - php -f /var/www/html/cron.php
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "500m"
+              volumeMounts:
+                - name: nextcloud-data
+                  subPath: nextcloud/app
+                  mountPath: /var/www/html
+          restartPolicy: OnFailure
+          volumes:
+            - name: nextcloud-data
+              persistentVolumeClaim:
+                claimName: utils-pvc

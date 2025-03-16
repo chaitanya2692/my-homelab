@@ -28,7 +28,7 @@ spec:
               done
       containers:
         - name: nextcloud
-          image: nextcloud:30
+          image: nextcloud:latest
           ports:
             - containerPort: 80
           resources:
@@ -91,7 +91,13 @@ spec:
             - name: nextcloud-data
               subPath: nextcloud/app
               mountPath: /var/www/html
+            - name: nextcloud-config
+              mountPath: /var/www/html/config/custom.config.php
+              subPath: custom.config.php
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
             claimName: utils-pvc
+        - name: nextcloud-config
+          configMap:
+            name: nextcloud-config
