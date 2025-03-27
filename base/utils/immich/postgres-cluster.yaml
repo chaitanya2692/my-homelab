@@ -46,5 +46,5 @@ spec:
   backup:
     volumeSnapshot:
       className: cluster-storage
-      snapshotOwnerReference: true
+      snapshotOwnerReference: "cluster"
     retentionPolicy: "30d"

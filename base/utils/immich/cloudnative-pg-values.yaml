@@ -1,6 +1,6 @@
 ---
 config:
-  clusterWide: true
+  clusterWide: false
 
 # Override operator namespace to utils
 fullnameOverride: "cnpg"
