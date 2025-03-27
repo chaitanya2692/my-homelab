@@ -28,6 +28,11 @@ redis:
   architecture: standalone
   auth:
     enabled: false
+  master:
+    persistence:
+      enabled: true
+      existingClaim: utils-pvc
+      subPath: "redis-data"
 
 server:
   enabled: true
@@ -46,6 +51,6 @@ machine-learning:
     cache:
       enabled: true
       size: 10Gi
+      subPath: "ml-cache"
       existingClaim: utils-pvc
       accessMode: ReadWriteMany
-      storageClass: cluster-storage
