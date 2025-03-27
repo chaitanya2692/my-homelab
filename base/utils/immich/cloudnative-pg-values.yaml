@@ -1,0 +1,17 @@
+---
+config:
+  clusterWide: true
+
+# Override operator namespace to utils
+fullnameOverride: "cnpg"
+containerSecurityContext:
+  enabled: true
+  runAsUser: 10001
+  runAsGroup: 10001
+
+webhook:
+  port: 9443
+  mutating:
+    namespaceSelector: {}
+  validating:
+    namespaceSelector: {}
