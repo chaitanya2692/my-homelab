@@ -50,7 +50,7 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: recipes # Your sops-managed secret
+                  name: tandoor-credentials # Your sops-managed secret
                   key: secret-key
             - name: DB_ENGINE
               value: django.db.backends.postgresql
@@ -163,7 +163,7 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: recipes
+                  name: tandoor-credentials
                   key: secret-key
             - name: POSTGRES_PASSWORD # App DB User Password
               valueFrom:
