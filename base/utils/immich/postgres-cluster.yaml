@@ -21,7 +21,6 @@ spec:
         login: true
         passwordSecret:
           name: immich-credentials
-          key: DB_PASSWORD
 
   bootstrap:
     initdb:
