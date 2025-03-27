@@ -53,7 +53,7 @@ spec:
               name: tandoor-pg-data # Use the volume name defined below
       containers:
         - name: tandoor-db # Renamed container
-          image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60 # Use specific tag from docs
+          image: docker.io/bitnami/postgresql
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 1001 # Run as postgres user
