@@ -63,6 +63,8 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-postgres-password
+            - name: REDIS_PORT
+              value: "6379"
           command:
             - sh
             - -c
@@ -70,20 +72,16 @@ spec:
               set -e
               echo "Waiting for database..."
               timeout 60 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
-
               source venv/bin/activate
               echo "Running DB migrations..."
               python manage.py migrate --noinput
-
               echo "Collecting static files..."
               python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput
-
               echo "Setting media file permissions..."
               chown -R 65534:65534 /opt/recipes/mediafiles
               find /opt/recipes/mediafiles -type d -print0 | xargs -0 -r chmod 755
               find /opt/recipes/mediafiles -type f -print0 | xargs -0 -r chmod 644
-
               echo "Init container finished."
           resources:
             requests:
@@ -124,7 +122,6 @@ spec:
               readOnly: true
             - name: nginx-logs
               mountPath: /var/log/nginx
-
         - name: tandoor-app
           image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
@@ -180,6 +177,8 @@ spec:
               value: "True"
             - name: SECURE_PROXY_SSL_HEADER
               value: "HTTP_X_FORWARDED_PROTO,https"
+            - name: REDIS_PORT
+              value: "6379"
           livenessProbe:
             httpGet:
               path: /
@@ -202,7 +201,7 @@ spec:
             requests:
               cpu: 150m
               memory: 256Mi
-            limits: # Add limits if desired, e.g.
+            limits:
               cpu: 500m
               memory: 512Mi
           volumeMounts:
