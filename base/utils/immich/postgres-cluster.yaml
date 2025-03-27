@@ -33,12 +33,12 @@ spec:
 
   storage:
     pvcTemplate:
+      storageClassName: cluster-storage
       accessModes:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 8Gi
-      storageClassName: cluster-storage
+          storage: 200Gi
       selector:
         matchLabels:
           type: utils
