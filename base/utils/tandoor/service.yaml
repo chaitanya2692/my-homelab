@@ -1,26 +1,24 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: tandoor
-  namespace: utils
-spec:
-  selector:
-    app: tandoor
+  name: tandoor # Renamed
+  labels:
+    app: tandoor # Updated label
     tier: frontend
-  ports:
-    - port: 8080
-      targetPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: tandoor-postgresql
-  namespace: utils
 spec:
   selector:
-    app: tandoor
-    tier: database
+    app: tandoor # Updated selector
+    tier: frontend
+    environment: production
   ports:
-    - port: 5432
-      targetPort: postgresql
+    # Port 80, targeting the 'http' port (containerPort 80) on the Nginx container
+    - port: 80
+      targetPort: http
+      name: http
+      protocol: TCP
+    # Port 8080, targeting the 'gunicorn' port (containerPort 8080) on the Tandoor App container
+    - port: 8080
+      targetPort: gunicorn
+      name: gunicorn
+      protocol: TCP
+  # type: ClusterIP # Default

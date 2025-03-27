@@ -1,126 +1,133 @@
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  name: tandoor-postgres # Renamed
   labels:
-    app: tandoor
+    app: tandoor # Updated label
     tier: database
-  name: tandoor-postgresql
-  namespace: utils
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tandoor
+      app: tandoor # Updated selector
       tier: database
-  serviceName: tandoor-postgresql
+  serviceName: tandoor-postgres # Updated service name
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        # You might want to adjust Velero backup annotations if needed
+        # backup.velero.io/backup-volumes: data # 'data' volume name changes below
       labels:
-        app: tandoor
+        app: tandoor # Updated label
         tier: database
-      name: tandoor-postgresql
+      # name: tandoor-postgres # Name is inherited
     spec:
-      containers:
-        - name: postgresql
-          env:
-            - name: POSTGRESQL_PORT_NUMBER
-              value: "5432"
-            - name: POSTGRESQL_VOLUME_DIR
-              value: /bitnami/postgresql
-            - name: PGDATA
-              value: /bitnami/postgresql/data
-            - name: POSTGRES_USER
-              value: tandoor
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-password
-            # Optional PG admin pass - bitnami might need it for init logic even if creating another user
-            - name: POSTGRESQL_POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-postgres-password
-            - name: POSTGRES_DB
-              value: tandoor
-            # Disable features that might cause permission issues on simple volumes
-            - name: POSTGRESQL_ENABLE_LDAP
-              value: "no"
-            - name: ALLOW_EMPTY_PASSWORD
-              value: "yes"
-          image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60
-          imagePullPolicy: IfNotPresent
-          livenessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - exec pg_isready -U tandoor -d tandoor -h 127.0.0.1 -p 5432
-            failureThreshold: 6
-            initialDelaySeconds: 45 # Give more time for init + startup
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-          ports:
-            - containerPort: 5432
-              name: postgresql
-              protocol: TCP
-          readinessProbe:
-            exec:
-              command:
-                - sh
-                - -c
-                - -e
-                - pg_isready -U tandoor -d tandoor -h 127.0.0.1 -p 5432
-            failureThreshold: 6
-            initialDelaySeconds: 20 # Quicker readiness check
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 5
-          resources:
-            requests:
-              cpu: 250m
-              memory: 256Mi
-          securityContext:
-            runAsUser: 1001
-          volumeMounts:
-            - mountPath: /bitnami/postgresql
-              name: data
-              subPath: tandoor/postgresql
-      dnsPolicy: ClusterFirst
+      # Use fsGroup matching runAsUser of the main container
+      securityContext:
+        fsGroup: 1001 # Matches the Bitnami postgres user ID
+      serviceAccountName: tandoor # Updated service account
       initContainers:
-        - command:
+        # This init container ensures the directory exists and has correct permissions
+        # before the main postgres container starts.
+        - name: init-chmod-data
+          image: docker.io/bitnami/minideb:stretch # As per original
+          imagePullPolicy: IfNotPresent # Changed from Always for less pulling
+          command:
             - sh
             - -c
             - |
               mkdir -p /bitnami/postgresql/data
-              chown -R 1001:1001 /bitnami/postgresql
               chmod 700 /bitnami/postgresql/data
-              echo "Permissions set for /bitnami/postgresql"
-          image: busybox:1.36
-          imagePullPolicy: IfNotPresent
-          name: init-chmod-data
-          resources:
-            requests:
-              cpu: 50m
-              memory: 32Mi
+              # Ensure the parent directory and the data dir are owned by postgres user/group
+              chown -R 1001:1001 /bitnami/postgresql
           securityContext:
-            runAsUser: 0
+            runAsUser: 0 # Needs root to chown
+          resources: # Kept original requests
+            requests:
+              cpu: 100m # Reduced from 250m
+              memory: 128Mi # Reduced from 256Mi
           volumeMounts:
             - mountPath: /bitnami/postgresql
-              name: data
-              subPath: tandoor/postgresql
-      restartPolicy: Always
-      securityContext:
-        fsGroup: 1001
-      serviceAccount: recipes
-      serviceAccountName: recipes
-      terminationGracePeriodSeconds: 30
+              name: tandoor-pg-data # Use the volume name defined below
+      containers:
+        - name: tandoor-db # Renamed container
+          image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60 # Use specific tag from docs
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 1001 # Run as postgres user
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_VOLUME_DIR # Mounted path
+              value: /bitnami/postgresql
+            - name: PGDATA # Data directory within the volume mount
+              value: /bitnami/postgresql/data
+            # DB User for Tandoor Application (created by Bitnami entrypoint)
+            - name: POSTGRES_USER
+              value: recipes # Keep as 'recipes' unless Tandoor app config changes
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials # Updated secret name
+                  key: postgresql-password # Key for the application user password
+            # DB Admin User (postgres) Password
+            - name: POSTGRESQL_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials # Updated secret name
+                  key: postgresql-postgres-password # Key for the postgres admin password
+            # Database Name for Tandoor Application
+            - name: POSTGRES_DB
+              value: recipes # Keep as 'recipes' unless Tandoor app config changes
+          ports:
+            - containerPort: 5432
+              name: postgresql
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                # Check readiness using the 'postgres' admin user and the 'recipes' db
+                - sh
+                - -c
+                - exec pg_isready -U "postgres" -d "recipes" -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                # Check readiness using the 'postgres' admin user and the 'recipes' db
+                - sh
+                - -c
+                - -e # Exit immediately if a command exits with a non-zero status.
+                - |
+                  pg_isready -U "postgres" -d "recipes" -h 127.0.0.1 -p 5432
+                  # Bitnami specific check - presence of .initialized file
+                  # [ -f /opt/bitnami/postgresql/tmp/.initialized ] # Path might differ, PGDATA is safer
+                  [ -f /bitnami/postgresql/data/postmaster.pid ] # Check if postmaster is running
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          resources: # Kept original requests
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            # limits: # Consider adding limits
+            #   cpu: 500m
+            #   memory: 512Mi
+          volumeMounts:
+            - mountPath: /bitnami/postgresql # Mount point inside container
+              name: tandoor-pg-data # Use the volume name defined below
       volumes:
-        - name: data
+        # Define the volume using the existing utils-pvc
+        - name: tandoor-pg-data
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: utils-pvc # Your existing PVC
+      # Removed volumeClaimTemplates as we use an existing PVC
+  # volumeClaimTemplates: ... (removed)

@@ -1,29 +1,77 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
+  name: tandoor-nginx-config # Renamed for clarity
   labels:
-    app: recipes
-  name: recipes-nginx-config
+    app: tandoor
 data:
   nginx-config: |-
+    #user nobody nogroup; # Nginx image runs as root, forks workers as nobody by default
+    worker_processes auto;
+    pid /run/nginx.pid;
+    include /etc/nginx/modules-enabled/*.conf;
+
     events {
       worker_connections 1024;
     }
+
     http {
-      include mime.types;
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+
+      log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+      access_log  /var/log/nginx/access.log  main;
+      error_log   /var/log/nginx/error.log warn;
+
+      sendfile        on;
+      tcp_nopush      on;
+      tcp_nodelay     on;
+      keepalive_timeout 65;
+      types_hash_max_size 2048;
+      server_tokens off;
+
+      # Define upstream for gunicorn
+      upstream gunicorn {
+        # This server directive is not strictly needed when running as a sidecar
+        # talking over localhost or a shared socket, but doesn't hurt.
+        # Traefik will direct traffic to the correct container port.
+        # server 127.0.0.1:8080; # Removed as Traefik targets the service
+      }
+
       server {
-        listen 80;
-        server_name _;
+        listen 80 default_server;
+        server_name _; # Listen for any server name
 
         client_max_body_size 16M;
 
-        # serve static files
+        # serve static files collected by django collectstatic
         location /static/ {
           alias /static/;
+          # Optional: Add caching headers for static files
+          expires 1y;
+          add_header Cache-Control "public";
         }
-        # serve media files
+
+        # serve media files uploaded by users
         location /media/ {
           alias /media/;
+          # Optional: Add caching headers for media files if appropriate
+          # expires 7d;
+          # add_header Cache-Control "public";
         }
+
+        # Proxy pass all other requests to gunicorn (handled by ingress)
+        # The ingress will route non-static/media to the gunicorn port (8080)
+        # This block might not be hit if ingress routes correctly.
+        # location / {
+        #    proxy_pass http://gunicorn;
+        #    proxy_set_header Host $host;
+        #    proxy_set_header X-Real-IP $remote_addr;
+        #    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #    proxy_set_header X-Forwarded-Proto $scheme;
+        # }
       }
     }
