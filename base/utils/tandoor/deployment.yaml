@@ -185,7 +185,7 @@ spec:
             - name: DEBUG
               value: "0" # MUST be 0 in production
             - name: ALLOWED_HOSTS
-              value: "recipes.my-homelab.party" # CHANGE THIS to your specific domain
+              value: "*"
             - name: GUNICORN_MEDIA
               value: "0" # Disable Gunicorn serving media (Nginx handles it)
             - name: TZ
