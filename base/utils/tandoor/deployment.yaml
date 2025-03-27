@@ -169,7 +169,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-password # App user password key
+                  key: postgresql-postgres-password # App user password key
             # --- Database Config ---
             - name: DB_ENGINE
               value: django.db.backends.postgresql
@@ -178,7 +178,7 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: recipes # Application database user
+              value: postgres # Application database user
             - name: POSTGRES_DB
               value: recipes
             # --- Application Config ---
