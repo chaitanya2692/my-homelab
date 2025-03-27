@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,7 +20,7 @@ spec:
       serviceAccount: recipes
       serviceAccountName: recipes
       initContainers:
-        - name: init-chmod-data
+        - name: init-migrations-and-static
           env:
             - name: SECRET_KEY
               valueFrom:
@@ -40,38 +41,40 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password
+                  key: postgresql-password
           image: vabene1111/recipes
           imagePullPolicy: Always
           resources:
             requests:
               cpu: 250m
-              memory: 64Mi
+              memory: 128Mi
           command:
             - sh
             - -c
             - |
               set -e
-              source venv/bin/activate
               echo "Updating database"
-              python manage.py migrate
+              source venv/bin/activate
+              python manage.py migrate --noinput
+              echo "Collecting static files"
               python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput
-              echo "Setting media file attributes"
-              chown -R 65534:65534 /opt/recipes/mediafiles
-              find /opt/recipes/mediafiles -type d | xargs -r chmod 755
-              find /opt/recipes/mediafiles -type f | xargs -r chmod 644
+              echo "Setting media/static file attributes"
+              mkdir -p /opt/recipes/mediafiles /opt/recipes/staticfiles
+              chown -R 65534:65534 /opt/recipes/mediafiles /opt/recipes/staticfiles
+              find /opt/recipes/mediafiles -type d -exec chmod 755 {} + || true # Allow errors if dir is empty initially
+              find /opt/recipes/mediafiles -type f -exec chmod 644 {} + || true
+              find /opt/recipes/staticfiles -type d -exec chmod 755 {} + || true
+              find /opt/recipes/staticfiles -type f -exec chmod 644 {} + || true
               echo "Done"
           securityContext:
             runAsUser: 0
           volumeMounts:
             - mountPath: /opt/recipes/mediafiles
-              name: media
-              # mount as subPath due to lost+found on ext4 pvc
+              name: data
               subPath: tandoor/media
             - mountPath: /opt/recipes/staticfiles
-              name: static
-              # mount as subPath due to lost+found on ext4 pvc
+              name: data
               subPath: tandoor/static
       containers:
         - name: recipes-nginx
@@ -80,27 +83,36 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
-              name: http
-            - containerPort: 8080
-              protocol: TCP
-              name: gunicorn
+              name: http-nginx
           resources:
             requests:
-              cpu: 250m
+              cpu: 100m
               memory: 64Mi
           volumeMounts:
-            - mountPath: tandoor/media
-              name: media
-              # mount as subPath due to lost+found on ext4 pvc
-              subPath: files
-            - mountPath: tandoor/static
-              name: static
-              # mount as subPath due to lost+found on ext4 pvc
-              subPath: files
+            - mountPath: /media
+              name: data
+              subPath: tandoor/media
+              readOnly: true
+            - mountPath: /static
+              name: data
+              subPath: tandoor/static
+              readOnly: true
             - name: nginx-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx-config
               readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
         - name: tandoor
           image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
@@ -115,25 +127,30 @@ spec:
             - --log-level
             - INFO
             - recipes.wsgi
+          ports:
+            - containerPort: 8080
+              name: gunicorn
+              protocol: TCP
           livenessProbe:
-            failureThreshold: 3
             httpGet:
-              path: /
-              port: 8080
+              path: /api/version/
+              port: gunicorn
               scheme: HTTP
+            initialDelaySeconds: 30
             periodSeconds: 30
+            failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
-              port: 8080
+              path: /api/version/
+              port: gunicorn
               scheme: HTTP
-            periodSeconds: 30
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            failureThreshold: 3
           resources:
             requests:
               cpu: 250m
-              memory: 64Mi
-          ports:
-            - containerPort: 8080
+              memory: 256Mi
           env:
             - name: DEBUG
               value: "0"
@@ -159,6 +176,14 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-password
+            - name: STATIC_ROOT
+              value: /opt/recipes/staticfiles
+            - name: MEDIA_ROOT
+              value: /opt/recipes/mediafiles
+            - name: STATIC_URL
+              value: /static/
+            - name: MEDIA_URL
+              value: /media/
           volumeMounts:
             - mountPath: /opt/recipes/mediafiles
               name: data
@@ -166,6 +191,7 @@ spec:
             - mountPath: /opt/recipes/staticfiles
               name: data
               subPath: tandoor/static
+              readOnly: true
           securityContext:
             runAsUser: 65534
       volumes:
@@ -175,3 +201,6 @@ spec:
         - name: nginx-config
           configMap:
             name: recipes-nginx-config
+            items:
+              - key: nginx-config
+                path: nginx-config

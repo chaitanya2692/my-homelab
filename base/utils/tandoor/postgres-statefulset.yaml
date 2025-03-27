@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -17,8 +18,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        backup.velero.io/backup-volumes: data
       labels:
         app: tandoor
         tier: database
@@ -40,6 +39,7 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-password
+            # Optional PG admin pass - bitnami might need it for init logic even if creating another user
             - name: POSTGRESQL_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -47,6 +47,11 @@ spec:
                   key: postgresql-postgres-password
             - name: POSTGRES_DB
               value: tandoor
+            # Disable features that might cause permission issues on simple volumes
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: "no"
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
           image: docker.io/bitnami/postgresql:11.5.0-debian-9-r60
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -54,9 +59,9 @@ spec:
               command:
                 - sh
                 - -c
-                - exec pg_isready -U "postgres" -d "wiki" -h 127.0.0.1 -p 5432
+                - exec pg_isready -U tandoor -d tandoor -h 127.0.0.1 -p 5432
             failureThreshold: 6
-            initialDelaySeconds: 30
+            initialDelaySeconds: 45 # Give more time for init + startup
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
@@ -70,11 +75,9 @@ spec:
                 - sh
                 - -c
                 - -e
-                - |
-                  pg_isready -U "postgres" -d "wiki" -h 127.0.0.1 -p 5432
-                  [ -f /opt/bitnami/postgresql/tmp/.initialized ]
+                - pg_isready -U tandoor -d tandoor -h 127.0.0.1 -p 5432
             failureThreshold: 6
-            initialDelaySeconds: 5
+            initialDelaySeconds: 20 # Quicker readiness check
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
@@ -84,8 +87,6 @@ spec:
               memory: 256Mi
           securityContext:
             runAsUser: 1001
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
           volumeMounts:
             - mountPath: /bitnami/postgresql
               name: data
@@ -97,21 +98,22 @@ spec:
             - -c
             - |
               mkdir -p /bitnami/postgresql/data
+              chown -R 1001:1001 /bitnami/postgresql
               chmod 700 /bitnami/postgresql/data
-              find /bitnami/postgresql -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-                xargs chown -R 1001:1001
-          image: docker.io/bitnami/minideb:stretch
-          imagePullPolicy: Always
+              echo "Permissions set for /bitnami/postgresql"
+          image: busybox:1.36
+          imagePullPolicy: IfNotPresent
           name: init-chmod-data
           resources:
             requests:
-              cpu: 250m
-              memory: 256Mi
+              cpu: 50m
+              memory: 32Mi
           securityContext:
             runAsUser: 0
           volumeMounts:
             - mountPath: /bitnami/postgresql
               name: data
+              subPath: tandoor/postgresql
       restartPolicy: Always
       securityContext:
         fsGroup: 1001
@@ -122,15 +124,3 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: utils-pvc
-  volumeClaimTemplates:
-    - apiVersion: v1
-      kind: PersistentVolumeClaim
-      metadata:
-        name: data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 2Gi
-        volumeMode: Filesystem
