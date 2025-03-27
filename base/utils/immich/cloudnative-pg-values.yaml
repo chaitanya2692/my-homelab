@@ -4,6 +4,7 @@ config:
 
 # Override operator namespace to utils
 fullnameOverride: "cnpg"
+namespaceOverride: utils
 containerSecurityContext:
   enabled: true
   runAsUser: 10001
