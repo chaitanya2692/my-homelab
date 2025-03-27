@@ -20,7 +20,7 @@ spec:
         superuser: true
         login: true
         passwordSecret:
-          name: DB_USERNAME
+          name: DB_PASSWORD
 
   bootstrap:
     initdb:

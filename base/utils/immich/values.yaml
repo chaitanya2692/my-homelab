@@ -1,6 +1,6 @@
 env:
   REDIS_HOSTNAME: immich-redis-master
-  DB_HOSTNAME: immich-postgres-rw.cnpg
+  DB_HOSTNAME: immich-rw
   DB_USERNAME:
     valueFrom:
       secretKeyRef:
@@ -53,4 +53,4 @@ machine-learning:
       size: 10Gi
       subPath: "ml-cache"
       existingClaim: utils-pvc
-      accessMode: ReadWriteMany
+      accessMode: ReadWriteOnce
