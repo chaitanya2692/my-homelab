@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: tandoor-postgres # Renamed
+  name: recipes-postgresql
   labels:
-    app: tandoor # Updated label
+    app: recipes
     tier: database
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tandoor # Updated selector
+      app: recipes
       tier: database
-  serviceName: tandoor-postgres # Updated service name
+  serviceName: recipes-postgresql
   updateStrategy:
     type: RollingUpdate
   template:
@@ -20,14 +20,14 @@ spec:
         # You might want to adjust Velero backup annotations if needed
         # backup.velero.io/backup-volumes: data # 'data' volume name changes below
       labels:
-        app: tandoor # Updated label
+        app: recipes
         tier: database
-      # name: tandoor-postgres # Name is inherited
+      # name: recipes-postgresql # Name is inherited
     spec:
       # Use fsGroup matching runAsUser of the main container
       securityContext:
         fsGroup: 1001 # Matches the Bitnami postgres user ID
-      serviceAccountName: tandoor # Updated service account
+      serviceAccountName: recipes # Changed from tandoor to recipes
       initContainers:
         # This init container ensures the directory exists and has correct permissions
         # before the main postgres container starts.
@@ -72,8 +72,8 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials # Updated secret name
-                  key: postgresql-password # Key for the application user password
+                  name: recipes
+                  key: postgresql-password
             # DB Admin User (postgres) Password
             - name: POSTGRESQL_POSTGRES_PASSWORD
               valueFrom:

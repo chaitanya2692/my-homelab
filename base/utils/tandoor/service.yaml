@@ -1,24 +1,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tandoor # Renamed
+  name: recipes
   labels:
-    app: tandoor # Updated label
-    tier: frontend
+    app: recipes
 spec:
   selector:
-    app: tandoor # Updated selector
-    tier: frontend
-    environment: production
+    app: recipes
   ports:
-    # Port 80, targeting the 'http' port (containerPort 80) on the Nginx container
     - port: 80
       targetPort: http
       name: http
       protocol: TCP
-    # Port 8080, targeting the 'gunicorn' port (containerPort 8080) on the Tandoor App container
     - port: 8080
       targetPort: gunicorn
       name: gunicorn
       protocol: TCP
-  # type: ClusterIP # Default

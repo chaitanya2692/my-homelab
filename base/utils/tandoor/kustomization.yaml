@@ -7,10 +7,11 @@ namespace: utils
 resources:
   - deployment.yaml
   - service.yaml
+  - service-db.yaml
   - postgres-statefulset.yaml
   - configmap.yaml
   - secret
   - serviceaccount.yaml
 
 commonLabels:
-  app: tandoor
+  app: recipes

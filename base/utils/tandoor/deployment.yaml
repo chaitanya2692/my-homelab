@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tandoor
+  name: recipes
   labels:
-    app: tandoor
+    app: recipes
     environment: production
     tier: frontend
 spec:
@@ -12,17 +12,17 @@ spec:
     type: Recreate # As recommended by original docs for updates/migrations
   selector:
     matchLabels:
-      app: tandoor
+      app: recipes
       environment: production
       tier: frontend
   template:
     metadata:
       labels:
-        app: tandoor
+        app: recipes
         tier: frontend
         environment: production
     spec:
-      serviceAccountName: tandoor
+      serviceAccountName: recipes
       restartPolicy: Always
       # Define volumes once
       volumes:
@@ -35,7 +35,7 @@ spec:
           configMap:
             name: tandoor-nginx-config # Name of the ConfigMap created separately
             items:
-              - key: nginx-config # Key within the ConfigMap data
+              - key: nginx.conf # Changed to match ConfigMap key
                 path: nginx.conf # Filename to mount inside the container
         # EmptyDir volume for nginx logs (non-persistent)
         - name: nginx-logs
@@ -50,12 +50,12 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials # Your sops-managed secret
+                  name: recipes # Your sops-managed secret
                   key: secret-key
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: tandoor-postgresql # Service name of the Postgres StatefulSet
+              value: recipes-postgresql # Service name of the Postgres StatefulSet
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
@@ -163,7 +163,7 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials
+                  name: recipes
                   key: secret-key
             - name: POSTGRES_PASSWORD # App DB User Password
               valueFrom:
@@ -174,7 +174,7 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: tandoor-postgresql
+              value: recipes-postgresql
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
