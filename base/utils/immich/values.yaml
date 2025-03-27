@@ -1,8 +1,21 @@
 env:
   REDIS_HOSTNAME: immich-redis-master
-  DB_HOSTNAME: immich-postgresql
-  DB_USERNAME: immich
-  DB_DATABASE_NAME: immich
+  DB_HOSTNAME: immich-postgres-rw.cnpg
+  DB_USERNAME:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_USERNAME
+  DB_PASSWORD:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_PASSWORD
+  DB_DATABASE_NAME:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_DATABASE_NAME
   IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
 
 immich:
@@ -33,5 +46,6 @@ machine-learning:
     cache:
       enabled: true
       size: 10Gi
-      type: emptyDir
+      existingClaim: utils-pvc
       accessMode: ReadWriteMany
+      storageClass: cluster-storage
