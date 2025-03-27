@@ -76,6 +76,7 @@ spec:
               # Simple wait loop (adjust timeout/checks if needed)
               timeout 60 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
 
+              source venv/bin/activate
               echo "Running DB migrations..."
               python manage.py migrate --noinput
 
