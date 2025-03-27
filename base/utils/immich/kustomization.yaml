@@ -8,6 +8,7 @@ resources:
   - secret
   - backup.yaml
   - postgres-cluster.yaml
+  - manual-pv-immich-db.yaml
 
 helmCharts:
   - name: immich
