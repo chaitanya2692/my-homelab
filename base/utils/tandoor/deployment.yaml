@@ -9,7 +9,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: Recreate # As recommended by original docs for updates/migrations
+    type: Recreate
   selector:
     matchLabels:
       app: recipes
@@ -24,56 +24,51 @@ spec:
     spec:
       serviceAccountName: recipes
       restartPolicy: Always
-      # Define volumes once
       volumes:
-        # The main storage volume using the existing PVC
         - name: tandoor-storage
           persistentVolumeClaim:
             claimName: utils-pvc
-        # Volume for the nginx configmap
         - name: nginx-config-volume
           configMap:
-            name: tandoor-nginx-config # Name of the ConfigMap created separately
+            name: tandoor-nginx-config
             items:
-              - key: nginx.conf # Changed to match ConfigMap key
-                path: nginx.conf # Filename to mount inside the container
-        # EmptyDir volume for nginx logs (non-persistent)
+              - key: nginx.conf
+                path: nginx.conf
         - name: nginx-logs
           emptyDir: {}
       initContainers:
         - name: init-db-migrate-static
-          image: vabene1111/recipes:1.5.15 # <<< USE SPECIFIC TAG (MATCH APP CONTAINER)
+          image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
           securityContext:
-            runAsUser: 0 # Required for chown
+            runAsUser: 0
           env:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials # Your sops-managed secret
+                  name: tandoor-credentials
                   key: secret-key
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: recipes-postgresql # Service name of the Postgres StatefulSet
+              value: recipes-postgresql
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: postgres # Use admin user for migrations per original docs
+              value: postgres
             - name: POSTGRES_DB
               value: recipes
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials # Your sops-managed secret
-                  key: postgresql-postgres-password # Admin password
+                  name: tandoor-credentials
+                  key: postgresql-postgres-password
           command:
             - sh
             - -c
             - |
               set -e
               echo "Waiting for database..."
-              # Simple wait loop (adjust timeout/checks if needed)
               timeout 60 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
 
               source venv/bin/activate
@@ -93,84 +88,76 @@ spec:
           resources:
             requests:
               cpu: 150m
-              memory: 128Mi # Migrations might need a bit more memory
+              memory: 128Mi
           volumeMounts:
-            - name: tandoor-storage # Reference the PVC volume
+            - name: tandoor-storage
               mountPath: /opt/recipes/mediafiles
-              subPath: tandoor/media # Store media under utils-pvc/tandoor/media
-            - name: tandoor-storage # Reference the PVC volume
+              subPath: tandoor/media
+            - name: tandoor-storage
               mountPath: /opt/recipes/staticfiles
-              subPath: tandoor/static # Store static under utils-pvc/tandoor/static
+              subPath: tandoor/static
 
       containers:
-        # Nginx sidecar for serving static/media files
         - name: tandoor-nginx
-          image: nginx:1.27-alpine # Using alpine for smaller size
+          image: nginx:1.27-alpine
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-              name: http # Port targeted by IngressRoute for static/media
+              name: http
               protocol: TCP
           resources:
             requests:
               cpu: 100m
               memory: 64Mi
           volumeMounts:
-            # Mount the specific nginx.conf from the ConfigMap volume
             - name: nginx-config-volume
               mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf # Must match the 'path' in the volume definition
+              subPath: nginx.conf
               readOnly: true
-            # Mount media files (read-only for nginx)
-            - name: tandoor-storage # Reference the PVC volume
-              mountPath: /media # Nginx config serves from /media
-              subPath: tandoor/media # Location on PVC
+            - name: tandoor-storage
+              mountPath: /media
+              subPath: tandoor/media
               readOnly: true
-            # Mount static files (read-only for nginx)
-            - name: tandoor-storage # Reference the PVC volume
-              mountPath: /static # Nginx config serves from /static
-              subPath: tandoor/static # Location on PVC
+            - name: tandoor-storage
+              mountPath: /static
+              subPath: tandoor/static
               readOnly: true
-            # Mount emptyDir for logs
             - name: nginx-logs
               mountPath: /var/log/nginx
 
-        # Tandoor application container (Gunicorn)
         - name: tandoor-app
-          image: vabene1111/recipes:1.5.15 # <<< USE SPECIFIC TAG (MATCH INIT CONTAINER)
+          image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
           securityContext:
-            runAsUser: 65534 # Run as non-root 'nobody' user
+            runAsUser: 65534
           command:
             - /opt/recipes/venv/bin/gunicorn
-            - --bind # Use --bind instead of -b for clarity
-            - 0.0.0.0:8080 # Listen on all interfaces inside the container
+            - --bind
+            - 0.0.0.0:8080
             - --workers
-            - "3" # Example, adjust based on expected load and CPU limits
+            - "3"
             - --log-level
             - INFO
             - --access-logfile
-            - "-" # Log access to stdout
+            - "-"
             - --error-logfile
-            - "-" # Log errors to stderr
-            - recipes.wsgi:application # Standard WSGI entrypoint
+            - "-"
+            - recipes.wsgi:application
           ports:
             - containerPort: 8080
-              name: gunicorn # Port targeted by IngressRoute for the app
+              name: gunicorn
               protocol: TCP
           env:
-            # --- Secrets ---
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: secret-key
-            - name: POSTGRES_PASSWORD # App DB User Password
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password # App user password key
-            # --- Database Config ---
+                  key: postgresql-postgres-password
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
@@ -178,55 +165,51 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: postgres # Application database user
+              value: postgres
             - name: POSTGRES_DB
               value: recipes
-            # --- Application Config ---
             - name: DEBUG
-              value: "0" # MUST be 0 in production
+              value: "0"
             - name: ALLOWED_HOSTS
               value: "*"
             - name: GUNICORN_MEDIA
-              value: "0" # Disable Gunicorn serving media (Nginx handles it)
+              value: "0"
             - name: TZ
-              value: "CET" # Your timezone
-            # --- Proxy Headers (Important when behind Traefik/Ingress) ---
+              value: "CET"
             - name: USE_X_FORWARDED_HOST
               value: "True"
-            - name: SECURE_PROXY_SSL_HEADER # Tells Django to trust X-Forwarded-Proto
+            - name: SECURE_PROXY_SSL_HEADER
               value: "HTTP_X_FORWARDED_PROTO,https"
           livenessProbe:
             httpGet:
-              path: / # Check the root path served by Gunicorn
-              port: gunicorn # Check the Gunicorn port
+              path: /
+              port: gunicorn
               scheme: HTTP
-            initialDelaySeconds: 60 # Allow time for Gunicorn to start
+            initialDelaySeconds: 60
             periodSeconds: 30
             failureThreshold: 3
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: / # Check the root path served by Gunicorn
-              port: gunicorn # Check the Gunicorn port
+              path: /
+              port: gunicorn
               scheme: HTTP
-            initialDelaySeconds: 30 # Check readiness sooner
+            initialDelaySeconds: 30
             periodSeconds: 30
             failureThreshold: 3
             timeoutSeconds: 5
           resources:
             requests:
               cpu: 150m
-              memory: 256Mi # Django apps often need more than minimal memory
-            # limits: # Add limits if desired, e.g.
-            #   cpu: 500m
-            #   memory: 512Mi
+              memory: 256Mi
+            limits: # Add limits if desired, e.g.
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
-            # Mount media files (read/write for the app)
-            - name: tandoor-storage # Reference the PVC volume
+            - name: tandoor-storage
               mountPath: /opt/recipes/mediafiles
-              subPath: tandoor/media # Location on PVC
-            # Mount static files (read-only for the app - init collects them)
-            - name: tandoor-storage # Reference the PVC volume
+              subPath: tandoor/media
+            - name: tandoor-storage
               mountPath: /opt/recipes/staticfiles
-              subPath: tandoor/static # Location on PVC
+              subPath: tandoor/static
               readOnly: true

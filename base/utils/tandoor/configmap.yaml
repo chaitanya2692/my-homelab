@@ -1,50 +1,41 @@
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
   labels:
-    app: recipes # Changed from tandoor to recipes
+    app: recipes
   name: tandoor-nginx-config
   namespace: utils
 data:
-  nginx.conf: |- # Renamed key to nginx.conf to match mount subPath
+  nginx.conf: |-
     events {
       worker_connections 1024;
     }
     http {
       include mime.types;
-      # Added access/error log directives to match container best practices
       access_log /dev/stdout;
       error_log /dev/stderr;
       server {
         listen 80;
         server_name _;
-
-        # Increased body size, adjust if needed
         client_max_body_size 50M;
 
-        # Set custom location for static files served by nginx
         location /static/ {
-            alias /static/; # Path inside the nginx container
-            expires 1y; # Add caching headers
+            alias /static/;
+            expires 1y;
             add_header Cache-Control "public";
         }
-
-        # Set custom location for media files served by nginx
         location /media/ {
-            alias /media/; # Path inside the nginx container
-            expires 7d; # Add caching headers
+            alias /media/;
+            expires 7d;
             add_header Cache-Control "public";
         }
-
-        # Proxy requests to Gunicorn (Tandoor app)
-        # Removed proxying for /static and /media as they are handled above
         location / {
-            proxy_pass http://127.0.0.1:8080; # Gunicorn runs on port 8080 in the same pod
+            proxy_pass http://127.0.0.1:8080;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_read_timeout 300s; # Increase timeout for potentially long operations
+            proxy_read_timeout 300s;
             proxy_connect_timeout 75s;
         }
       }

@@ -37,8 +37,8 @@ spec:
       priority: 0
       services:
         - kind: Service
-          name: tandoor
-          port: 8080
+          name: recipes
+          port: http
     - kind: Rule
       match: Host(`immich.my-homelab.party`)
       priority: 0
