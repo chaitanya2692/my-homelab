@@ -20,7 +20,8 @@ spec:
         superuser: true
         login: true
         passwordSecret:
-          name: DB_PASSWORD
+          name: immich-credentials
+          key: DB_PASSWORD
 
   bootstrap:
     initdb:
