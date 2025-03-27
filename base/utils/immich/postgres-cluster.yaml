@@ -19,8 +19,8 @@ spec:
       - name: immich
         superuser: true
         login: true
-        passwordSecret:
-          name: immich-credentials
+        # passwordSecret:
+        #   name: immich-credentials
 
   bootstrap:
     initdb:
@@ -38,10 +38,10 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 200Gi
+          storage: 20Gi
       selector:
         matchLabels:
-          type: utils
+          type: immich
 
   backup:
     volumeSnapshot:

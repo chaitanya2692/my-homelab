@@ -3,10 +3,10 @@ kind: PersistentVolume
 metadata:
   name: immich-db-pv
   labels:
-    type: utils
+    type: immich
 spec:
   capacity:
-    storage: 200Gi
+    storage: 20Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
