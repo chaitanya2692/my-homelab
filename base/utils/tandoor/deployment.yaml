@@ -55,7 +55,7 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: tandoor-postgres # Service name of the Postgres StatefulSet
+              value: tandoor-postgresql # Service name of the Postgres StatefulSet
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
@@ -173,7 +173,7 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: tandoor-postgres
+              value: tandoor-postgresql
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
