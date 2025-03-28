@@ -32,20 +32,3 @@ spec:
   hostPath:
     path: /opt/cluster/infra
     type: DirectoryOrCreate
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: utils-pv
-  labels:
-    type: utils
-spec:
-  storageClassName: cluster-storage
-  capacity:
-    storage: 200Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  hostPath:
-    path: /opt/cluster/utils
-    type: DirectoryOrCreate
