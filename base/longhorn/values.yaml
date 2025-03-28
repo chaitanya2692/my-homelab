@@ -1,6 +1,4 @@
 ---
-serviceAccount:
-  create: false
 longhorn:
   defaultSettings:
     defaultDataPath: "/opt/cluster/utils/"
