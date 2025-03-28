@@ -5,3 +5,5 @@ longhorn:
     createDefaultStorageClass: false
     defaultReplicaCount: 1
     volumeSnapshotClassName: "longhorn"
+preUpgradeChecker:
+  jobEnabled: false
