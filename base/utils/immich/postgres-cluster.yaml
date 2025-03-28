@@ -31,7 +31,7 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
 
   storage:
-    storageClassName: longhorn
+    storageClass: longhorn
     size: 20Gi
 
   backup:
