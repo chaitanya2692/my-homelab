@@ -4,6 +4,5 @@ defaultSettings:
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 1
-  reclaimPolicy: Retain
 preUpgradeChecker:
   jobEnabled: false # Keep this as you had it for GitOps
