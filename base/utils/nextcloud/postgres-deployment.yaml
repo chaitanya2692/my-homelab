@@ -17,6 +17,22 @@ spec:
     spec:
       securityContext:
         fsGroup: 999
+      initContainers:
+        - name: fix-pg-owner
+          image: busybox:latest
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              echo "Setting ownership for PostgreSQL mount point..."
+              # Ensure the mount point itself is owned correctly before initdb runs
+              chown -R 999:999 /var/lib/postgresql
+              echo "Mount point ownership set."
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: nextcloud-db-volume
       containers:
         - name: postgres
           image: postgres:16

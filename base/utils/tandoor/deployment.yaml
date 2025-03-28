@@ -104,9 +104,7 @@ spec:
               memory: 128Mi
           volumeMounts:
             - name: tandoor-data-volume
-              mountPath: /opt/recipes/mediafiles
-            - name: tandoor-data-volume
-              mountPath: /opt/recipes/staticfiles
+              mountPath: /opt/recipes/appdata
       containers:
         - name: tandoor-nginx
           image: nginx:1.27-alpine
@@ -126,10 +124,12 @@ spec:
               readOnly: true
             - name: tandoor-data-volume
               mountPath: /media
+              subPath: mediafiles
               readOnly: true
             - name: tandoor-data-volume
               mountPath: /static
               readOnly: true
+              subPath: staticfiles
             - name: nginx-logs
               mountPath: /var/log/nginx
         - name: tandoor-app
@@ -217,6 +217,8 @@ spec:
           volumeMounts:
             - name: tandoor-data-volume
               mountPath: /opt/recipes/mediafiles
+              subPath: mediafiles
             - name: tandoor-data-volume
               mountPath: /opt/recipes/staticfiles
+              subPath: staticfiles
               readOnly: true
