@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,10 +25,12 @@ spec:
     spec:
       serviceAccountName: recipes
       restartPolicy: Always
+      securityContext:
+        fsGroup: 65534
       volumes:
-        - name: tandoor-storage
+        - name: tandoor-data-volume
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: tandoor-data-pvc
         - name: nginx-config-volume
           configMap:
             name: tandoor-nginx-config
@@ -71,7 +74,11 @@ spec:
             - |
               set -e
               echo "Waiting for database..."
-              timeout 60 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 2; done'
+              timeout 90 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do echo "DB not ready, sleeping..."; sleep 3; done'
+
+              # Ensure directories exist before chown/chmod
+              mkdir -p /opt/recipes/mediafiles /opt/recipes/staticfiles
+
               source venv/bin/activate
               echo "Running DB migrations..."
               python manage.py migrate --noinput
@@ -82,19 +89,24 @@ spec:
               chown -R 65534:65534 /opt/recipes/mediafiles
               find /opt/recipes/mediafiles -type d -print0 | xargs -0 -r chmod 755
               find /opt/recipes/mediafiles -type f -print0 | xargs -0 -r chmod 644
+
+              # Add chown for staticfiles to fix permission error
+              echo "Setting static file permissions..."
+              chown -R 65534:65534 /opt/recipes/staticfiles
+              # Optionally set read-only permissions if desired after chown
+              # find /opt/recipes/staticfiles -type d -print0 | xargs -0 -r chmod 755
+              # find /opt/recipes/staticfiles -type f -print0 | xargs -0 -r chmod 644
+
               echo "Init container finished."
           resources:
             requests:
               cpu: 150m
               memory: 128Mi
           volumeMounts:
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /opt/recipes/mediafiles
-              subPath: tandoor/media
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /opt/recipes/staticfiles
-              subPath: tandoor/static
-
       containers:
         - name: tandoor-nginx
           image: nginx:1.27-alpine
@@ -112,13 +124,11 @@ spec:
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /media
-              subPath: tandoor/media
               readOnly: true
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /static
-              subPath: tandoor/static
               readOnly: true
             - name: nginx-logs
               mountPath: /var/log/nginx
@@ -162,7 +172,7 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: postgres
+              value: recipes
             - name: POSTGRES_DB
               value: recipes
             - name: DEBUG
@@ -205,10 +215,8 @@ spec:
               cpu: 500m
               memory: 512Mi
           volumeMounts:
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /opt/recipes/mediafiles
-              subPath: tandoor/media
-            - name: tandoor-storage
+            - name: tandoor-data-volume
               mountPath: /opt/recipes/staticfiles
-              subPath: tandoor/static
               readOnly: true

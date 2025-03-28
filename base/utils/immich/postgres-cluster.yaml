@@ -4,7 +4,6 @@ metadata:
   name: immich
   namespace: utils
 spec:
-  # imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0@sha256:be3f025d79aa1b747817f478e07e71be43236e14d00d8a9eb3914146245035ba
   imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:17.4
   instances: 1
 
@@ -19,8 +18,8 @@ spec:
       - name: immich
         superuser: true
         login: true
-        # passwordSecret:
-        #   name: immich-credentials
+        passwordSecret:
+          name: immich-credentials
 
   bootstrap:
     initdb:
@@ -32,19 +31,11 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
 
   storage:
-    pvcTemplate:
-      storageClassName: cluster-storage
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-      selector:
-        matchLabels:
-          type: immich
+    storageClassName: longhorn-utils
+    size: 20Gi
 
   backup:
     volumeSnapshot:
-      className: cluster-storage
+      className: longhorn
       snapshotOwnerReference: "cluster"
     retentionPolicy: "30d"

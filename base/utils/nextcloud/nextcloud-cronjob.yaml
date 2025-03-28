@@ -4,9 +4,10 @@ kind: CronJob
 metadata:
   name: nextcloud-cron
 spec:
-  successfulJobsHistoryLimit: 0
-  failedJobsHistoryLimit: 1
   schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
@@ -14,6 +15,7 @@ spec:
           securityContext:
             runAsUser: 33
             runAsGroup: 33
+            fsGroup: 33
           containers:
             - name: nextcloud-cron
               image: nextcloud:latest
@@ -30,10 +32,9 @@ spec:
                   cpu: "500m"
               volumeMounts:
                 - name: nextcloud-data
-                  subPath: nextcloud/app
                   mountPath: /var/www/html
           restartPolicy: OnFailure
           volumes:
             - name: nextcloud-data
               persistentVolumeClaim:
-                claimName: utils-pvc
+                claimName: nextcloud-data-pvc

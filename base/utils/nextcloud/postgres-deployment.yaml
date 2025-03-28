@@ -65,9 +65,8 @@ spec:
             failureThreshold: 5
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: nextcloud-data
-              subPath: postgres
+              name: nextcloud-db-volume
       volumes:
-        - name: nextcloud-data
+        - name: nextcloud-db-volume
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: nextcloud-db-pvc

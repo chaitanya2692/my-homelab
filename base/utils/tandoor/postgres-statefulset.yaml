@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -14,6 +15,15 @@ spec:
   serviceName: recipes-postgresql
   updateStrategy:
     type: RollingUpdate
+  volumeClaimTemplates:
+    - metadata:
+        name: tandoor-pg-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn-utils
+        resources:
+          requests:
+            storage: 5Gi
   template:
     metadata:
       annotations:
@@ -111,7 +121,3 @@ spec:
           volumeMounts:
             - mountPath: /bitnami/postgresql
               name: tandoor-pg-data
-      volumes:
-        - name: tandoor-pg-data
-          persistentVolumeClaim:
-            claimName: utils-pvc

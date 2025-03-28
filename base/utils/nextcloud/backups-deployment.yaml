@@ -15,6 +15,9 @@ spec:
       labels:
         run: nextcloud-backups
     spec:
+      # Add fsGroup if needed for writing backups to the volume
+      # securityContext:
+      #   fsGroup: <some_group_id>
       containers:
         - name: nextcloud-backups
           image: postgres:16
@@ -23,13 +26,37 @@ spec:
             - -c
           args:
             - |
-              sh -c 'sleep $BACKUP_INIT_SLEEP &&
+              # Define backup paths within the mounted volume
+              DB_BACKUP_DIR="/backup/postgres-backups"
+              APP_BACKUP_DIR="/backup/nextcloud-backups"
+              APP_DATA_PATH="/nextcloud-data" # Path where nextcloud data is mounted
+
+              mkdir -p $DB_BACKUP_DIR $APP_BACKUP_DIR
+
+              echo "Initial sleep for $BACKUP_INIT_SLEEP..."
+              sleep $BACKUP_INIT_SLEEP
+
               while true; do
-                pg_dump -h postgres -p 5432 -d $NEXTCLOUD_DB_NAME -U $NEXTCLOUD_DB_USER | gzip > $POSTGRES_BACKUPS_PATH/$POSTGRES_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").gz &&
-                tar -zcpf $DATA_BACKUPS_PATH/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz $DATA_PATH &&
-                find $POSTGRES_BACKUPS_PATH -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS | xargs rm -f &&
-                find $DATA_BACKUPS_PATH -type f -mtime +$DATA_BACKUP_PRUNE_DAYS | xargs rm -f;
-                sleep $BACKUP_INTERVAL; done'
+                echo "Starting backup cycle..."
+                DB_BACKUP_FILE="$DB_BACKUP_DIR/$POSTGRES_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").gz"
+                APP_BACKUP_FILE="$APP_BACKUP_DIR/$DATA_BACKUP_NAME-$(date "+%Y-%m-%d_%H-%M").tar.gz"
+
+                echo "Dumping database to $DB_BACKUP_FILE..."
+                pg_dump -h postgres -p 5432 -d $NEXTCLOUD_DB_NAME -U $NEXTCLOUD_DB_USER | gzip > "$DB_BACKUP_FILE"
+                if [ $? -ne 0 ]; then echo "Database dump failed!"; fi
+
+                echo "Archiving application data to $APP_BACKUP_FILE..."
+                # Use --absolute-names to handle paths correctly if needed, or cd first
+                tar -zcpf "$APP_BACKUP_FILE" -C "$(dirname "$APP_DATA_PATH")" "$(basename "$APP_DATA_PATH")"
+                if [ $? -ne 0 ]; then echo "Application data archive failed!"; fi
+
+                echo "Pruning old backups..."
+                find "$DB_BACKUP_DIR" -name "$POSTGRES_BACKUP_NAME-*.gz" -type f -mtime +$POSTGRES_BACKUP_PRUNE_DAYS -print -delete
+                find "$APP_BACKUP_DIR" -name "$DATA_BACKUP_NAME-*.tar.gz" -type f -mtime +$DATA_BACKUP_PRUNE_DAYS -print -delete
+
+                echo "Backup cycle complete. Sleeping for $BACKUP_INTERVAL..."
+                sleep $BACKUP_INTERVAL
+              done
           envFrom:
             - configMapRef:
                 name: nextcloud-env
@@ -42,15 +69,11 @@ spec:
                   name: nextcloud-credentials
                   key: NEXTCLOUD_DB_PASSWORD
           volumeMounts:
-            - name: nextcloud-data
-              mountPath: /var/www/html
-              subPath: nextcloud
-            - name: nextcloud-data
-              mountPath: /srv/nextcloud-postgres/backups
-              subPath: postgres-backups
-            - name: nextcloud-data
-              mountPath: /srv/nextcloud-application-data/backups
-              subPath: nextcloud-backups
+            - name: nextcloud-data-volume
+              mountPath: /backup
+            - name: nextcloud-data-volume
+              mountPath: /nextcloud-data
+              readOnly: true
           resources:
             requests:
               memory: "256Mi"
@@ -59,6 +82,6 @@ spec:
               memory: "512Mi"
               cpu: "500m"
       volumes:
-        - name: nextcloud-data
+        - name: nextcloud-data-volume
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: nextcloud-data-pvc

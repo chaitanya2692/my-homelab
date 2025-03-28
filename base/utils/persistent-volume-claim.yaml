@@ -1,15 +1,104 @@
 ---
+# PVC for Dashy configuration and data
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: utils-pvc
+  name: dashy-data-pvc
+  namespace: utils
 spec:
-  storageClassName: cluster-storage
   accessModes:
     - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PVC for Immich Media Library
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: longhorn-utils
   resources:
     requests:
       storage: 200Gi
-  selector:
-    matchLabels:
-      type: utils
+
+---
+# PVC for Immich Redis persistence
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-redis-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PVC for Immich Machine Learning cache
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-ml-cache-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# PVC for Nextcloud main data (files, redis cache, backups - based on current setup)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 150Gi
+
+---
+# PVC for Nextcloud PostgreSQL database
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-db-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 15Gi
+
+---
+# PVC for Tandoor application data (media, static files)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tandoor-data-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn-utils
+  resources:
+    requests:
+      storage: 20Gi

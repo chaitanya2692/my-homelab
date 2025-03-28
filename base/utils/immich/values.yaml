@@ -1,3 +1,4 @@
+---
 env:
   REDIS_HOSTNAME: immich-redis-master
   DB_HOSTNAME: immich-rw
@@ -21,7 +22,7 @@ env:
 immich:
   persistence:
     library:
-      existingClaim: utils-pvc
+      existingClaim: immich-library-pvc
 
 redis:
   enabled: true
@@ -31,8 +32,7 @@ redis:
   master:
     persistence:
       enabled: true
-      existingClaim: utils-pvc
-      subPath: "redis-data"
+      existingClaim: immich-redis-pvc
 
 server:
   enabled: true
@@ -50,7 +50,6 @@ machine-learning:
   persistence:
     cache:
       enabled: true
-      size: 10Gi
       subPath: "ml-cache"
-      existingClaim: utils-pvc
+      existingClaim: immich-ml-cache-pvc
       accessMode: ReadWriteOnce
