@@ -22,7 +22,7 @@ metadata:
   namespace: utils
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   storageClassName: longhorn
   resources:
     requests:
@@ -102,3 +102,18 @@ spec:
   resources:
     requests:
       storage: 20Gi
+
+---
+# PVC for Nextcloud Redis persistence
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-redis-pvc
+  namespace: utils
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 1Gi

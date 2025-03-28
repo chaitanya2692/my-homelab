@@ -16,6 +16,8 @@ spec:
       labels:
         run: dashy
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: dashy
           image: lissy93/dashy:latest

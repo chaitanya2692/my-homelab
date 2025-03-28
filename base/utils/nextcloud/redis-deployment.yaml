@@ -38,7 +38,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
-            - name: nextcloud-data
+            - name: redis-data
               mountPath: /data
           resources:
             requests:
@@ -48,6 +48,6 @@ spec:
               memory: "512Mi"
               cpu: "500m"
       volumes:
-        - name: nextcloud-data
+        - name: redis-data
           persistentVolumeClaim:
-            claimName: nextcloud-data-pvc
+            claimName: nextcloud-redis-pvc
