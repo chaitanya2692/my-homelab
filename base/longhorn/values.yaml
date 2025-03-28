@@ -1,4 +1,6 @@
-# Default settings equivalent to the previous settings.yaml
+---
+serviceAccount:
+  create: false
 longhorn:
   defaultSettings:
     defaultDataPath: "/opt/cluster/utils/"
