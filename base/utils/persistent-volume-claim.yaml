@@ -8,7 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 5Gi
@@ -23,7 +23,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 200Gi
@@ -38,7 +38,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 5Gi
@@ -53,7 +53,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 10Gi
@@ -68,7 +68,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 150Gi
@@ -83,7 +83,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 15Gi
@@ -98,7 +98,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: longhorn-utils
+  storageClassName: longhorn
   resources:
     requests:
       storage: 20Gi

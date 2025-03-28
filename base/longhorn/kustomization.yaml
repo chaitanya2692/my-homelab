@@ -5,7 +5,6 @@ namespace: longhorn-system
 
 resources:
   - namespace.yaml
-  - storageclass.yaml
   - ingress-route.yaml
 
 helmCharts:

@@ -1,9 +1,9 @@
 ---
-longhorn:
-  defaultSettings:
-    defaultDataPath: "/opt/cluster/utils/"
-    createDefaultStorageClass: false
-    defaultReplicaCount: 1
-    volumeSnapshotClassName: "longhorn"
+defaultSettings:
+  defaultDataPath: "/opt/cluster/utils/"
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 1
+  reclaimPolicy: Retain
 preUpgradeChecker:
-  jobEnabled: false
+  jobEnabled: false # Keep this as you had it for GitOps
