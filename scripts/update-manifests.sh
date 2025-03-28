@@ -32,13 +32,14 @@ build() {
     update_environment "${ENVIRONMENT}"
 
     # Build each overlay separately
-    for app in htpc utils infra argocd; do
+    for app in htpc utils infra argocd longhorn-system; do
         echo "---" >> "${PWD}/install.yaml"
         kustomize build "${PWD}/overlays/${app}" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
     done
 
     echo "Successfully updated install.yaml for ${ENVIRONMENT} environment"
     # Code cleanup
+    find "$PWD" -maxdepth 3 -type d -name 'charts' -exec rm -rf {} \;
     find "$PWD" -maxdepth 4 -type d -name 'charts' -exec rm -rf {} \;
 }
 

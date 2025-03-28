@@ -11,7 +11,7 @@ spec:
           - path: htpc
           - path: utils
           - path: infra
-          - path: longhorn
+          - path: longhorn-system
   template:
     metadata:
       name: "{{path}}-apps"

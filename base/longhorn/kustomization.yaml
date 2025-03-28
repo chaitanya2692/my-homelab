@@ -16,3 +16,14 @@ helmCharts:
     namespace: longhorn-system
     includeCRDs: true
     valuesFile: values.yaml
+
+patches:
+  - patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: longhorn-service-account
+    target:
+      kind: ServiceAccount
+      name: longhorn-service-account
