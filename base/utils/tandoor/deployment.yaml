@@ -65,7 +65,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-password
+                  key: postgresql-postgres-password
             - name: REDIS_PORT
               value: "6379"
           command:
@@ -74,28 +74,26 @@ spec:
             - |
               set -e
               echo "Waiting for database..."
+              export PGPASSWORD=$(printenv POSTGRES_PASSWORD)
               timeout 90 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do echo "DB not ready, sleeping..."; sleep 3; done'
 
               # Ensure directories exist before chown/chmod
-              mkdir -p /opt/recipes/mediafiles /opt/recipes/staticfiles
+              mkdir -p /opt/recipes/mediafiles /opt/recipes/staticfiles /opt/recipes/appdata/staticfiles /opt/recipes/appdata/mediafiles
 
               source venv/bin/activate
               echo "Running DB migrations..."
               python manage.py migrate --noinput
               echo "Collecting static files..."
               python manage.py collectstatic_js_reverse
-              python manage.py collectstatic --noinput
-              echo "Setting media file permissions..."
-              chown -R 65534:65534 /opt/recipes/mediafiles
-              find /opt/recipes/mediafiles -type d -print0 | xargs -0 -r chmod 755
-              find /opt/recipes/mediafiles -type f -print0 | xargs -0 -r chmod 644
-
-              # Add chown for staticfiles to fix permission error
-              echo "Setting static file permissions..."
-              chown -R 65534:65534 /opt/recipes/staticfiles
-              # Optionally set read-only permissions if desired after chown
-              # find /opt/recipes/staticfiles -type d -print0 | xargs -0 -r chmod 755
-              # find /opt/recipes/staticfiles -type f -print0 | xargs -0 -r chmod 644
+              python manage.py collectstatic --noinput --clear
+              echo "Setting file permissions..."
+              # Mount points are /opt/recipes/appdata/mediafiles and /opt/recipes/appdata/staticfiles
+              # The volumeMounts below map these to the correct locations for the main containers
+              chown -R 65534:65534 /opt/recipes/appdata/mediafiles /opt/recipes/appdata/staticfiles
+              find /opt/recipes/appdata/mediafiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/appdata/mediafiles -type f -print0 | xargs -0 -r chmod 644
+              find /opt/recipes/appdata/staticfiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/appdata/staticfiles -type f -print0 | xargs -0 -r chmod 644
 
               echo "Init container finished."
           resources:
@@ -160,19 +158,19 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: secret-key
+            - name: POSTGRES_USER
+              value: recipes
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password
+                  key: postgresql-password
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
               value: recipes-postgresql
             - name: POSTGRES_PORT
               value: "5432"
-            - name: POSTGRES_USER
-              value: recipes
             - name: POSTGRES_DB
               value: recipes
             - name: DEBUG
