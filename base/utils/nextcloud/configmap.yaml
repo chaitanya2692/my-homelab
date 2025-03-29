@@ -34,7 +34,11 @@ data:
       'memcache.locking' => '\\OC\\Memcache\\Redis', // Use Redis for file locking
       'memcache.local' => '\\OC\\Memcache\\Redis',    // Use Redis for local cache
       'memcache.distributed' => '\\OC\\Memcache\\Redis', // Use Redis for distributed cache (if scaling later)
-
+      'redis' => [
+        'host' => getenv('REDIS_HOST'), // Read from environment variable
+        'port' => (int)getenv('REDIS_HOST_PORT'), // Read from environment variable
+        'password' => getenv('REDIS_HOST_PASSWORD'), // Read from environment variable
+      ],
       // ### Background Jobs / Maintenance ###
       'maintenance_window_start' => 1, // 1am - 5am
       'filesystem_check_changes' => 1, // Detect changes made outside Nextcloud
