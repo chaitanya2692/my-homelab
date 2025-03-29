@@ -109,11 +109,6 @@ spec:
                 secretKeyRef:
                   name: nextcloud-credentials
                   key: NEXTCLOUD_DB_PASSWORD
-            - name: REDIS_HOST_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: nextcloud-credentials
-                  key: REDIS_HOST_PASSWORD
           volumeMounts:
             - name: nextcloud-data
               subPath: nextcloud/app
