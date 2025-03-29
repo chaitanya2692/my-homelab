@@ -6,3 +6,6 @@ persistence:
   defaultClassReplicaCount: 1
 preUpgradeChecker:
   jobEnabled: false
+csi:
+  snapshotter:
+    enabled: true
