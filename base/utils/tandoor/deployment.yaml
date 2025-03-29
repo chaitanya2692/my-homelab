@@ -20,6 +20,16 @@ spec:
     spec:
       serviceAccountName: recipes
       restartPolicy: Always
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tandoor-data-pvc
+        - name: nginx-config
+          configMap:
+            name: tandoor-nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
       initContainers:
         - name: init-tandoor-data
           image: vabene1111/recipes
@@ -186,13 +196,3 @@ spec:
                   key: postgresql-postgres-password
             - name: TZ
               value: "CET"
-          volumes:
-            - name: data
-              persistentVolumeClaim:
-                claimName: tandoor-data-pvc
-            - name: nginx-config
-              configMap:
-                name: tandoor-nginx-config
-                items:
-                  - key: nginx.conf
-                    path: nginx.conf
