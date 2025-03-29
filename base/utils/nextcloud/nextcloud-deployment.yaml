@@ -109,13 +109,13 @@ spec:
           volumeMounts:
             - name: nextcloud-data
               mountPath: /var/www/html
-            - name: nextcloud-config
-              mountPath: /var/www/html/config/custom.config.php
-              subPath: custom.config.php
+            # - name: nextcloud-config
+            #   mountPath: /var/www/html/config/custom.config.php
+            #   subPath: custom.config.php
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
             claimName: nextcloud-data-pvc
-        - name: nextcloud-config
-          configMap:
-            name: nextcloud-config
+        # - name: nextcloud-config
+        #   configMap:
+        #     name: nextcloud-config

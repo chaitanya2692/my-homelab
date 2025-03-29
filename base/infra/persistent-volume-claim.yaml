@@ -5,6 +5,8 @@ metadata:
   name: infra-pvc
   namespace: infra
 spec:
+  storageClassName: local-path-infra
+  persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteOnce
   resources:
