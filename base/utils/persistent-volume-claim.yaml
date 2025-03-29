@@ -6,6 +6,7 @@ metadata:
   name: dashy-data-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -20,6 +21,7 @@ metadata:
   name: immich-library-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -34,6 +36,7 @@ metadata:
   name: immich-redis-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -48,6 +51,7 @@ metadata:
   name: immich-ml-cache-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -62,6 +66,7 @@ metadata:
   name: nextcloud-data-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -76,6 +81,7 @@ metadata:
   name: nextcloud-db-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -90,6 +96,7 @@ metadata:
   name: tandoor-data-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
@@ -104,6 +111,7 @@ metadata:
   name: nextcloud-redis-pvc
   namespace: utils
 spec:
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
