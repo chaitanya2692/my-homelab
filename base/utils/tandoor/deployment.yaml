@@ -66,6 +66,8 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-postgres-password
+            - name: APP_DB_USER
+              value: recipes
             - name: REDIS_PORT
               value: "6379"
           command:
@@ -77,24 +79,32 @@ spec:
               export PGPASSWORD=$(printenv POSTGRES_PASSWORD)
               timeout 90 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do echo "DB not ready, sleeping..."; sleep 3; done'
 
-              # Ensure directories exist before chown/chmod
-              mkdir -p /opt/recipes/mediafiles /opt/recipes/staticfiles /opt/recipes/appdata/staticfiles /opt/recipes/appdata/mediafiles
+              mkdir -p /opt/recipes/appdata/staticfiles /opt/recipes/appdata/mediafiles
 
               source venv/bin/activate
               echo "Running DB migrations..."
               python manage.py migrate --noinput
+
+              echo "Granting permissions to application user '$APP_DB_USER'..."
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON SCHEMA public TO \"$APP_DB_USER\";" || echo "Failed to grant schema privileges (may not be critical if already exists)"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$APP_DB_USER\";"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO \"$APP_DB_USER\";"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO \"$APP_DB_USER\";"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO \"$APP_DB_USER\";"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO \"$APP_DB_USER\";"
+              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO \"$APP_DB_USER\";"
+              echo "Permissions granted."
+
               echo "Collecting static files..."
               python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput --clear
+
               echo "Setting file permissions..."
-              # Mount points are /opt/recipes/appdata/mediafiles and /opt/recipes/appdata/staticfiles
-              # The volumeMounts below map these to the correct locations for the main containers
               chown -R 65534:65534 /opt/recipes/appdata/mediafiles /opt/recipes/appdata/staticfiles
               find /opt/recipes/appdata/mediafiles -type d -print0 | xargs -0 -r chmod 755
               find /opt/recipes/appdata/mediafiles -type f -print0 | xargs -0 -r chmod 644
               find /opt/recipes/appdata/staticfiles -type d -print0 | xargs -0 -r chmod 755
               find /opt/recipes/appdata/staticfiles -type f -print0 | xargs -0 -r chmod 644
-
               echo "Init container finished."
           resources:
             requests:
