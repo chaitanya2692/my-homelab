@@ -4,7 +4,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: htpc-pvc
 spec:
-  storageClassName: local-path
+  storageClassName: local-path-htpc
   accessModes:
     - ReadWriteOnce
   resources:

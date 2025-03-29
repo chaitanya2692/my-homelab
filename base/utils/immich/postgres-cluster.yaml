@@ -31,11 +31,11 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
 
   storage:
-    storageClass: local-path
+    storageClass: local-path-utils
     size: 20Gi
 
   backup:
     volumeSnapshot:
-      className: local-path
+      className: local-path-utils
       snapshotOwnerReference: "cluster"
     retentionPolicy: "30d"
