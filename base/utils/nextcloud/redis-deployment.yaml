@@ -15,9 +15,6 @@ spec:
       labels:
         run: redis
     spec:
-      # Consider adding fsGroup if redis image needs specific group permissions
-      # securityContext:
-      #   fsGroup: <redis_group_id_if_needed>
       containers:
         - name: redis
           image: redis:7.4
@@ -38,7 +35,8 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
-            - name: redis-data
+            - name: nextcloud-data
+              subPath: redis
               mountPath: /data
           resources:
             requests:
@@ -48,6 +46,6 @@ spec:
               memory: "512Mi"
               cpu: "500m"
       volumes:
-        - name: redis-data
+        - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-redis-pvc
+            claimName: nextcloud-pvc

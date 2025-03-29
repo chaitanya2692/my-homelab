@@ -59,36 +59,6 @@ spec:
       storage: 10Gi
 
 ---
-# PVC for Nextcloud main data (files, redis cache, backups - based on current setup)
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: nextcloud-data-pvc
-  namespace: utils
-spec:
-  storageClassName: local-path-utils
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 15Gi
-
----
-# PVC for Nextcloud PostgreSQL database
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: nextcloud-db-pvc
-  namespace: utils
-spec:
-  storageClassName: local-path-utils
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 15Gi
-
----
 # PVC for Tandoor application data (media, static files)
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -104,11 +74,11 @@ spec:
       storage: 20Gi
 
 ---
-# PVC for Nextcloud Redis persistence
+# PVC for all Nextcloud data (app, database, redis, backups)
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nextcloud-redis-pvc
+  name: nextcloud-pvc
   namespace: utils
 spec:
   storageClassName: local-path-utils
@@ -116,4 +86,4 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 31Gi
