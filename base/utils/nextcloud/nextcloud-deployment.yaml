@@ -74,7 +74,7 @@ spec:
               value: "redis"
             - name: REDIS_HOST_PORT
               value: "6379"
-            - name: NC_setup_create_db_user
+            - name: NEXTCLOUD_SETUP_CREATE_DB_USER
               value: "false"
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "nextcloud.my-homelab.party"
