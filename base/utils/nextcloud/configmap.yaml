@@ -20,7 +20,7 @@ data:
       // ### Reverse Proxy Configuration ###
       // !! IMPORTANT: Replace with the actual IP range(s) of your reverse proxy !!
       // Examples: Kubernetes service CIDR, Ingress controller IPs, LoadBalancer IP
-      'trusted_proxies' => ['192.168.1.0/24', '10.0.0.0/8', '172.16.0.0/12'], // Adjust these ranges!
+      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'], // Adjust these ranges!
       'overwritehost' => 'nextcloud.my-homelab.party',
       'overwriteprotocol' => 'https',
       'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
