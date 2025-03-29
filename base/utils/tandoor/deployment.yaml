@@ -3,9 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recipes
+  namespace: utils
   labels:
-    app: recipes
-    environment: production
     tier: frontend
 spec:
   replicas: 1
@@ -13,38 +12,39 @@ spec:
     type: Recreate
   selector:
     matchLabels:
-      app: recipes
-      environment: production
       tier: frontend
   template:
     metadata:
       labels:
-        app: recipes
         tier: frontend
-        environment: production
     spec:
       serviceAccountName: recipes
       restartPolicy: Always
-      securityContext:
-        fsGroup: 65534
-      volumes:
-        - name: tandoor-data-volume
-          persistentVolumeClaim:
-            claimName: tandoor-data-pvc
-        - name: nginx-config-volume
-          configMap:
-            name: tandoor-nginx-config
-            items:
-              - key: nginx.conf
-                path: nginx.conf
-        - name: nginx-logs
-          emptyDir: {}
       initContainers:
-        - name: init-db-migrate-static
+        - name: init-tandoor-data
           image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              source venv/bin/activate
+              echo "Updating database"
+              python manage.py migrate --noinput
+              python manage.py collectstatic_js_reverse
+              python manage.py collectstatic --noinput
+              echo "Setting media/static file ownership and permissions"
+              mkdir -p /opt/recipes/mediafiles
+              mkdir -p /opt/recipes/staticfiles
+              chown -R 65534:65534 /opt/recipes/mediafiles /opt/recipes/staticfiles
+              find /opt/recipes/mediafiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/mediafiles -type f -print0 | xargs -0 -r chmod 644
+              find /opt/recipes/staticfiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/staticfiles -type f -print0 | xargs -0 -r chmod 644
+              echo "Done"
           env:
             - name: SECRET_KEY
               valueFrom:
@@ -66,56 +66,23 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-postgres-password
-            - name: APP_DB_USER
-              value: recipes
-            - name: REDIS_PORT
-              value: "6379"
-          command:
-            - sh
-            - -c
-            - |
-              set -e
-              echo "Waiting for database..."
-              export PGPASSWORD=$(printenv POSTGRES_PASSWORD)
-              timeout 90 sh -c 'until pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do echo "DB not ready, sleeping..."; sleep 3; done'
-
-              mkdir -p /opt/recipes/appdata/staticfiles /opt/recipes/appdata/mediafiles
-
-              source venv/bin/activate
-              echo "Running DB migrations..."
-              python manage.py migrate --noinput
-
-              echo "Granting permissions to application user '$APP_DB_USER'..."
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON SCHEMA public TO \"$APP_DB_USER\";" || echo "Failed to grant schema privileges (may not be critical if already exists)"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$APP_DB_USER\";"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO \"$APP_DB_USER\";"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO \"$APP_DB_USER\";"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO \"$APP_DB_USER\";"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO \"$APP_DB_USER\";"
-              psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO \"$APP_DB_USER\";"
-              echo "Permissions granted."
-
-              echo "Collecting static files..."
-              python manage.py collectstatic_js_reverse
-              python manage.py collectstatic --noinput --clear
-
-              echo "Setting file permissions..."
-              chown -R 65534:65534 /opt/recipes/appdata/mediafiles /opt/recipes/appdata/staticfiles
-              find /opt/recipes/appdata/mediafiles -type d -print0 | xargs -0 -r chmod 755
-              find /opt/recipes/appdata/mediafiles -type f -print0 | xargs -0 -r chmod 644
-              find /opt/recipes/appdata/staticfiles -type d -print0 | xargs -0 -r chmod 755
-              find /opt/recipes/appdata/staticfiles -type f -print0 | xargs -0 -r chmod 644
-              echo "Init container finished."
           resources:
             requests:
-              cpu: 150m
+              cpu: 250m
               memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           volumeMounts:
-            - name: tandoor-data-volume
-              mountPath: /opt/recipes/appdata
+            - name: data
+              mountPath: /opt/recipes/mediafiles
+              subPath: media
+            - name: data
+              mountPath: /opt/recipes/staticfiles
+              subPath: static
       containers:
         - name: tandoor-nginx
-          image: nginx:1.27-alpine
+          image: nginx:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -125,21 +92,22 @@ spec:
             requests:
               cpu: 100m
               memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
           volumeMounts:
-            - name: nginx-config-volume
+            - name: data
+              mountPath: /media
+              subPath: media
+              readOnly: true
+            - name: data
+              mountPath: /static
+              subPath: static
+              readOnly: true
+            - name: nginx-config
               mountPath: /etc/nginx/nginx.conf
               subPath: nginx.conf
               readOnly: true
-            - name: tandoor-data-volume
-              mountPath: /media
-              subPath: mediafiles
-              readOnly: true
-            - name: tandoor-data-volume
-              mountPath: /static
-              readOnly: true
-              subPath: staticfiles
-            - name: nginx-logs
-              mountPath: /var/log/nginx
         - name: tandoor-app
           image: vabene1111/recipes
           imagePullPolicy: IfNotPresent
@@ -147,86 +115,84 @@ spec:
             runAsUser: 65534
           command:
             - /opt/recipes/venv/bin/gunicorn
-            - --bind
-            - 0.0.0.0:8080
-            - --workers
-            - "3"
-            - --log-level
-            - INFO
+            - -b
+            - :8080
             - --access-logfile
             - "-"
             - --error-logfile
             - "-"
-            - recipes.wsgi:application
+            - --log-level
+            - INFO
+            - recipes.wsgi
           ports:
             - containerPort: 8080
               name: gunicorn
               protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: gunicorn
+              scheme: HTTP
+            periodSeconds: 30
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gunicorn
+              scheme: HTTP
+            periodSeconds: 30
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/recipes/mediafiles
+              subPath: media
+            - name: data
+              mountPath: /opt/recipes/staticfiles
+              subPath: static
           env:
+            - name: DEBUG
+              value: "0"
+            - name: ALLOWED_HOSTS
+              value: "*"
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: secret-key
-            - name: POSTGRES_USER
-              value: recipes
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-password
+            - name: GUNICORN_MEDIA
+              value: "0"
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
               value: recipes-postgresql
             - name: POSTGRES_PORT
               value: "5432"
+            - name: POSTGRES_USER
+              value: recipes
             - name: POSTGRES_DB
               value: recipes
-            - name: DEBUG
-              value: "0"
-            - name: ALLOWED_HOSTS
-              value: "*"
-            - name: GUNICORN_MEDIA
-              value: "0"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: postgresql-postgres-password
             - name: TZ
               value: "CET"
-            - name: USE_X_FORWARDED_HOST
-              value: "True"
-            - name: SECURE_PROXY_SSL_HEADER
-              value: "HTTP_X_FORWARDED_PROTO,https"
-            - name: REDIS_PORT
-              value: "6379"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: gunicorn
-              scheme: HTTP
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            failureThreshold: 3
-            timeoutSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: gunicorn
-              scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            failureThreshold: 3
-            timeoutSeconds: 5
-          resources:
-            requests:
-              cpu: 150m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-          volumeMounts:
-            - name: tandoor-data-volume
-              mountPath: /opt/recipes/mediafiles
-              subPath: mediafiles
-            - name: tandoor-data-volume
-              mountPath: /opt/recipes/staticfiles
-              subPath: staticfiles
-              readOnly: true
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: tandoor-data-pvc
+            - name: nginx-config
+              configMap:
+                name: tandoor-nginx-config
+                items:
+                  - key: nginx.conf
+                    path: nginx.conf
