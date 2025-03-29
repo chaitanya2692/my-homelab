@@ -30,6 +30,11 @@ data:
       // 'forcessl' => true, // Deprecated and often handled by overwriteprotocol + webserver/proxy redirect
       'hsts_max_age' => 15552000, // Enable HSTS (6 months) - Ensure your proxy also sets this!
 
+      // ### Memcache / Redis Configuration ###
+      'memcache.locking' => '\\OC\\Memcache\\Redis', // Use Redis for file locking
+      'memcache.local' => '\\OC\\Memcache\\Redis',    // Use Redis for local cache
+      'memcache.distributed' => '\\OC\\Memcache\\Redis', // Use Redis for distributed cache (if scaling later)
+
       // ### Background Jobs / Maintenance ###
       'maintenance_window_start' => 1, // 1am - 5am
       'filesystem_check_changes' => 1, // Detect changes made outside Nextcloud
