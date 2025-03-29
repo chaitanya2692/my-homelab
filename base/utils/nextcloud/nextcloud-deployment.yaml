@@ -15,6 +15,8 @@ spec:
       labels:
         run: nextcloud
     spec:
+      securityContext:
+        fsGroup: 33
       initContainers:
         - name: wait-for-db
           image: busybox:latest
@@ -57,7 +59,7 @@ spec:
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "nextcloud.my-homelab.party"
             - name: TRUSTED_PROXIES
-              value: "192.168.1.0/24"
+              value: "192.168.1.0/24,10.42.0.0/16"
             - name: OVERWRITEPROTOCOL
               value: "https"
             - name: OVERWRITECLIURL
@@ -87,6 +89,11 @@ spec:
                 secretKeyRef:
                   name: nextcloud-credentials
                   key: NEXTCLOUD_DB_PASSWORD
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-credentials
+                  key: REDIS_HOST_PASSWORD
           volumeMounts:
             - name: nextcloud-data
               subPath: nextcloud/app
