@@ -18,15 +18,26 @@ spec:
       securityContext:
         fsGroup: 33
       initContainers:
-        # - name: set-volume-permissions
-        #   image: busybox:latest
-        #   command: ["sh", "-c", "chown -R 33:33 /var/www/html || true"]
-        #   securityContext:
-        #     runAsUser: 0
-        #   volumeMounts:
-        #     - name: nextcloud-data
-        #       subPath: nextcloud/app
-        #       mountPath: /var/www/html
+        - name: set-perms-and-copy-config
+          image: busybox:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /var/www/html/config
+              chown -R 33:33 /var/www/html
+              cp /config-src/custom.config.php /var/www/html/config/custom.config.php
+              chown 33:33 /var/www/html/config/custom.config.php
+              echo "Permissions set and config copied successfully."
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: nextcloud-data
+              subPath: nextcloud/app
+              mountPath: /var/www/html
+            - name: nextcloud-config-vol
+              mountPath: /config-src
+              readOnly: true
         - name: wait-for-db
           image: busybox:latest
           command:
@@ -68,7 +79,7 @@ spec:
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "nextcloud.my-homelab.party"
             - name: TRUSTED_PROXIES
-              value: "192.168.1.0/24,10.42.0.0/16"
+              value: "192.168.1.0/24"
             - name: OVERWRITEPROTOCOL
               value: "https"
             - name: OVERWRITECLIURL
@@ -107,13 +118,10 @@ spec:
             - name: nextcloud-data
               subPath: nextcloud/app
               mountPath: /var/www/html
-            # - name: nextcloud-config
-            #   mountPath: /var/www/html/config/custom.config.php
-            #   subPath: custom.config.php
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
             claimName: nextcloud-pvc
-        # - name: nextcloud-config
-        #   configMap:
-        #     name: nextcloud-config
+        - name: nextcloud-config-vol
+          configMap:
+            name: nextcloud-config
