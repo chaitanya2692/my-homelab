@@ -18,6 +18,15 @@ spec:
       securityContext:
         fsGroup: 33
       initContainers:
+        - name: set-volume-permissions
+          image: busybox:latest
+          command: ["sh", "-c", "chown -R 33:33 /var/www/html || true"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: nextcloud-data
+              subPath: nextcloud/app
+              mountPath: /var/www/html
         - name: wait-for-db
           image: busybox:latest
           command:
