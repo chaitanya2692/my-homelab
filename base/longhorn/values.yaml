@@ -5,4 +5,4 @@ persistence:
   defaultClass: true
   defaultClassReplicaCount: 1
 preUpgradeChecker:
-  jobEnabled: false # Keep this as you had it for GitOps
+  jobEnabled: false
