@@ -195,7 +195,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password
+                  key: postgresql-password
             - name: TZ
               value: "CET"
             - name: REDIS_PORT
