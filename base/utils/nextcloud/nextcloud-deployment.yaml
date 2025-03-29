@@ -18,6 +18,23 @@ spec:
       securityContext:
         fsGroup: 33
       initContainers:
+        - name: fix-config-owner
+          image: busybox:latest
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              echo "Checking/Fixing ownership for /var/www/html/config..."
+              # Ensure the directory exists (it should due to the subPath mount)
+              mkdir -p /var/www/html/config
+              # Set ownership to www-data:www-data (UID 33, GID 33)
+              chown -R 33:33 /var/www/html/config
+              echo "Ownership set for /var/www/html/config."
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
         - name: wait-for-db
           image: busybox:latest
           command:
