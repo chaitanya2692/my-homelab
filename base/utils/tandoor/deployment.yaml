@@ -76,6 +76,8 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: postgresql-postgres-password
+            - name: REDIS_PORT
+              value: "6379"
           resources:
             requests:
               cpu: 250m
@@ -196,3 +198,5 @@ spec:
                   key: postgresql-postgres-password
             - name: TZ
               value: "CET"
+            - name: REDIS_PORT
+              value: "6379"
