@@ -8,8 +8,7 @@ resources:
   - cert-manager
   - metallb
   - traefik
+  - local-path-provisioner
   - ingress-route.yaml
-  - persistent-volume.yaml
-  - storageclass.yaml
   # Add PVC back when in use
   # - persistent-volume-claim.yaml

@@ -4,12 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: htpc-pvc
 spec:
-  storageClassName: cluster-storage
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 500Gi
-  selector:
-    matchLabels:
-      type: arr-stack

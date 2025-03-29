@@ -20,7 +20,7 @@ check_existing_manifest() {
 
 update_environment() {
     local env=$1
-    for app in htpc utils infra argocd longhorn-system; do
+    for app in htpc utils infra argocd; do
         sed -i "s|components/.*|components/${env}  # Change to ${env} for ${env} environment|" "${PWD}/overlays/${app}/kustomization.yaml"
     done
 }

@@ -31,11 +31,11 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS "earthdistance" CASCADE;
 
   storage:
-    storageClass: longhorn
+    storageClass: local-path
     size: 20Gi
 
   backup:
     volumeSnapshot:
-      className: longhorn
+      className: local-path
       snapshotOwnerReference: "cluster"
     retentionPolicy: "30d"
