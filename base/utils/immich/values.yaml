@@ -50,6 +50,5 @@ machine-learning:
   persistence:
     cache:
       enabled: true
-      subPath: "ml-cache"
       existingClaim: immich-ml-cache-pvc
       accessMode: ReadWriteOnce
