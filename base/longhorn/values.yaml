@@ -1,6 +1,8 @@
 ---
 defaultSettings:
   defaultDataPath: "/opt/cluster/utils/"
+  defaultReplicaCount: 1
+  storageMinimalAvailablePercentage: 25
 persistence:
   defaultClass: true
   defaultClassReplicaCount: 1
