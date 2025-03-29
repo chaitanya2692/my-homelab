@@ -5,7 +5,6 @@ metadata:
   name: htpc-pvc
 spec:
   storageClassName: local-path-htpc
-  persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteOnce
   resources:
