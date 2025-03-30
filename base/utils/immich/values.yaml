@@ -48,5 +48,8 @@ machine-learning:
     TRANSFORMERS_CACHE: /cache
   persistence:
     cache:
+      enabled: true
+      type: pvc
+      size: 10Gi
       existingClaim: immich-ml-cache-pvc
-      accessMode: ReadWriteOnce
+      storageClass: local-path-utils
