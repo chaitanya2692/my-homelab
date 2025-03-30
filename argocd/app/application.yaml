@@ -31,7 +31,7 @@ spec:
           - ApplyOutOfSyncOnly=true
           - ServerSideApply=true # Recommended
   # --- Add or modify this block ---
-  ignoreDifferences:
+  ignoreApplicationDifferences:
     # Ignore fields added by CNPG operator to the Cluster spec
     - group: postgresql.cnpg.io
       kind: Cluster
