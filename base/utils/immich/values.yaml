@@ -1,4 +1,3 @@
----
 env:
   REDIS_HOSTNAME: immich-redis-master
   DB_HOSTNAME: immich-rw
@@ -49,6 +48,5 @@ machine-learning:
     TRANSFORMERS_CACHE: /cache
   persistence:
     cache:
-      enabled: true
       existingClaim: immich-ml-cache-pvc
       accessMode: ReadWriteOnce
