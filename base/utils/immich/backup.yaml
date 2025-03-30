@@ -6,6 +6,5 @@ metadata:
 spec:
   schedule: "11 12 3 * * *"
   backupOwnerReference: self
-  method: volumeSnapshot
   cluster:
     name: immich
