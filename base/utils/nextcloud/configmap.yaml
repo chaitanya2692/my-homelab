@@ -15,7 +15,7 @@ data:
       ],
       'datadirectory' => '/var/www/html/data', // Ensure this matches Nextcloud's expectation
       'default_phone_region' => 'SE',
-      'skeletondirectory' => '', // Keep empty if you don't use skeletons
+      'skeletondirectory' => '', // Keep empty
 
       // ### Reverse Proxy Configuration ###
       // !! IMPORTANT: Replace with the actual IP range(s) of your reverse proxy !!
