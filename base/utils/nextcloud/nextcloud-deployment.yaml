@@ -44,8 +44,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              until nc -z redis 6379 && nc -z postgres 5432; do
-                echo "Waiting for Redis and PostgreSQL..."
+              until nc -z redis 6379 && nc -z nextcloud-db-rw 5432; do
+                echo "Waiting for Redis and PostgreSQL (CNPG)..."
                 sleep 5
               done
       containers:
@@ -67,7 +67,7 @@ spec:
                 name: nextcloud-credentials
           env:
             - name: POSTGRES_HOST
-              value: "postgres"
+              value: "nextcloud-db-rw"
             - name: DB_PORT
               value: "5432"
             - name: REDIS_HOST
