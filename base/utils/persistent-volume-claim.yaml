@@ -1,15 +1,89 @@
 ---
+# PVC for Dashy configuration and data
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: utils-pvc
+  name: dashy-data-pvc
+  namespace: utils
 spec:
-  storageClassName: cluster-storage
+  storageClassName: local-path-utils
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Gi
-  selector:
-    matchLabels:
-      type: utils
+      storage: 5Gi
+
+---
+# PVC for Immich Media Library
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-library-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+# PVC for Immich Redis persistence
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-redis-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PVC for Immich Machine Learning cache
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich-ml-cache-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# PVC for Tandoor application data (media, static files)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tandoor-data-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+# PVC for all Nextcloud data (app, database, redis, backups)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 31Gi

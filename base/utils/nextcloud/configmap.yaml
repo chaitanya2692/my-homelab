@@ -7,14 +7,45 @@ data:
   custom.config.php: |
     <?php
     $CONFIG = array(
-      // System settings
-      'maintenance_window_start' => 1,
+      // ### Basic Settings ###
+      'trusted_domains' => [
+        0 => 'localhost', // Often needed for internal checks/CLI
+        1 => 'nextcloud.my-homelab.party', // Your primary domain
+        // Add any other domains/IPs used to access Nextcloud
+      ],
+      'datadirectory' => '/var/www/html/data', // Ensure this matches Nextcloud's expectation
       'default_phone_region' => 'SE',
-      'skeletondirectory' => '',
+      'skeletondirectory' => '', // Keep empty
 
-      // Background jobs
-      'files_no_background_scan' => true,
+      // ### Reverse Proxy Configuration ###
+      // !! IMPORTANT: Replace with the actual IP range(s) of your reverse proxy !!
+      // Examples: Kubernetes service CIDR, Ingress controller IPs, LoadBalancer IP
+      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'], // Adjust these ranges!
+      'overwritehost' => 'nextcloud.my-homelab.party',
+      'overwriteprotocol' => 'https',
+      'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
+      'forwarded_for_headers' => ['HTTP_X_FORWARDED_FOR'], // Common header for client IP
 
-      // Cleanup and maintenance
-      'filesystem_check_changes' => 1,
+      // ### HTTPS / HSTS Configuration ###
+      // 'forcessl' => true, // Deprecated and often handled by overwriteprotocol + webserver/proxy redirect
+      'hsts_max_age' => 15552000, // Enable HSTS (6 months) - Ensure your proxy also sets this!
+
+      // ### Memcache / Redis Configuration ###
+      'memcache.locking' => '\\OC\\Memcache\\Redis', // Use Redis for file locking
+      'memcache.local' => '\\OC\\Memcache\\Redis',    // Use Redis for local cache
+      'memcache.distributed' => '\\OC\\Memcache\\Redis', // Use Redis for distributed cache (if scaling later)
+      'redis' => array(
+        'host' => 'redis',
+        'port' => 6379,
+      ),
+
+      // ### Background Jobs / Maintenance ###
+      'maintenance_window_start' => 1, // 1am - 5am
+      'filesystem_check_changes' => 1, // Detect changes made outside Nextcloud
+      'files_no_background_scan' => true, // Disable background scanning if using cron/systemd timers for 'occ files:scan'
+
+      // ### Logging ###
+      // 'loglevel' => 2, // Default is 2 (WARN). Set to 0 (DEBUG) for troubleshooting.
+      // 'log_type' => 'file',
+      // 'logfile' => '/var/www/html/data/nextcloud.log',
     );

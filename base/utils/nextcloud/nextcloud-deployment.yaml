@@ -15,7 +15,29 @@ spec:
       labels:
         run: nextcloud
     spec:
+      securityContext:
+        fsGroup: 33
       initContainers:
+        - name: set-perms-and-copy-config
+          image: busybox:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /var/www/html/config
+              chown -R 33:33 /var/www/html
+              cp /config-src/custom.config.php /var/www/html/config/custom.config.php
+              chown 33:33 /var/www/html/config/custom.config.php
+              echo "Permissions set and config copied successfully."
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: nextcloud-data
+              subPath: nextcloud/app
+              mountPath: /var/www/html
+            - name: nextcloud-config-vol
+              mountPath: /config-src
+              readOnly: true
         - name: wait-for-db
           image: busybox:latest
           command:
@@ -52,7 +74,7 @@ spec:
               value: "redis"
             - name: REDIS_HOST_PORT
               value: "6379"
-            - name: NC_setup_create_db_user
+            - name: NEXTCLOUD_SETUP_CREATE_DB_USER
               value: "false"
             - name: NEXTCLOUD_TRUSTED_DOMAINS
               value: "nextcloud.my-homelab.party"
@@ -91,13 +113,10 @@ spec:
             - name: nextcloud-data
               subPath: nextcloud/app
               mountPath: /var/www/html
-            - name: nextcloud-config
-              mountPath: /var/www/html/config/custom.config.php
-              subPath: custom.config.php
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: utils-pvc
-        - name: nextcloud-config
+            claimName: nextcloud-pvc
+        - name: nextcloud-config-vol
           configMap:
             name: nextcloud-config

@@ -70,4 +70,4 @@ spec:
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: nextcloud-pvc

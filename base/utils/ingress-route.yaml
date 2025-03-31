@@ -32,3 +32,17 @@ spec:
         - kind: Service
           name: dashy
           port: 4000
+    - kind: Rule
+      match: Host(`recipes.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: recipes
+          port: http
+    - kind: Rule
+      match: Host(`immich.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: immich-server
+          port: 2283

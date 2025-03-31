@@ -1,0 +1,55 @@
+env:
+  REDIS_HOSTNAME: immich-redis-master
+  DB_HOSTNAME: immich-rw
+  DB_USERNAME:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_USERNAME
+  DB_PASSWORD:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_PASSWORD
+  DB_DATABASE_NAME:
+    valueFrom:
+      secretKeyRef:
+        name: immich-credentials
+        key: DB_DATABASE_NAME
+  IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
+
+immich:
+  persistence:
+    library:
+      existingClaim: immich-library-pvc
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      existingClaim: immich-redis-pvc
+
+server:
+  enabled: true
+  image:
+    repository: ghcr.io/immich-app/immich-server
+    pullPolicy: IfNotPresent
+
+machine-learning:
+  enabled: true
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    pullPolicy: IfNotPresent
+  env:
+    TRANSFORMERS_CACHE: /cache
+  persistence:
+    cache:
+      enabled: true
+      type: pvc
+      size: 10Gi
+      existingClaim: immich-ml-cache-pvc
+      storageClass: local-path-utils

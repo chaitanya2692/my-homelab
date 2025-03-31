@@ -18,20 +18,14 @@ spec:
       containers:
         - name: redis
           image: redis:7.4
-          args: ["--requirepass", "$(REDIS_HOST_PASSWORD)"]
           ports:
             - containerPort: 6379
-          envFrom:
-            - configMapRef:
-                name: nextcloud-env
-            - secretRef:
-                name: nextcloud-credentials
           readinessProbe:
             exec:
               command:
                 - /bin/sh
                 - -c
-                - redis-cli -a $REDIS_HOST_PASSWORD ping | grep PONG
+                - redis-cli ping | grep PONG
             initialDelaySeconds: 5
             periodSeconds: 10
           volumeMounts:
@@ -48,4 +42,4 @@ spec:
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: utils-pvc
+            claimName: nextcloud-pvc

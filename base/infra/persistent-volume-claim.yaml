@@ -5,7 +5,7 @@ metadata:
   name: infra-pvc
   namespace: infra
 spec:
-  storageClassName: cluster-storage
+  storageClassName: local-path-infra
   accessModes:
     - ReadWriteOnce
   resources:

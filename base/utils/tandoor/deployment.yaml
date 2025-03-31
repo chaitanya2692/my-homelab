@@ -1,0 +1,202 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recipes
+  namespace: utils
+  labels:
+    tier: frontend
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      serviceAccountName: recipes
+      restartPolicy: Always
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: tandoor-data-pvc
+        - name: nginx-config
+          configMap:
+            name: tandoor-nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+      initContainers:
+        - name: init-tandoor-data
+          image: vabene1111/recipes
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              source venv/bin/activate
+              echo "Updating database"
+              python manage.py migrate --noinput
+              python manage.py collectstatic_js_reverse
+              python manage.py collectstatic --noinput
+              echo "Setting media/static file ownership and permissions"
+              mkdir -p /opt/recipes/mediafiles
+              mkdir -p /opt/recipes/staticfiles
+              chown -R 65534:65534 /opt/recipes/mediafiles /opt/recipes/staticfiles
+              find /opt/recipes/mediafiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/mediafiles -type f -print0 | xargs -0 -r chmod 644
+              find /opt/recipes/staticfiles -type d -print0 | xargs -0 -r chmod 755
+              find /opt/recipes/staticfiles -type f -print0 | xargs -0 -r chmod 644
+              echo "Done"
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: secret-key
+            - name: DB_ENGINE
+              value: django.db.backends.postgresql
+            - name: POSTGRES_HOST
+              value: recipes-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_DB
+              value: recipes
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: postgresql-postgres-password
+            - name: REDIS_PORT
+              value: "6379"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/recipes/mediafiles
+              subPath: media
+            - name: data
+              mountPath: /opt/recipes/staticfiles
+              subPath: static
+      containers:
+        - name: tandoor-nginx
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          volumeMounts:
+            - name: data
+              mountPath: /media
+              subPath: media
+              readOnly: true
+            - name: data
+              mountPath: /static
+              subPath: static
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+        - name: tandoor-app
+          image: vabene1111/recipes
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 65534
+          command:
+            - /opt/recipes/venv/bin/gunicorn
+            - -b
+            - :8080
+            - --access-logfile
+            - "-"
+            - --error-logfile
+            - "-"
+            - --log-level
+            - INFO
+            - recipes.wsgi
+          ports:
+            - containerPort: 8080
+              name: gunicorn
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: gunicorn
+              scheme: HTTP
+            periodSeconds: 30
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /
+              port: gunicorn
+              scheme: HTTP
+            periodSeconds: 30
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/recipes/mediafiles
+              subPath: media
+            - name: data
+              mountPath: /opt/recipes/staticfiles
+              subPath: static
+          env:
+            - name: DEBUG
+              value: "0"
+            - name: ALLOWED_HOSTS
+              value: "*"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: secret-key
+            - name: GUNICORN_MEDIA
+              value: "0"
+            - name: DB_ENGINE
+              value: django.db.backends.postgresql
+            - name: POSTGRES_HOST
+              value: recipes-postgresql
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              value: recipes
+            - name: POSTGRES_DB
+              value: recipes
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: postgresql-password
+            - name: TZ
+              value: "CET"
+            - name: REDIS_PORT
+              value: "6379"

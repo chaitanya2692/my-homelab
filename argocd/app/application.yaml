@@ -29,3 +29,25 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
+          - ServerSideApply=true # Recommended
+      # --- Add or modify this block ---
+      ignoreDifferences:
+        # Ignore fields added by CNPG operator to the Cluster spec
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          name: immich
+          namespace: utils
+          jsonPointers:
+            - /spec/managed/roles/0/connectionLimit # Field added by CNPG
+            - /spec/managed/roles/0/ensure # Field added by CNPG
+            - /spec/managed/roles/0/inherit # Field added by CNPG
+            - /status # Always ignore status
+        # Ignore fields added by Kubernetes to the StatefulSet volumeClaimTemplate
+        - group: apps
+          kind: StatefulSet
+          name: recipes-postgresql
+          namespace: utils
+          jsonPointers:
+            - /spec/volumeClaimTemplates/0/apiVersion # Field added by K8s
+            - /spec/volumeClaimTemplates/0/kind # Field added by K8s
+            - /status # Always ignore status
