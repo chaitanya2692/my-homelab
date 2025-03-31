@@ -18,7 +18,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/chaitanya2692/my-homelab.git
-        targetRevision: HEAD
+        targetRevision: test-cnpg
         path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc

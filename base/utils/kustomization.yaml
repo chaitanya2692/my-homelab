@@ -9,5 +9,6 @@ resources:
   - nextcloud
   - immich
   - tandoor
+  - cnpg
   - ingress-route.yaml
   - persistent-volume-claim.yaml

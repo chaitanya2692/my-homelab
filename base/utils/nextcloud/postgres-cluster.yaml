@@ -1,0 +1,35 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nextcloud-db
+  namespace: utils
+spec:
+  instances: 1
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+
+  managed:
+    roles:
+      - name: nextcloud
+        login: true
+        passwordSecret:
+          name: nextcloud-credentials
+          key: NEXTCLOUD_DB_PASSWORD
+
+  bootstrap:
+    initdb:
+      database: nextclouddb
+      owner: nextcloud
+
+  storage:
+    storageClass: local-path-utils
+    size: 10Gi
+
+  backup:
+    retentionPolicy: "30d"
+    volumeSnapshot:
+      className: local-path-utils
+      snapshotOwnerReference: "cluster"
