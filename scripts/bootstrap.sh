@@ -152,7 +152,7 @@ if sudo k3s kubectl get node &> /dev/null; then
     echo "K3s is already installed"
 else
     echo "Installing K3s..."
-    curl -fL https://get.k3s.io | sh -s - --disable servicelb --disable traefik
+    curl -fL https://get.k3s.io | sh -s - --disable servicelb --disable traefik --disable local-storage
 fi
 
 # Set up environment variables

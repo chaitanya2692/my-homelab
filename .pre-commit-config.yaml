@@ -1,51 +1,32 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
 
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.32.0
+    rev: v1.37.0
     hooks:
       - id: yamllint
         args: ["-c", ".yamllint.yml"]
 
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.13.0
+    rev: v0.17.2
     hooks:
       - id: markdownlint-cli2
         args: ["**/*.md"]
 
   - repo: local
     hooks:
-      - id: print-env
-        name: Print Pre-commit Environment
-        entry: bash -c 'env | sort > pre-commit-env.log'
-        language: system
-        pass_filenames: false
-
-      - id: test-update-manifests
-        name: Update Manifests
-        entry: ./scripts/update-manifests.sh
-        language: system
-        pass_filenames: false
-
       - id: encrypt-secrets
         name: Encrypt Secrets
         entry: ./scripts/encrypt-secrets.sh
         language: system
         pass_filenames: false
 
-  - repo: https://github.com/trufflesecurity/trufflehog
-    rev: v3.42.0
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.2
     hooks:
-      - id: trufflehog
-        name: TruffleHog
-        description: Detect secrets in your data.
-        entry: bash -c 'docker run -v "$(pwd):/workdir" us-docker.pkg.dev/thog-artifacts/public/scanner:latest git main HEAD /workdir'
-        language: system
-        types: [file]
-        fail_fast: true
-        verbose: true
+      - id: gitleaks
