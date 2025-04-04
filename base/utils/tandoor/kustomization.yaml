@@ -7,8 +7,7 @@ namespace: utils
 resources:
   - deployment.yaml
   - service.yaml
-  - service-db.yaml
-  - postgres-statefulset.yaml
+  - postgres-cluster.yaml
   - configmap.yaml
   - secret
   - serviceaccount.yaml
