@@ -12,16 +12,18 @@ spec:
       max_connections: "100"
       shared_buffers: "128MB"
 
-  managed:
-    roles:
-      - name: recipes
-        login: true
-        passwordSecret:
-          name: tandoor-credentials
-          key: postgresql-password
+  # Remove managed roles - let CNPG create the standard '-app' secret for the owner
+  # managed:
+  #   roles:
+  #     - name: recipes
+  #       login: true
+  #       passwordSecret:
+  #         name: tandoor-credentials
+  #         key: postgresql-password
 
   bootstrap:
     initdb:
+      # The owner specified here will have credentials generated in the '<cluster-name>-app' secret
       database: recipes
       owner: recipes
 

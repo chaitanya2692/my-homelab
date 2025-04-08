@@ -61,23 +61,14 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: secret-key
+            # DB connection details will come from the tandoor-db-app secret
             - name: DB_ENGINE
               value: django.db.backends.postgresql
-            - name: POSTGRES_HOST
-              value: tandoor-db-rw
-            - name: POSTGRES_PORT
-              value: "5432"
-            - name: POSTGRES_USER
-              value: recipes
-            - name: POSTGRES_DB
-              value: recipes
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-password
-            - name: REDIS_PORT
+            - name: REDIS_PORT # Assuming Redis is configured elsewhere or not needed for init
               value: "6379"
+          envFrom: # Add envFrom for CNPG secret
+            - secretRef:
+                name: tandoor-db-app
           resources:
             requests:
               cpu: 250m
@@ -181,22 +172,13 @@ spec:
                   key: secret-key
             - name: GUNICORN_MEDIA
               value: "0"
+            # DB connection details will come from the tandoor-db-app secret
             - name: DB_ENGINE
               value: django.db.backends.postgresql
-            - name: POSTGRES_HOST
-              value: tandoor-db-rw
-            - name: POSTGRES_PORT
-              value: "5432"
-            - name: POSTGRES_USER
-              value: recipes
-            - name: POSTGRES_DB
-              value: recipes
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-password
             - name: TZ
               value: "CET"
-            - name: REDIS_PORT
+            - name: REDIS_PORT # Assuming Redis is configured elsewhere
               value: "6379"
+          envFrom: # Add envFrom for CNPG secret
+            - secretRef:
+                name: tandoor-db-app
