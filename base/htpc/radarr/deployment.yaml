@@ -14,20 +14,34 @@ spec:
     metadata:
       labels:
         run: radarr
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7878"
+        prometheus.io/path: "/radarr/metrics"
     spec:
       securityContext:
         fsGroup: 1000
       initContainers:
         - name: check-config-dir
           image: busybox
-          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/radarr</UrlBase></Config>" > /config/config.xml']
+          command:
+            [
+              "sh",
+              "-c",
+              'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/radarr</UrlBase></Config>" > /config/config.xml',
+            ]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
               subPath: radarr
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "mkdir -p /data/media/movies /data/torrents/radarr && chown -R 1000:1000 /data"]
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /data/media/movies /data/torrents/radarr && chown -R 1000:1000 /data",
+            ]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /data

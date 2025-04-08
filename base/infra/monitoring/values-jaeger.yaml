@@ -1,0 +1,4 @@
+# Values for jaeger Helm chart
+# Add overrides here, for example:
+# storage:
+#   type: memory # For simple setups, consider elasticsearch or cassandra for production
