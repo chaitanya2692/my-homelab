@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         run: jellyfin
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8096"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
         - name: jellyfin

@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         run: prowlarr
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9696"
+        prometheus.io/path: "/prowlarr/metrics"
     spec:
       securityContext:
         fsGroup: 1000
@@ -21,6 +25,13 @@ spec:
         - name: prowlarr
           image: linuxserver/prowlarr:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
           env:
             - name: TZ
               value: "CET"

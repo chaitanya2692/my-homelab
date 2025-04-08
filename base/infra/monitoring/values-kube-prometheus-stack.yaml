@@ -1,0 +1,8 @@
+# Values for kube-prometheus-stack Helm chart
+# Add overrides here, for example:
+# grafana:
+#   enabled: true
+#   adminPassword: "your-secure-password" # Consider using secrets
+# prometheus:
+#   prometheusSpec:
+#     retention: 15d

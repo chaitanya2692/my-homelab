@@ -1,0 +1,6 @@
+# Values for loki Helm chart
+# Add overrides here, for example:
+# loki:
+#   auth_enabled: false
+# promtail:
+#   enabled: true # Deploy promtail alongside loki
