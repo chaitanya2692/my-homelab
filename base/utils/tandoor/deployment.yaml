@@ -42,7 +42,19 @@ spec:
             - |
               set -e
               source venv/bin/activate
-              echo "Updating database"
+              echo "Waiting for DB..."
+              # Simple wait loop - adjust timeout/check as needed
+              timeout=60
+              until nc -z $DB_HOST $DB_PORT; do
+                echo "Waiting for Tandoor DB ($DB_HOST:$DB_PORT)..."
+                timeout=$((timeout-5))
+                if [ $timeout -le 0 ]; then
+                  echo "Error: Tandoor DB timed out."
+                  exit 1
+                fi
+                sleep 5
+              done
+              echo "Tandoor DB is up. Updating database..."
               python manage.py migrate --noinput
               python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput
@@ -61,9 +73,18 @@ spec:
                 secretKeyRef:
                   name: tandoor-credentials
                   key: secret-key
-            # DB connection details will come from the tandoor-db-app secret
             - name: DB_ENGINE
               value: django.db.backends.postgresql
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-db-app
+                  key: HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-db-app
+                  key: PORT
             - name: REDIS_PORT # Assuming Redis is configured elsewhere or not needed for init
               value: "6379"
           envFrom: # Add envFrom for CNPG secret
@@ -172,9 +193,19 @@ spec:
                   key: secret-key
             - name: GUNICORN_MEDIA
               value: "0"
-            # DB connection details will come from the tandoor-db-app secret
             - name: DB_ENGINE
               value: django.db.backends.postgresql
+            # Explicitly set host and port from secret
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-db-app
+                  key: HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-db-app
+                  key: PORT
             - name: TZ
               value: "CET"
             - name: REDIS_PORT # Assuming Redis is configured elsewhere
