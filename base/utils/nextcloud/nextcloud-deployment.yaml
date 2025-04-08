@@ -60,16 +60,13 @@ spec:
             limits:
               memory: "2Gi"
               cpu: "1000m"
+          # Use the CNPG-generated secret for DB connection details
           envFrom:
-            - configMapRef:
-                name: nextcloud-env
             - secretRef:
-                name: nextcloud-credentials
+                name: nextcloud-db-app # Secret created by CNPG for the 'nextcloud' user/db
           env:
-            - name: POSTGRES_HOST
-              value: "nextcloud-db-rw"
-            - name: DB_PORT
-              value: "5432"
+            # POSTGRES_HOST, DB_PORT, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD
+            # are now sourced from the nextcloud-db-app secret via envFrom
             - name: REDIS_HOST
               value: "redis"
             - name: REDIS_HOST_PORT
@@ -94,21 +91,7 @@ spec:
               value: "512M"
             - name: PHP_UPLOAD_LIMIT
               value: "512M"
-            - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: NEXTCLOUD_DB_NAME
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_PASSWORD
+            # Remove explicit DB vars, they come from nextcloud-db-app secret
           volumeMounts:
             - name: nextcloud-data
               subPath: nextcloud/app
