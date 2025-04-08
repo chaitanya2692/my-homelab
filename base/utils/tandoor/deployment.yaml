@@ -45,8 +45,8 @@ spec:
               echo "Waiting for DB..."
               # Simple wait loop - adjust timeout/check as needed
               timeout=60
-              until nc -z $DB_HOST $DB_PORT; do
-                echo "Waiting for Tandoor DB ($DB_HOST:$DB_PORT)..."
+              until nc -z $host $port; do
+                echo "Waiting for Tandoor DB ($host:$port)..."
                 timeout=$((timeout-5))
                 if [ $timeout -le 0 ]; then
                   echo "Error: Tandoor DB timed out."
@@ -68,26 +68,12 @@ spec:
               find /opt/recipes/staticfiles -type f -print0 | xargs -0 -r chmod 644
               echo "Done"
           env:
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: secret-key
             - name: DB_ENGINE
               value: django.db.backends.postgresql
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-db-app
-                  key: host
-            - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-db-app
-                  key: port
             - name: REDIS_PORT # Assuming Redis is configured elsewhere or not needed for init
               value: "6379"
-          envFrom: # Add envFrom for CNPG secret
+          # envFrom is likely redundant now for DB creds, but keep for other potential vars
+          envFrom:
             - secretRef:
                 name: tandoor-db-app
           resources:
@@ -186,26 +172,11 @@ spec:
               value: "0"
             - name: ALLOWED_HOSTS
               value: "*"
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-credentials
-                  key: secret-key
             - name: GUNICORN_MEDIA
               value: "0"
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             # Explicitly set host and port from secret
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-db-app
-                  key: host
-            - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: tandoor-db-app
-                  key: port
             - name: TZ
               value: "CET"
             - name: REDIS_PORT # Assuming Redis is configured elsewhere
