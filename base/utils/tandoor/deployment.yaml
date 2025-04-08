@@ -79,12 +79,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-db-app
-                  key: HOST
+                  key: host
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
                   name: tandoor-db-app
-                  key: PORT
+                  key: port
             - name: REDIS_PORT # Assuming Redis is configured elsewhere or not needed for init
               value: "6379"
           envFrom: # Add envFrom for CNPG secret
@@ -200,12 +200,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: tandoor-db-app
-                  key: HOST
+                  key: host
             - name: DB_PORT
               valueFrom:
                 secretKeyRef:
                   name: tandoor-db-app
-                  key: PORT
+                  key: port
             - name: TZ
               value: "CET"
             - name: REDIS_PORT # Assuming Redis is configured elsewhere
