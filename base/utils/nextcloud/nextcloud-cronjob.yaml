@@ -21,17 +21,6 @@ spec:
                 - /bin/sh
                 - -c
                 - php -f /var/www/html/cron.php
-              # Add envFrom to provide DB connection details
-              envFrom:
-                - secretRef:
-                    name: nextcloud-db-app # Secret created by CNPG
-              env:
-                # Add PHP memory limit if needed by cron tasks
-                - name: PHP_MEMORY_LIMIT
-                  value: "512M"
-                # Ensure Nextcloud knows its URL for CLI operations
-                - name: NEXTCLOUD_OVERWRITECLIURL
-                  value: "https://nextcloud.my-homelab.party" # Match deployment value
               resources:
                 requests:
                   memory: "512Mi"

@@ -9,16 +9,10 @@ resources:
   - nextcloud-service.yaml
   - nextcloud-cronjob.yaml
   - postgres-cluster.yaml
-  - postgres-backup.yaml
+  # - postgres-backup.yaml
   - redis-deployment.yaml
   - redis-service.yaml
   - middleware.yaml
-
-configMapGenerator:
-  - name: nextcloud-env
-    literals:
-      # Database Configuration
-      - NEXTCLOUD_DB_NAME=nextclouddb
 
 generatorOptions:
   disableNameSuffixHash: true

@@ -13,9 +13,10 @@ spec:
 
   bootstrap:
     initdb:
-      # The owner specified here will have credentials generated in the '<cluster-name>-app' secret
       database: nextclouddb
       owner: nextcloud
+      secret:
+        name: nextcloud-credentials
 
   storage:
     storageClass: local-path-utils
