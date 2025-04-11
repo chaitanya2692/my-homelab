@@ -1,0 +1,6 @@
+---
+config:
+  clusterWide: false
+
+# Override operator namespace to utils
+namespaceOverride: utils
