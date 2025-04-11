@@ -45,8 +45,8 @@ spec:
               echo "Waiting for DB..."
               # Simple wait loop - adjust timeout/check as needed
               timeout=60
-              until nc -z $host $port; do
-                echo "Waiting for Tandoor DB ($host:$port)..."
+              until nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Waiting for Tandoor DB ($POSTGRES_HOST:$POSTGRES_PORT)..."
                 timeout=$((timeout-5))
                 if [ $timeout -le 0 ]; then
                   echo "Error: Tandoor DB timed out."
@@ -206,8 +206,8 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-credentials
-                  key: postgresql-password
+                  name: tandoor-db-app
+                  key: password
             - name: TZ
               value: "CET"
             - name: REDIS_PORT

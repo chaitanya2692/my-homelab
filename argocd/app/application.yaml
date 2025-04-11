@@ -18,14 +18,14 @@ spec:
       project: default
       source:
         repoURL: https://github.com/chaitanya2692/my-homelab.git
-        targetRevision: test-cnpg
+        targetRevision: main
         path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{path}}"
-      syncPolicy:
-        automated:
-          prune: true
+        # syncPolicy:
+        #   automated:
+        #     prune: true
         syncOptions:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
