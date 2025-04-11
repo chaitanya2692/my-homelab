@@ -90,9 +90,6 @@ spec:
                   key: postgresql-postgres-password
             - name: REDIS_PORT
               value: "6379"
-          envFrom:
-            - secretRef:
-                name: tandoor-db-app
           resources:
             requests:
               cpu: 250m
