@@ -11,6 +11,12 @@ spec:
       max_connections: "100"
       shared_buffers: "256MB"
 
+  managed:
+    roles:
+      - name: nextcloud
+        superuser: true
+        login: true
+
   bootstrap:
     initdb:
       database: nextclouddb
