@@ -65,7 +65,7 @@ spec:
                 name: nextcloud-credentials
           env:
             - name: POSTGRES_HOST
-              value: "postgres"
+              value: nextcloud-db-rw
             - name: DB_PORT
               value: "5432"
             - name: REDIS_HOST
