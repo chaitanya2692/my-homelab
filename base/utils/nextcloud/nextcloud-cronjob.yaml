@@ -28,6 +28,9 @@ spec:
                 limits:
                   memory: "1Gi"
                   cpu: "500m"
+              env:
+                - name: POSTGRES_HOST
+                  value: nextcloud-db-rw
               volumeMounts:
                 - name: nextcloud-data
                   subPath: nextcloud/app
