@@ -23,6 +23,8 @@ spec:
       owner: nextcloud
       secret:
         name: nextcloud-credentials
+        username: NEXTCLOUD_DB_USER
+        password: NEXTCLOUD_DB_PASSWORD
 
   storage:
     storageClass: local-path-utils

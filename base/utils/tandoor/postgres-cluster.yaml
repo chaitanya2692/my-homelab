@@ -24,6 +24,8 @@ spec:
       owner: recipes
       secret:
         name: tandoor-credentials
+        username: POSTGRES_USER
+        password: postgres-password
 
   storage:
     storageClass: local-path-utils
