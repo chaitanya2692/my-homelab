@@ -9,6 +9,7 @@ resources:
   - service.yaml
   - postgres-cluster.yaml
   - configmap.yaml
+  - secret
   - serviceaccount.yaml
 
 commonLabels:
