@@ -12,6 +12,12 @@ spec:
       max_connections: "100"
       shared_buffers: "128MB"
 
+  managed:
+    roles:
+      - name: recipes
+        superuser: true
+        login: true
+
   bootstrap:
     initdb:
       database: recipes
