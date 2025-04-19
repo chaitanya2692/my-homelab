@@ -31,6 +31,13 @@ spec:
           ports:
             - containerPort: 9696
               name: webui
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config

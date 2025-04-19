@@ -23,13 +23,13 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: "{{path}}"
-        # syncPolicy:
-        #   automated:
-        #     prune: true
-        # syncOptions:
-        #   - CreateNamespace=true
-        #   - ApplyOutOfSyncOnly=true
-        #   - ServerSideApply=true # Recommended
+      syncPolicy:
+        automated:
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+          - ServerSideApply=true # Recommended
       # --- Add or modify this block ---
       ignoreDifferences:
         # Ignore fields added by CNPG operator to the Cluster spec
