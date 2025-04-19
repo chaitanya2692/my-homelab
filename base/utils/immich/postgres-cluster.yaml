@@ -18,13 +18,13 @@ spec:
       - name: immich
         superuser: true
         login: true
-        passwordSecret:
-          name: immich-credentials
 
   bootstrap:
     initdb:
-      database: immich
+      database: immich-db
       owner: immich
+      secret:
+        name: immich-credentials
       postInitSQL:
         - CREATE EXTENSION IF NOT EXISTS "vectors";
         - CREATE EXTENSION IF NOT EXISTS "cube" CASCADE;

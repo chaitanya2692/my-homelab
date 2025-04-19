@@ -1,0 +1,38 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: tandoor-db
+  namespace: utils
+spec:
+  instances: 1
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "128MB"
+
+  enableSuperuserAccess: true
+
+  managed:
+    roles:
+      - name: recipes
+        superuser: true
+        login: true
+
+  bootstrap:
+    initdb:
+      database: recipes-db
+      owner: recipes
+      secret:
+        name: tandoor-credentials
+
+  storage:
+    storageClass: local-path-utils
+    size: 5Gi
+
+  backup:
+    retentionPolicy: "30d"
+    volumeSnapshot:
+      className: local-path-utils
+      snapshotOwnerReference: "cluster"

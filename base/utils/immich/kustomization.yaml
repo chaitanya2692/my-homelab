@@ -16,9 +16,3 @@ helmCharts:
     releaseName: immich
     includeCRDs: true
     valuesFile: values.yaml
-  - name: cloudnative-pg
-    repo: https://cloudnative-pg.github.io/charts
-    version: 0.23.2
-    releaseName: cloudnative-pg
-    includeCRDs: true
-    valuesFile: cloudnative-pg-values.yaml

@@ -42,7 +42,19 @@ spec:
             - |
               set -e
               source venv/bin/activate
-              echo "Updating database"
+              echo "Waiting for DB..."
+              # Simple wait loop - adjust timeout/check as needed
+              timeout=60
+              until nc -z $POSTGRES_HOST $POSTGRES_PORT; do
+                echo "Waiting for Tandoor DB ($POSTGRES_HOST:$POSTGRES_PORT)..."
+                timeout=$((timeout-5))
+                if [ $timeout -le 0 ]; then
+                  echo "Error: Tandoor DB timed out."
+                  exit 1
+                fi
+                sleep 5
+              done
+              echo "Tandoor DB is up. Updating database..."
               python manage.py migrate --noinput
               python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput
@@ -64,18 +76,21 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: recipes-postgresql
+              value: tandoor-db-rw
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: postgres
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: username
             - name: POSTGRES_DB
-              value: recipes
+              value: recipes-db
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password
+                  key: password
             - name: REDIS_PORT
               value: "6379"
           resources:
@@ -184,18 +199,21 @@ spec:
             - name: DB_ENGINE
               value: django.db.backends.postgresql
             - name: POSTGRES_HOST
-              value: recipes-postgresql
+              value: tandoor-db-rw
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: recipes
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: username
             - name: POSTGRES_DB
-              value: recipes
+              value: recipes-db
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-password
+                  key: password
             - name: TZ
               value: "CET"
             - name: REDIS_PORT

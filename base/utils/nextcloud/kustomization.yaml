@@ -1,3 +1,4 @@
+# File: base/utils/nextcloud/kustomization.yaml
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -8,29 +9,10 @@ resources:
   - nextcloud-deployment.yaml
   - nextcloud-service.yaml
   - nextcloud-cronjob.yaml
-  - postgres-deployment.yaml
-  - postgres-service.yaml
+  - postgres-cluster.yaml
   - redis-deployment.yaml
   - redis-service.yaml
-  - backups-deployment.yaml
   - middleware.yaml
-
-configMapGenerator:
-  - name: nextcloud-env
-    literals:
-      # Database Configuration
-      - NEXTCLOUD_DB_NAME=nextclouddb
-
-      # Backup Configuration
-      - BACKUP_INIT_SLEEP=30m
-      - BACKUP_INTERVAL=24h
-      - POSTGRES_BACKUP_PRUNE_DAYS=7
-      - DATA_BACKUP_PRUNE_DAYS=7
-      - POSTGRES_BACKUPS_PATH=/srv/nextcloud-postgres/backups
-      - DATA_BACKUPS_PATH=/srv/nextcloud-application-data/backups
-      - DATA_PATH=/var/www/html
-      - POSTGRES_BACKUP_NAME=nextcloud-postgres-backup
-      - DATA_BACKUP_NAME=nextcloud-application-data-backup
 
 generatorOptions:
   disableNameSuffixHash: true

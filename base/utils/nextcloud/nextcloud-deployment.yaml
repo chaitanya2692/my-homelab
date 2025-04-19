@@ -44,8 +44,8 @@ spec:
             - /bin/sh
             - -c
             - |
-              until nc -z redis 6379 && nc -z postgres 5432; do
-                echo "Waiting for Redis and PostgreSQL..."
+              until nc -z redis 6379 && nc -z nextcloud-db-rw 5432; do
+                echo "Waiting for Redis and PostgreSQL (CNPG)..."
                 sleep 5
               done
       containers:
@@ -61,54 +61,31 @@ spec:
               memory: "2Gi"
               cpu: "1000m"
           envFrom:
-            - configMapRef:
-                name: nextcloud-env
             - secretRef:
                 name: nextcloud-credentials
           env:
             - name: POSTGRES_HOST
-              value: "postgres"
-            - name: DB_PORT
+              value: nextcloud-db-rw
+            - name: POSTGRES_PORT
               value: "5432"
             - name: REDIS_HOST
               value: "redis"
-            - name: REDIS_HOST_PORT
-              value: "6379"
-            - name: NEXTCLOUD_SETUP_CREATE_DB_USER
-              value: "false"
-            - name: NEXTCLOUD_TRUSTED_DOMAINS
-              value: "nextcloud.my-homelab.party"
-            - name: TRUSTED_PROXIES
-              value: "192.168.1.0/24"
-            - name: OVERWRITEPROTOCOL
-              value: "https"
-            - name: OVERWRITECLIURL
-              value: "https://nextcloud.my-homelab.party"
-            - name: NEXTCLOUD_HOSTNAME
-              value: "nextcloud.my-homelab.party"
-            - name: NEXTCLOUD_TIMEZONE
-              value: "CET"
-            - name: NEXTCLOUD_UPDATE
-              value: "1"
             - name: PHP_MEMORY_LIMIT
               value: "512M"
             - name: PHP_UPLOAD_LIMIT
               value: "512M"
             - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: nextcloud-env
-                  key: NEXTCLOUD_DB_NAME
+              value: nextcloud-db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_USER
+                  key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_PASSWORD
+                  key: password
           volumeMounts:
             - name: nextcloud-data
               subPath: nextcloud/app

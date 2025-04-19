@@ -29,6 +29,13 @@ spec:
               value: "CET"
             - name: PORT
               value: "4000"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             - name: dashy-config
               mountPath: /app/user-data/conf.yml
