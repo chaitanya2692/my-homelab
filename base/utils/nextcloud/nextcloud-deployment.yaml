@@ -66,26 +66,26 @@ spec:
           env:
             - name: POSTGRES_HOST
               value: nextcloud-db-rw
-            - name: DB_PORT
+            - name: POSTGRES_PORT
               value: "5432"
             - name: REDIS_HOST
               value: "redis"
-            - name: REDIS_HOST_PORT
+            - name: PHP_MEMORY_LIMIT
               value: "512M"
             - name: PHP_UPLOAD_LIMIT
               value: "512M"
             - name: POSTGRES_DB
-              value: nextclouddb
+              value: nextcloud-db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_USER
+                  key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: nextcloud-credentials
-                  key: NEXTCLOUD_DB_PASSWORD
+                  key: password
           volumeMounts:
             - name: nextcloud-data
               subPath: nextcloud/app

@@ -80,14 +80,17 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: recipes
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: username
             - name: POSTGRES_DB
-              value: recipes
+              value: recipes-db
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: tandoor-credentials
-                  key: postgresql-postgres-password
+                  key: password
             - name: REDIS_PORT
               value: "6379"
           resources:
@@ -200,13 +203,16 @@ spec:
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
-              value: recipes
+              valueFrom:
+                secretKeyRef:
+                  name: tandoor-credentials
+                  key: username
             - name: POSTGRES_DB
-              value: recipes
+              value: recipes-db
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: tandoor-db-app
+                  name: tandoor-credentials
                   key: password
             - name: TZ
               value: "CET"

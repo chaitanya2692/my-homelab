@@ -28,19 +28,6 @@ spec:
                 limits:
                   memory: "1Gi"
                   cpu: "500m"
-              env:
-                - name: POSTGRES_HOST
-                  value: nextcloud-db-rw
-                - name: POSTGRES_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-db-app
-                      key: username
-                - name: POSTGRES_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: nextcloud-db-app
-                      key: password
               volumeMounts:
                 - name: nextcloud-data
                   subPath: nextcloud/app

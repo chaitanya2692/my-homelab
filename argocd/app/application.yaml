@@ -26,10 +26,10 @@ spec:
         # syncPolicy:
         #   automated:
         #     prune: true
-        syncOptions:
-          - CreateNamespace=true
-          - ApplyOutOfSyncOnly=true
-          - ServerSideApply=true # Recommended
+        # syncOptions:
+        #   - CreateNamespace=true
+        #   - ApplyOutOfSyncOnly=true
+        #   - ServerSideApply=true # Recommended
       # --- Add or modify this block ---
       ignoreDifferences:
         # Ignore fields added by CNPG operator to the Cluster spec

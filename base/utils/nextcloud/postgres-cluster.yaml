@@ -11,6 +11,8 @@ spec:
       max_connections: "100"
       shared_buffers: "256MB"
 
+  enableSuperuserAccess: true
+
   managed:
     roles:
       - name: nextcloud
@@ -19,12 +21,10 @@ spec:
 
   bootstrap:
     initdb:
-      database: nextclouddb
+      database: nextcloud-db
       owner: nextcloud
       secret:
         name: nextcloud-credentials
-        username: NEXTCLOUD_DB_USER
-        password: NEXTCLOUD_DB_PASSWORD
 
   storage:
     storageClass: local-path-utils

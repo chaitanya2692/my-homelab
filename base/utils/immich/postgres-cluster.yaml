@@ -11,19 +11,17 @@ spec:
     shared_preload_libraries:
       - "vectors.so"
 
-  # enableSuperuserAccess: true
+  enableSuperuserAccess: true
 
   managed:
     roles:
       - name: immich
         superuser: true
         login: true
-        # passwordSecret:
-        #   name: immich-credentials
 
   bootstrap:
     initdb:
-      database: immich
+      database: immich-db
       owner: immich
       secret:
         name: immich-credentials

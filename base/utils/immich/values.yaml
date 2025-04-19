@@ -11,11 +11,7 @@ env:
       secretKeyRef:
         name: immich-credentials
         key: DB_PASSWORD
-  DB_DATABASE_NAME:
-    valueFrom:
-      secretKeyRef:
-        name: immich-credentials
-        key: DB_DATABASE_NAME
+  DB_DATABASE_NAME: immich-db
   IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
 
 immich:
