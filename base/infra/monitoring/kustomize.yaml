@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: infra
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    # Find latest version: helm search repo --regexp 'prometheus-community/kube-prometheus-stack[[:space:]]' -o json | jq -r '.[0].version'
+    version: 58.2.1 # Replace with actual latest version if needed
+    releaseName: kube-prometheus-stack
+    namespace: infra # Explicitly setting namespace, though inherited
+    valuesFile: values-kube-prometheus-stack.yaml
+
+  - name: loki
+    repo: https://grafana.github.io/helm-charts
+    # Find latest version: helm search repo --regexp 'grafana/loki[[:space:]]' -o json | jq -r '.[0].version'
+    version: 6.6.2 # Replace with actual latest version if needed
+    releaseName: loki
+    namespace: infra
+    valuesFile: values-loki.yaml
+
+  - name: jaeger
+    repo: https://jaegertracing.github.io/helm-charts
+    # Find latest version: helm search repo --regexp 'jaegertracing/jaeger[[:space:]]' -o json | jq -r '.[0].version'
+    version: 0.80.0 # Replace with actual latest version if needed
+    releaseName: jaeger
+    namespace: infra
+    valuesFile: values-jaeger.yaml
