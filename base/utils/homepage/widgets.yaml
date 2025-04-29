@@ -1,0 +1,43 @@
+---
+- resources:
+      label: System # Matches image CPU/Memory/Disk
+      cpu: true
+      memory: true
+      disk: / # Adjust disk path if needed
+
+- search:
+      provider: google
+      target: _blank
+
+- datetime:
+      text_size: xl
+      format:
+          dateStyle: long
+          timeStyle: short
+
+- weather:
+      provider: openweathermap # Or weatherapi
+      city: YourCity # Replace with your City
+      units: metric # Or imperial
+
+# - openmeteo: # Alternative weather widget
+#     label: YourCity
+#     latitude: 40.7128 # Replace with your coordinates
+#     longitude: -74.0060 # Replace with your coordinates
+#     units: metric
+#     cache: 5
+
+- crypto:
+      # Example from your image
+      coins: ["bitcoin", "ethereum", "polygon", "multiversx"]
+
+# Assuming RHomeServer Repo is a public GitHub repo
+- gitlab:
+      # You might need to adjust this if it's not GitLab or requires specific tokens
+      repo: https://github.com/chaitanya2692/my-homelab # Replace with actual repo URL if possible
+
+# Add Kubernetes integration if desired
+# - kubernetes:
+#     cluster: my-cluster # Must match a cluster defined in kubernetes.yaml
+#     showNodes: true
+#     showPods: true

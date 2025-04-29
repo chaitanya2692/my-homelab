@@ -1,0 +1,25 @@
+---
+title: Homelab # From your image
+description: A description of my awesome homepage
+background:
+  image: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
+  blur: sm
+  saturate: 50
+  brightness: 50
+  opacity: 50
+cardBlur: xs
+layout:
+  Media:
+    style: row
+    columns: 4
+theme: dark
+headerStyle: boxedWidgets
+providers:
+  openweathermap: openweathermapapikey # Replace with your OpenWeatherMap API key
+  weatherapi: weatherapiapikey # Replace with your WeatherAPI key
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+  showSearchSuggestions: true
+  hideVisitURL: true
+  provider: google

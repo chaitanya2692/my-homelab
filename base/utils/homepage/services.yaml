@@ -1,0 +1,54 @@
+---
+- Admin:
+      - Pihole:
+            href: http://192.168.1.50/admin/
+            description: LAN Ad-blocker
+
+- Smart Home:
+      - Home Assistant:
+            href: http://homeassistant.local:8123/lovelace/0
+            description: Smart Home Management
+      - Zigbee2MQTT:
+            href: https://<zigbee2mqtt_ip_or_hostname>:8080
+            description: Zigbee Dashboard
+
+- Media:
+      - Sonarr:
+            href: https://sonarr.my-homelab.party
+            description: TV Shows Management
+      - Radarr:
+            href: https://radarr.my-homelab.party
+            description: Movies Management
+      - Jellyfin:
+            href: https://jellyfin.my-homelab.party
+            description: Plex but better
+      - Transmission:
+            href: https://transmission.my-homelab.party
+            description: Torrent Client WebUI
+      - Flaresolverr:
+            href: https://flaresolverr.my-homelab.party
+            description: Request bypass service
+      - Prowlarr:
+            href: https://prowlarr.my-homelab.party
+            description: Torrent Tracker Management
+
+# Add services already in your k8s cluster
+- Infrastructure:
+      - Traefik:
+            href: https://traefik.my-homelab.party
+            description: Reverse Proxy
+            icon: https://djeqr6to3dedg.cloudfront.net/repo-logos/library/traefik/live/logo-1720462302224.png
+
+- Storage:
+      - Nextcloud:
+            href: https://nextcloud.my-homelab.party
+            description: File browser and more
+            icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/refs/heads/main/svg/nextcloud-white.svg
+
+- Utilities:
+      - Immich:
+            href: https://immich.my-homelab.party
+            description: Photo Backup
+      - Tandoor Recipes:
+            href: https://recipes.my-homelab.party
+            description: Recipe Manager
