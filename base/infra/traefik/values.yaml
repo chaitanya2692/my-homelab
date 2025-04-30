@@ -1,5 +1,5 @@
 ---
-namespace: infra
+namespaceOverride: infra
 
 globalArguments:
   - "--global.sendanonymoususage=false"
@@ -7,18 +7,35 @@ globalArguments:
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--log.level=DEBUG"
+
+# Log level moved here from additionalArguments
+logs:
+  general:
+    level: "INFO" # Set log level here
+
+metrics:
+  prometheus:
+    entryPoint: metrics
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
 
 deployment:
   enabled: true
+  kind: Deployment
   replicas: 1
-  namespaceOverride: infra
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8082"
+    prometheus.io/path: "/metrics"
 
 ports:
   web:
     redirections:
       entrypoint:
         to: websecure
+        scheme: https
         priority: 10
   websecure:
     http3:
@@ -26,6 +43,12 @@ ports:
     advertisedPort: 443
     tls:
       enabled: true
+  metrics:
+    port: 8082
+    expose:
+      default: false
+    protocol: TCP
+    entryPoint: metrics
 
 providers:
   kubernetesCRD:
@@ -45,6 +68,15 @@ service:
   spec:
     loadBalancerIP: 192.168.1.245
 
+persistence:
+  enabled: true
+  existingClaim: traefik-data-pvc
+
 env:
   - name: TZ
     value: "CET"
+
+tracing:
+  jaeger:
+    collector:
+      endpoint: "jaeger-collector.infra.svc.cluster.local:14268/api/traces?format=jaeger.thrift"

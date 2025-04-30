@@ -1,0 +1,66 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exportarr
+  labels:
+    app: exportarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exportarr
+  template:
+    metadata:
+      labels:
+        app: exportarr
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9794"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: exportarr
+          image: ghcr.io/onedr0p/exportarr:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "CET"
+            - name: PORT
+              value: "9794"
+            - name: RADARR_URL
+              value: "http://radarr:7878"
+            - name: SONARR_URL
+              value: "http://sonarr:8989"
+            - name: PROWLARR_URL
+              value: "http://prowlarr:9696"
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: RADARR_API_KEY
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: SONARR_API_KEY
+            - name: PROWLARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: PROWLARR_API_KEY
+            - name: ENABLE_ADDITIONAL_METRICS
+              value: "true"
+            - name: ENABLE_UNKNOWN_QUEUE_ITEMS
+              value: "true"
+          ports:
+            - containerPort: 9794
+              name: metrics
+              protocol: TCP
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

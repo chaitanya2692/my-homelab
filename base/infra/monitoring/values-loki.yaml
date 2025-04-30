@@ -1,6 +1,31 @@
-# Values for loki Helm chart
-# Add overrides here, for example:
-# loki:
-#   auth_enabled: false
-# promtail:
-#   enabled: true # Deploy promtail alongside loki
+loki:
+  auth_enabled: false
+  persistence:
+    enabled: true
+    existingClaim: loki-data-pvc
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+promtail:
+  enabled: true
+  extraScrapeConfigs: |
+    - job_name: kubernetes-pods
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        target_label: app
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: "true"
+
+gateway:
+  ingress:
+    enabled: false
