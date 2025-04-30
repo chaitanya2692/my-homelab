@@ -1,8 +1,46 @@
-# Values for kube-prometheus-stack Helm chart
-# Add overrides here, for example:
-# grafana:
-#   enabled: true
-#   adminPassword: "your-secure-password" # Consider using secrets
-# prometheus:
-#   prometheusSpec:
-#     retention: 15d
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: true
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards
+  persistence:
+    enabled: true
+    existingClaim: grafana-kube-prometheus-stack-pvc
+  ingress:
+    enabled: false
+prometheus:
+  enabled: true
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 15d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path-infra
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 20Gi
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1024Mi"
+nodeExporter:
+  enabled: true # Keep enabled
+
+kubeStateMetrics:
+  enabled: true # Keep enabled

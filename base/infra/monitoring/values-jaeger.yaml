@@ -1,4 +1,35 @@
-# Values for jaeger Helm chart
-# Add overrides here, for example:
-# storage:
-#   type: memory # For simple setups, consider elasticsearch or cassandra for production
+storage:
+  type: badger
+  badger:
+    persistence:
+      enabled: true
+      existingClaim: jaeger-data-pvc
+
+collector:
+  enabled: true
+  service:
+    type: ClusterIP
+
+query:
+  enabled: true
+  service:
+    type: ClusterIP
+
+strategy: allInOne
+
+allInOne:
+  options:
+    log-level: info
+    memory.max-traces: "100000"
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "16686"
+    prometheus.io/path: "/metrics"

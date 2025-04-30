@@ -1,3 +1,4 @@
+# File: base/htpc/jellyfin/deployment.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -18,6 +19,25 @@ spec:
         prometheus.io/port: "8096"
         prometheus.io/path: "/metrics"
     spec:
+      initContainers:
+        - name: init-jellyfin-config
+          image: alpine/xmlstarlet:latest
+          command: ["sh", "-c"]
+          args:
+            - |
+              CONFIG_FILE="/config/config/system.xml"
+              if [ -f "$CONFIG_FILE" ]; then
+                # Ensure EnableMetrics exists and is true
+                if xmlstarlet sel -t -c "boolean(/ServerConfiguration/EnableMetrics)" "$CONFIG_FILE"; then
+                  xmlstarlet ed --inplace -u "/ServerConfiguration/EnableMetrics" -v "true" "$CONFIG_FILE"
+                else
+                  xmlstarlet ed --inplace -s "/ServerConfiguration" -t elem -n "EnableMetrics" -v "true" "$CONFIG_FILE"
+                fi
+              fi
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config-init
+              subPath: jellyfin/config
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:latest
@@ -28,6 +48,7 @@ spec:
           ports:
             - containerPort: 8096
               protocol: TCP
+              name: http
             - containerPort: 8920
               protocol: TCP
             - containerPort: 7359
