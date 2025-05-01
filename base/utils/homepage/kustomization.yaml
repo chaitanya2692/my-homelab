@@ -2,9 +2,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: utils
+
 resources:
   - deployment.yaml
   - service.yaml
+  - rbac.yaml
+  - serviceaccount.yaml
 
 configMapGenerator:
   - name: homepage-config
@@ -12,7 +16,7 @@ configMapGenerator:
       - settings.yaml
       - services.yaml
       - widgets.yaml
-      - bookmarks.yaml
+      - kubernetes.yaml
 
 generatorOptions:
   disableNameSuffixHash: true

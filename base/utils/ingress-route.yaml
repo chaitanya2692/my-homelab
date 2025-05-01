@@ -30,7 +30,7 @@ spec:
       priority: 0
       services:
         - kind: Service
-          name: dashy
+          name: homepage
           port: 3000
     - kind: Rule
       match: Host(`recipes.my-homelab.party`)
