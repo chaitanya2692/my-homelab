@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage-config
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+    traefik: true
+  settings.yaml: |
+    title: Homelab
+    description: A description of my awesome homepage
+    background:
+      image: https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80
+      blur: sm
+      saturate: 50
+      brightness: 50
+      opacity: 50
+    cardBlur: xs
+    layout:
+      Media:
+        style: row
+        columns: 3
+      Utilities:
+        style: row
+        columns: 2
+    theme: dark
+    headerStyle: boxedWidgets
+    quicklaunch:
+      searchDescriptions: true
+      hideInternetSearch: true
+      showSearchSuggestions: true
+      hideVisitURL: true
+      provider: google
+  services.yaml: |
+    - Admin:
+      - Pihole:
+          href: http://192.168.1.50/admin/
+          description: LAN Ad-blocker
+          icon: pi-hole
+
+    - Smart Home:
+        - Home Assistant:
+            href: http://homeassistant.local:8123/lovelace/0
+            description: Smart Home Management
+            icon: home-assistant
+        - Zigbee2MQTT:
+            href: https://<zigbee2mqtt_ip_or_hostname>:8080
+            description: Zigbee Dashboard
+            icon: zigbee2mqtt
+
+    - Media:
+        - Sonarr:
+            href: https://sonarr.my-homelab.party
+            description: TV Shows Management
+            icon: sonarr
+        - Radarr:
+            href: https://radarr.my-homelab.party
+            description: Movies Management
+            icon: radarr
+        - Jellyfin:
+            href: https://jellyfin.my-homelab.party
+            description: Plex but better
+            icon: jellyfin
+        - Transmission:
+            href: https://transmission.my-homelab.party
+            description: Torrent Client WebUI
+            icon: transmission
+        - Flaresolverr:
+            href: https://flaresolverr.my-homelab.party
+            description: Request bypass service
+            icon: flaresolverr
+        - Prowlarr:
+            href: https://prowlarr.my-homelab.party
+            description: Torrent Tracker Management
+            icon: prowlarr
+
+    - Infrastructure:
+        - Traefik:
+            href: https://traefik.my-homelab.party
+            description: Reverse Proxy
+            icon: traefik
+
+    - Storage:
+        - Nextcloud:
+            href: https://nextcloud.my-homelab.party
+            description: File browser and more
+            icon: nextcloud
+
+    - Utilities:
+        - Immich:
+            href: https://immich.my-homelab.party
+            description: Photo Backup
+            icon: immich
+        - Tandoor Recipes:
+            href: https://recipes.my-homelab.party
+            description: Recipe Manager
+            icon: tandoor-recipes
+
+  widgets.yaml: |
+    - resources:
+        label: Ubuntu
+        cpu: true
+        memory: true
+        disk: /
+        uptime: true
+        units: metric
+
+    - search:
+        provider: google
+        target: _blank
+        showSearchSuggestions: true
+
+    - datetime:
+        format:
+          dateStyle: short
+          timeStyle: short
+          hour12: true
+
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "Cluster"
+        nodes:
+          show: false

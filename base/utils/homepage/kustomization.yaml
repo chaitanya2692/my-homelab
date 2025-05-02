@@ -9,17 +9,7 @@ resources:
   - service.yaml
   - rbac.yaml
   - serviceaccount.yaml
-
-configMapGenerator:
-  - name: homepage-config
-    files:
-      - settings.yaml
-      - services.yaml
-      - widgets.yaml
-      - kubernetes.yaml
-
-generatorOptions:
-  disableNameSuffixHash: true
+  - configmap.yaml
 
 commonLabels:
   app.kubernetes.io/name: homepage
