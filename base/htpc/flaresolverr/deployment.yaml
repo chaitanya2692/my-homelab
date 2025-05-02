@@ -29,7 +29,7 @@ spec:
             - name: PGID
               value: "1000"
           ports:
-            - containerPort: 9696
+            - containerPort: 8191
               name: webui
           volumeMounts:
             - name: arr-stack-storage
@@ -37,11 +37,11 @@ spec:
               subPath: flaresolverr
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "100m"
-            limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
