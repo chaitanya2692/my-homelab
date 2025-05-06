@@ -1,0 +1,48 @@
+---
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: true
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          folder: ""
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards
+  persistence:
+    enabled: true
+    existingClaim: grafana-kube-prometheus-stack-pvc
+  ingress:
+    enabled: false
+prometheus:
+  enabled: true
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 15d
+    storageSpec:
+      existingClaim: prometheus-kube-prometheus-stack-db-pvc
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "1024Mi"
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      existingClaim: alertmanager-kube-prometheus-stack-db-pvc
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true

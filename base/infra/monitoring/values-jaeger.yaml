@@ -1,0 +1,31 @@
+storage:
+  type: badger
+  badger:
+    ephemeral: false
+    persistence:
+      useExistingPvcName: "jaeger-data-pvc"
+
+# Disable other components as we are using allInOne
+collector:
+  enabled: false
+query:
+  enabled: false
+agent:
+  enabled: false
+ingester:
+  enabled: false
+schema:
+  enabled: false
+
+strategy: allInOne
+
+allInOne:
+  options:
+    log-level: info
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"

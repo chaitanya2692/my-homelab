@@ -14,32 +14,44 @@ spec:
     metadata:
       labels:
         run: redis
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9121"
     spec:
       containers:
         - name: redis
-          image: redis:7.4
+          image: redis:alpine
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
-          readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - redis-cli ping | grep PONG
-            initialDelaySeconds: 5
-            periodSeconds: 10
+              name: redis
           volumeMounts:
             - name: nextcloud-data
-              subPath: redis
               mountPath: /data
+              subPath: nextcloud/redis
           resources:
             requests:
               memory: "256Mi"
-              cpu: "100m"
+              cpu: "250m"
             limits:
               memory: "512Mi"
               cpu: "500m"
+        - name: redis-exporter
+          image: oliver006/redis_exporter:latest
+          env:
+            - name: REDIS_ADDR
+              value: "redis://localhost:6379"
+          ports:
+            - containerPort: 9121
+              name: metrics
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
       volumes:
         - name: nextcloud-data
           persistentVolumeClaim:
-            claimName: nextcloud-pvc
+            claimName: nextcloud-data-pvc
