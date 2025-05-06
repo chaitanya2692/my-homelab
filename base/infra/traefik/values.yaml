@@ -8,14 +8,16 @@ globalArguments:
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
 
-# Log level moved here from additionalArguments
 logs:
   general:
-    level: "INFO" # Set log level here
+    level: "INFO"
 
 metrics:
   prometheus:
     entryPoint: metrics
+    # serviceMonitor:
+    #   enabled: true
+    #   namespace: infra
 
 ingressClass:
   enabled: true
@@ -25,10 +27,10 @@ deployment:
   enabled: true
   kind: Deployment
   replicas: 1
-  podAnnotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "8082"
-    prometheus.io/path: "/metrics"
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "8082"
+  #   prometheus.io/path: "/metrics"
 
 ports:
   web:
@@ -75,8 +77,3 @@ persistence:
 env:
   - name: TZ
     value: "CET"
-
-tracing:
-  jaeger:
-    collector:
-      endpoint: "jaeger-collector.infra.svc.cluster.local:14268/api/traces?format=jaeger.thrift"

@@ -10,17 +10,28 @@ helmCharts:
     releaseName: kube-prometheus-stack
     namespace: infra
     valuesFile: values-kube-prometheus-stack.yaml
+    includeCRDs: true
 
   - name: loki
     repo: https://grafana.github.io/helm-charts
-    version: 7.1.0
+    version: 6.29.0
     releaseName: loki
     namespace: infra
+    includeCRDs: true
     valuesFile: values-loki.yaml
+
+  - name: promtail
+    repo: https://grafana.github.io/helm-charts
+    version: 6.16.6
+    releaseName: promtail
+    namespace: infra
+    includeCRDs: true
+    valuesFile: values-promtail.yaml
 
   - name: jaeger
     repo: https://jaegertracing.github.io/helm-charts
     version: 3.4.1
     releaseName: jaeger
     namespace: infra
+    includeCRDs: true
     valuesFile: values-jaeger.yaml

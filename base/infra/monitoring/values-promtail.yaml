@@ -1,0 +1,7 @@
+---
+config:
+  clients:
+    - url: http://loki.infra.svc.cluster.local:3100/loki/api/v1/push
+
+serviceMonitor:
+  enabled: true
