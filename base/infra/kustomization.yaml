@@ -9,7 +9,6 @@ resources:
   - metallb
   - traefik
   - local-path-provisioner
-  - jaeger
-  - ingress-route.yaml
   - monitoring
+  - ingress-route.yaml
   - persistent-volume-claim.yaml

@@ -1,26 +1,27 @@
 storage:
   type: badger
   badger:
+    ephemeral: false
     persistence:
-      enabled: true
-      existingClaim: jaeger-data-pvc
+      useExistingPvcName: "jaeger-data-pvc"
 
+# Disable other components as we are using allInOne
 collector:
-  enabled: true
-  service:
-    type: ClusterIP
-
+  enabled: false
 query:
-  enabled: true
-  service:
-    type: ClusterIP
+  enabled: false
+agent:
+  enabled: false
+ingester:
+  enabled: false
+schema:
+  enabled: false
 
 strategy: allInOne
 
 allInOne:
   options:
     log-level: info
-    memory.max-traces: "100000"
   resources:
     requests:
       cpu: "250m"
@@ -28,8 +29,3 @@ allInOne:
     limits:
       cpu: "500m"
       memory: "512Mi"
-
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "16686"
-    prometheus.io/path: "/metrics"

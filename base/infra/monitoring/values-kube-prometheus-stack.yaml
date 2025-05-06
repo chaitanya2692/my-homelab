@@ -1,3 +1,4 @@
+---
 grafana:
   enabled: true
   defaultDashboardsEnabled: true
@@ -25,13 +26,7 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     retention: 15d
     storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: local-path-infra
-          accessModes: ["ReadWriteOnce"]
-          resources:
-            requests:
-              storage: 20Gi
+      existingClaim: prometheus-kube-prometheus-stack-db-pvc
   resources:
     requests:
       cpu: "500m"
@@ -39,8 +34,15 @@ prometheus:
     limits:
       cpu: "1"
       memory: "1024Mi"
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    storage:
+      existingClaim: alertmanager-kube-prometheus-stack-db-pvc
+
 nodeExporter:
-  enabled: true # Keep enabled
+  enabled: true
 
 kubeStateMetrics:
-  enabled: true # Keep enabled
+  enabled: true

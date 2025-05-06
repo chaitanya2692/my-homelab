@@ -1,31 +1,23 @@
-loki:
-  auth_enabled: false
+---
+deploymentMode: SingleBinary<->SimpleScalable
+
+singleBinary:
+  replicas: 1
   persistence:
     enabled: true
+    enableStatefulSetAutoDeletePVC: true
+    size: 4Gi
     existingClaim: loki-data-pvc
-  resources:
-    requests:
-      cpu: "250m"
-      memory: "256Mi"
-    limits:
-      cpu: "500m"
-      memory: "512Mi"
 
-promtail:
+loki:
+  auth_enabled: false
+  storage:
+    type: filesystem
+    filesystem: {}
+  commonConfig:
+    path_prefix: /opt/cluster/infra/loki
+    replication_factor: 1
+  useTestSchema: true
+
+serviceMonitor:
   enabled: true
-  extraScrapeConfigs: |
-    - job_name: kubernetes-pods
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_namespace]
-        target_label: namespace
-      - source_labels: [__meta_kubernetes_pod_label_app]
-        target_label: app
-      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-        action: keep
-        regex: "true"
-
-gateway:
-  ingress:
-    enabled: false
