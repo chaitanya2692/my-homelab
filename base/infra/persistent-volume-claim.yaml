@@ -56,7 +56,7 @@ spec:
     - ReadWriteOnce # Loki components might run as StatefulSet/Deployment needing RWO
   resources:
     requests: # Adjust based on log volume and retention
-      storage: 30Gi
+      storage: 4Gi
 ---
 # PVC for Jaeger Storage (Only if using persistent storage like Badger)
 apiVersion: v1
@@ -71,3 +71,31 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+# PVC for Promtail Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: promtail-positions-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# PVC for Traefik Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

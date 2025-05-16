@@ -8,6 +8,13 @@ singleBinary:
     enableStatefulSetAutoDeletePVC: true
     size: 4Gi
     existingClaim: loki-data-pvc
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 200m
+      memory: 2Gi
 
 loki:
   auth_enabled: false
