@@ -44,19 +44,7 @@ spec:
       storage: 5Gi # For dashboards, plugins, internal DB
 
 ---
-# PVC for Loki Storage
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: loki-data-pvc
-  namespace: infra
-spec:
-  storageClassName: local-path-infra
-  accessModes:
-    - ReadWriteOnce # Loki components might run as StatefulSet/Deployment needing RWO
-  resources:
-    requests: # Adjust based on log volume and retention
-      storage: 4Gi
+
 ---
 # PVC for Jaeger Storage (Only if using persistent storage like Badger)
 apiVersion: v1

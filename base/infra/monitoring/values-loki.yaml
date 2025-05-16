@@ -5,16 +5,41 @@ singleBinary:
   replicas: 1
   persistence:
     enabled: true
-    enableStatefulSetAutoDeletePVC: true
     size: 4Gi
-    existingClaim: loki-data-pvc
+    storageClass: local-path-infra
   resources:
     requests:
       cpu: 100m
-      memory: 512Mi
+      memory: 256Mi
     limits:
       cpu: 200m
-      memory: 2Gi
+      memory: 512Mi
+
+memcached:
+  chunks:
+    enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+  results:
+    enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+  index:
+    enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
 
 loki:
   auth_enabled: false
