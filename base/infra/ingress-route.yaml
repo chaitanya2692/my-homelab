@@ -18,12 +18,12 @@ spec:
     - match: Host(`grafana.my-homelab.party`)
       kind: Rule
       services:
-        - name: grafana
+        - name: kube-prometheus-stack-grafana
           port: 80
     - match: Host(`jaeger.my-homelab.party`)
       kind: Rule
       services:
-        - name: jaeger
+        - name: jaeger-query
           port: 16686
     - match: Host(`prometheus.my-homelab.party`)
       kind: Rule
@@ -44,5 +44,5 @@ spec:
       middlewares:
         - name: homelab-auth
       services:
-        - name: node-exporter
+        - name: kube-prometheus-stack-prometheus-node-exporter
           port: 9100

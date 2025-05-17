@@ -21,11 +21,12 @@ spec:
     spec:
       initContainers:
         - name: init-jellyfin-config
-          image: alpine/xmlstarlet:latest
+          image: alpine:latest
           command: ["sh", "-c"]
           args:
             - |
-              CONFIG_FILE="/config/config/system.xml"
+              apk add --no-cache xmlstarlet
+              CONFIG_FILE="/config/system.xml"
               if [ -f "$CONFIG_FILE" ]; then
                 # Ensure EnableMetrics exists and is true
                 if xmlstarlet sel -t -c "boolean(/ServerConfiguration/EnableMetrics)" "$CONFIG_FILE"; then
@@ -36,7 +37,7 @@ spec:
               fi
           volumeMounts:
             - name: arr-stack-storage
-              mountPath: /config-init
+              mountPath: /config
               subPath: jellyfin/config
       containers:
         - name: jellyfin
@@ -64,11 +65,11 @@ spec:
               subPath: data/media
           resources:
             requests:
-              memory: "1Gi"
-              cpu: "500m"
+              memory: "256Mi"
+              cpu: "150m"
             limits:
-              memory: "4Gi"
-              cpu: "2000m"
+              memory: "768Mi"
+              cpu: "500m"
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:

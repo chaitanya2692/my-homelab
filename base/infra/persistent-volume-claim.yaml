@@ -1,39 +1,9 @@
 ---
-# PVC for Prometheus Data (kube-prometheus-stack)
+# PVC for Grafana Data
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: prometheus-kube-prometheus-stack-db-pvc # Match expected name pattern or configure in values
-  namespace: infra
-spec:
-  storageClassName: local-path-infra
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests: # Adjust size based on retention and scrape frequency
-      storage: 20Gi
-
----
-# PVC for Alertmanager Data (kube-prometheus-stack)
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: alertmanager-kube-prometheus-stack-db-pvc # Match expected name pattern or configure in values
-  namespace: infra
-spec:
-  storageClassName: local-path-infra
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi # Usually smaller than Prometheus
-
----
-# PVC for Grafana Data (kube-prometheus-stack)
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: grafana-kube-prometheus-stack-pvc # Match expected name pattern or configure in values
+  name: grafana-data-pvc
   namespace: infra
 spec:
   storageClassName: local-path-infra
@@ -42,8 +12,6 @@ spec:
   resources:
     requests:
       storage: 5Gi # For dashboards, plugins, internal DB
-
----
 
 ---
 # PVC for Jaeger Storage (Only if using persistent storage like Badger)
@@ -73,17 +41,3 @@ spec:
   resources:
     requests:
       storage: 1Gi
----
-# PVC for Traefik Storage
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: traefik-data-pvc
-  namespace: infra
-spec:
-  storageClassName: local-path-infra
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi

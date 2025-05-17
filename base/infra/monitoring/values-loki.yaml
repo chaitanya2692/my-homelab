@@ -1,55 +1,43 @@
 ---
-deploymentMode: SingleBinary<->SimpleScalable
+namespaceOverride: "infra"
+
+deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
   persistence:
-    enabled: true
     size: 4Gi
     storageClass: local-path-infra
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: "100m"
+      memory: "200Mi"
     limits:
-      cpu: 200m
-      memory: 512Mi
+      cpu: "300m"
+      memory: "700Mi"
 
-memcached:
-  chunks:
-    enabled: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
-  results:
-    enabled: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
-  index:
-    enabled: true
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-      limits:
-        memory: 512Mi
+# Explicitly disable SimpleScalable components when in SingleBinary mode
+write:
+  replicas: 0
+read:
+  replicas: 0
+backend:
+  replicas: 0
 
 loki:
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
   auth_enabled: false
   storage:
     type: filesystem
-    filesystem: {}
   commonConfig:
-    path_prefix: /opt/cluster/infra/loki
     replication_factor: 1
   useTestSchema: true
 
-serviceMonitor:
-  enabled: true
+monitoring:
+  serviceMonitor:
+    enabled: true
