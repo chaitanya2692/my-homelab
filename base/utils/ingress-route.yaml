@@ -23,15 +23,15 @@ spec:
           name: nextcloud
           port: 80
     - kind: Rule
-      match: Host(`dashy.my-homelab.party`)
+      match: Host(`home.my-homelab.party`)
       middlewares:
         - name: homelab-auth
           namespace: infra
       priority: 0
       services:
         - kind: Service
-          name: dashy
-          port: 4000
+          name: homepage
+          port: 3000
     - kind: Rule
       match: Host(`recipes.my-homelab.party`)
       priority: 0

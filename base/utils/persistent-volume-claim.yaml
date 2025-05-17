@@ -1,19 +1,4 @@
 ---
-# PVC for Dashy configuration and data
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: dashy-data-pvc
-  namespace: utils
-spec:
-  storageClassName: local-path-utils
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-
----
 # PVC for Immich Media Library
 apiVersion: v1
 kind: PersistentVolumeClaim
