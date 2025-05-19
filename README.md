@@ -72,34 +72,42 @@ easy addition of new services while maintaining security and reliability.
 
 ## 🧩 Platform Services
 
-| Category | Service | Description | Status |
-|----------|---------|-------------|---------|
-| 🖥️ Core Platform | [k3s](https://k3s.io/) | Lightweight Kubernetes | ✅ |
-| | [ArgoCD](https://argoproj.github.io/cd/) | GitOps Deployment | ✅ |
-| | [Traefik](https://traefik.io/) | Ingress Controller | ✅ |
-| | [cert-manager](https://cert-manager.io/) | Certificate Management | ✅ |
-| | [MetalLB](https://metallb.universe.tf/) | Load Balancer | ✅ |
+### 🖥️ Core Platform
 
-| Category | Service | Description | Status |
-|----------|---------|-------------|---------|
-| 🔭 Observability | [Prometheus](https://prometheus.io/) | Metrics Collection | ✅ |
-| | [Grafana](https://grafana.com/) | Visualization | ✅ |
-| | [Loki](https://grafana.com/oss/loki/) | Log Aggregation | ✅ |
-| | [Jaeger](https://www.jaegertracing.io/) | Distributed Tracing | ✅ |
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://k3s.io/img/k3s-logo-light.svg" alt="k3s logo" height="40"> | [k3s](https://k3s.io/) | Lightweight Kubernetes |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/argo-cd.svg" alt="ArgoCD logo" height="40"> | [ArgoCD](https://argoproj.github.io/cd/) | GitOps Deployment |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/traefik.svg" alt="Traefik logo" height="40"> | [Traefik](https://traefik.io/) | Ingress Controller |
+| <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo.svg" alt="cert-manager logo" height="40"> | [cert-manager](https://cert-manager.io/) | Certificate Management |
+| <img src="https://raw.githubusercontent.com/metallb/metallb/main/website/static/images/logo/metallb-blue.svg" alt="MetalLB logo" height="40"> | [MetalLB](https://metallb.universe.tf/) | Load Balancer |
 
-| Category | Service | Description | Status |
-|----------|---------|-------------|---------|
-| ☁️ Personal Cloud | [Nextcloud](https://nextcloud.com/) | File Sync & Share | ✅ |
-| | [Homepage](https://gethomepage.dev/) | Service Dashboard | ✅ |
-| | [Immich](https://immich.app/) | Photo Management | ✅ |
-| | [Tandoor](https://tandoor.dev/) | Recipe Management | ✅ |
+### 🔭 Observability
 
-| Category | Service | Description | Status |
-|----------|---------|-------------|---------|
-| 🎬 Media Services | [Jellyfin](https://jellyfin.org/) | Media Streaming | ✅ |
-| | [Sonarr](https://sonarr.tv/) | TV Management | ✅ |
-| | [Radarr](https://radarr.video/) | Movie Management | ✅ |
-| | [Prowlarr](https://prowlarr.com/) | Index Management | ✅ |
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://prometheus.io/assets/prometheus_logo_grey.svg" alt="Prometheus logo" height="40"> | [Prometheus](https://prometheus.io/) | Metrics Collection |
+| <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana logo" height="40"> | [Grafana](https://grafana.com/) | Visualization |
+| <img src="https://grafana.com/static/img/logos/logo-loki.svg" alt="Loki logo" height="40"> | [Loki](https://grafana.com/oss/loki/) | Log Aggregation |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jaeger.svg" alt="Jaeger logo" height="40"> | [Jaeger](https://www.jaegertracing.io/) | Distributed Tracing |
+
+### ☁️ Personal Cloud
+
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/nextcloud.svg" alt="Nextcloud logo" width="40"> | [Nextcloud](https://nextcloud.com/) | File Sync & Share |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/homepage.png" alt="Homepage logo" height="40"> | [Homepage](https://gethomepage.dev/) | Service Dashboard |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/immich.svg" alt="Immich logo" height="40"> | [Immich](https://immich.app/) | Photo Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/tandoor-recipes.svg" alt="Tandoor logo" height="40"> | [Tandoor](https://tandoorrecipes.com/) | Recipe Management |
+
+### 🎬 Media Services
+
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jellyfin.svg" alt="Jellyfin logo" height="40"> | [Jellyfin](https://jellyfin.org/) | Media Streaming |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg" alt="Sonarr logo" height="40"> | [Sonarr](https://sonarr.tv/) | TV Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radarr.svg" alt="Radarr logo" height="40"> | [Radarr](https://radarr.video/) | Movie Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg" alt="Prowlarr logo" height="40"> | [Prowlarr](https://prowlarr.com/) | Index Management |
 
 ## 🏗️ Architecture and System Design
 
