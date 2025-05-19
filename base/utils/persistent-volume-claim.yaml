@@ -72,3 +72,18 @@ spec:
   resources:
     requests:
       storage: 31Gi
+
+---
+# PVC for Nextcloud redis data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-redis-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

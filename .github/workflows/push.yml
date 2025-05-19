@@ -1,6 +1,6 @@
 ---
 name: Pull Request CI
-on: [pull_request]  # yamllint disable-line rule:truthy
+on: [pull_request] # yamllint disable-line rule:truthy
 
 jobs:
   yaml-lint:
@@ -20,7 +20,8 @@ jobs:
         uses: DavidAnson/markdownlint-cli2-action@v16
         with:
           fix: true
-          globs: '**/*.md'
+          globs: "**/*.md"
+          config: .markdownlint.yaml
 
   validate:
     runs-on: ubuntu-latest

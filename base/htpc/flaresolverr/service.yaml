@@ -10,5 +10,9 @@ spec:
       protocol: TCP
       targetPort: 8191
       name: webui
+    - port: 8192
+      protocol: TCP
+      targetPort: 8192
+      name: metrics
   selector:
     run: flaresolverr
