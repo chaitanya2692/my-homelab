@@ -1,0 +1,88 @@
+server:
+  ha:
+    enabled: true
+    replicas: 3
+    raft:
+      enabled: true
+      setNodeId: true
+      config: |
+        ui = true
+        listener "tcp" {
+          tls_disable = 0
+          address = "[::]:8200"
+          cluster_address = "[::]:8201"
+          tls_cert_file = "/vault/userconfig/tls/tls.crt"
+          tls_key_file = "/vault/userconfig/tls/tls.key"
+        }
+        storage "raft" {
+          path = "/vault/data"
+          node_id = "${POD_NAME}"
+        }
+        service_registration "kubernetes" {}
+
+  dataStorage:
+    enabled: true
+    size: 10Gi
+    storageClass: local-path-infra
+
+  standalone:
+    enabled: false
+
+  service:
+    enabled: true
+
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/tls-ca/ca.crt
+    VAULT_ADDR: https://127.0.0.1:8200
+    VAULT_API_ADDR: https://vault.home.arpa
+    VAULT_CLUSTER_ADDR: https://$(POD_NAME).vault-internal:8201
+    SKIP_CHOWN: true
+    SKIP_SETCAP: true
+
+  extraVolumes:
+    - type: secret
+      name: vault-tls
+      path: /vault/userconfig/tls
+    - type: secret
+      name: vault-tls-ca
+      path: /vault/userconfig/tls-ca
+
+  auditStorage:
+    enabled: true
+    size: 5Gi
+    storageClass: local-path-infra
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+ui:
+  enabled: true
+  serviceType: ClusterIP
+  externalPort: 8200
+
+injector:
+  enabled: true
+  metrics:
+    enabled: true
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+
+csi:
+  enabled: true
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 250m

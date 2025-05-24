@@ -46,3 +46,18 @@ spec:
       services:
         - name: kube-prometheus-stack-prometheus-node-exporter
           port: 9100
+    - match: Host(`authentik.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: authentik-server
+          port: 9000
+    - match: Host(`vault.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: vault
+          port: 8200
+    - match: Host(`netbird.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: netbird-mgmt
+          port: 443

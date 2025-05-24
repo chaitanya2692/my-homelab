@@ -10,5 +10,11 @@ resources:
   - traefik
   - local-path-provisioner
   - monitoring
+  - authentik
+  - vault
+  - netbird
   - ingress-route.yaml
   - persistent-volume-claim.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: infrastructure

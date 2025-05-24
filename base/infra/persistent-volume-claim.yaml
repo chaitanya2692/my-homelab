@@ -41,3 +41,63 @@ spec:
   resources:
     requests:
       storage: 1Gi
+
+---
+# PVC for Authentik Media
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authentik-media-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# PVC for Authentik Redis
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: authentik-redis-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PVC for Vault Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# PVC for NetBird Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netbird-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

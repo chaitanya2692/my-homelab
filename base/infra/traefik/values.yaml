@@ -5,9 +5,6 @@ globalArguments:
   - "--global.sendanonymoususage=false"
   - "--global.checknewversion=false"
 
-additionalArguments:
-  - "--serversTransport.insecureSkipVerify=true"
-
 logs:
   general:
     level: "INFO"
