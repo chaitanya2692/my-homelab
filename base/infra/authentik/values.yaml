@@ -1,0 +1,39 @@
+global:
+  storageClass: local-path-infra
+
+authentik:
+  secret_key: "change-me-in-production" # Replace with a strong, unique secret key
+  error_reporting:
+    enabled: false
+  log_level: info
+  outposts:
+    docker_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+
+server:
+  replicas: 1
+  port: 9000
+
+postgresql:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: local-path-infra
+    size: 10Gi
+  auth:
+    database: authentik
+    username: authentik
+    password: "change-me-in-production" # Replace with a strong, unique password
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      storageClass: local-path-infra
+      size: 5Gi
+      # If you wish to use the pre-defined PVC, add:
+      # existingClaim: authentik-redis-pvc
+      # and remove size and storageClass definitions if they exist.

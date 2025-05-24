@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netbird-config
+  namespace: infra
+data:
+  config.json: |
+    {
+      "server": {
+        "proto": "https",
+        "port": 443,
+        "dashboard_port": 80,
+        "log_file": "",
+        "metrics_addr": ":8080",
+        "disable_anonymous_metrics": true,
+        "auth": {
+          "oauth": {
+            "client_id": "netbird",
+            "client_secret": "to-be-replaced",
+            "provider_url": "https://auth.home.arpa"
+          }
+        },
+        "dns_config": {
+          "upstream_servers": [
+            "8.8.8.8:53",
+            "1.1.1.1:53"
+          ]
+        }
+      }
+    }

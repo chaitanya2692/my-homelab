@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netbird
+  namespace: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbird
+  template:
+    metadata:
+      labels:
+        app: netbird
+    spec:
+      containers:
+        - name: management
+          image: netbirdio/management:latest
+          ports:
+            - containerPort: 443
+            - containerPort: 80
+          volumeMounts:
+            - name: config
+              mountPath: /etc/netbird
+            - name: data
+              mountPath: /var/lib/netbird
+          env:
+            - name: NETBIRD_CONFIG_PATH
+              value: "/etc/netbird/config.json"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+        - name: signal
+          image: netbirdio/signal:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: NETBIRD_SIGNAL_PORT
+              value: "80"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+        - name: coturn
+          image: netbirdio/coturn:latest
+          ports:
+            - containerPort: 3478
+              protocol: UDP
+            - containerPort: 3478
+              protocol: TCP
+          env:
+            - name: NETBIRD_TURN_PORT
+              value: "3478"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: netbird-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: netbird-data-pvc

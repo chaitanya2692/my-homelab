@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: infra
+
+helmCharts:
+  - name: hashicorp
+    repo: https://helm.releases.hashicorp.com
+    version: 0.30.0
+    releaseName: hashicorp
+    includeCRDs: true
+    valuesFile: values.yaml
