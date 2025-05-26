@@ -28,11 +28,11 @@ spec:
     requests:
       storage: 10Gi
 ---
-# PVC for Promtail Storage
+# PVC for Traefik Storage
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: promtail-positions-pvc
+  name: traefik-data-pvc
   namespace: infra
 spec:
   storageClassName: local-path-infra

@@ -1,0 +1,112 @@
+namespaceOverride: "infra" # Ensures Alloy is deployed in the 'infra' namespace.
+
+alloy:
+  configMap:
+    content: |
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.kubernetes.pods_discovered.targets
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.source.kubernetes_events "example" {
+        // Only watch for events in the kube-system namespace.
+        namespaces = ["kube-system", "default", "infra", "htpc", "utils"]
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki.infra.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+      // Step 1: Discover Kubernetes pods
+      discovery.kubernetes "pods_discovered" {
+        role = "pod"
+      }
+
+      // Step 2: Relabel the discovered targets using discovery.relabel
+      discovery.relabel "pods_relabeled" {
+        targets = discovery.kubernetes.pods_discovered.targets // Input from the discovery step
+
+        // Relabeling rules to prepare targets for scraping
+        // Each relabel_config is now a 'rule' block
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+          target_label  = "__metrics_path__"
+          regex         = "(.+)" // Default regex is "(.*)" so this is fine
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+          target_label  = "__address__"
+          regex         = "([^:]+)(?::\\d+)?;(\\d+)" // Ensure this regex correctly captures your intent
+          replacement   = "$1:$2"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "kubernetes_namespace"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "kubernetes_pod_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          target_label  = "app_kubernetes_io_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance"]
+          target_label  = "app_kubernetes_io_instance"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_run"]
+          target_label  = "run"
+          action        = "replace"
+        }
+      }
+
+      // Step 3: Scrape the (now relabeled) targets
+      prometheus.scrape "kubernetes_pods" {
+        targets    = discovery.relabel.pods_relabeled.output // Targets come from the discovery.relabel component
+        forward_to = [prometheus.remote_write.main.receiver]
+        job_name   = "kubernetes-pods"
+        // No relabel_config blocks are needed here as targets are pre-relabeled
+      }
+
+      prometheus.remote_write "main" {
+        endpoint {
+          url = "http://kube-prometheus-stack-prometheus.infra.svc.cluster.local:9090/api/v1/write"
+        }
+      }
+  enableReporting: false # Recommended to disable for privacy in homelabs.
+  resources: # Key: Resource requests and limits for the Alloy container. Adjusted for a homelab environment.
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+service:
+  nodePort: null

@@ -25,6 +25,8 @@ prometheus:
   enabled: true
   prometheusSpec:
     retention: 7d
+    enableFeatures:
+      - remote-write-receiver
     resources:
       requests:
         cpu: "150m"

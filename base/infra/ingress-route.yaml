@@ -46,3 +46,8 @@ spec:
       services:
         - name: kube-prometheus-stack-prometheus-node-exporter
           port: 9100
+    - match: Host(`loki.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: loki
+          port: 3100

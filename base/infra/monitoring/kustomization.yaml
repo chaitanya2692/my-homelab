@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: infra
 
+resources:
+  - loki-service-monitor.yaml
+
 helmCharts:
   - name: kube-prometheus-stack
     repo: https://prometheus-community.github.io/helm-charts
@@ -14,19 +17,19 @@ helmCharts:
 
   - name: loki
     repo: https://grafana.github.io/helm-charts
-    version: 6.29.0
+    version: 6.30.0
     releaseName: loki
     namespace: infra
     includeCRDs: true
     valuesFile: values-loki.yaml
 
-  - name: promtail
+  - name: alloy
     repo: https://grafana.github.io/helm-charts
-    version: 6.16.6
-    releaseName: promtail
+    version: 1.0.3
+    releaseName: alloy
     namespace: infra
     includeCRDs: true
-    valuesFile: values-promtail.yaml
+    valuesFile: values-alloy.yaml
 
   - name: jaeger
     repo: https://jaegertracing.github.io/helm-charts
