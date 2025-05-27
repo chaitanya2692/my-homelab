@@ -13,11 +13,31 @@ logs:
     level: "INFO"
 
 metrics:
+  addInternals: true
   prometheus:
     entryPoint: metrics
-    # serviceMonitor:
-    #   enabled: true
-    #   namespace: infra
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    service:
+      enabled: true
+    disableAPICheck: true
+    serviceMonitor:
+      enabled: true
+      namespace: infra
+      additionalLabels:
+        release: kube-prometheus-stack
+
+tracing:
+  serviceName: "traefik"
+  addInternals: true
+  sampleRate: 1.0
+  otlp:
+    enabled: true
+    grpc:
+      enabled: true
+      endpoint: "jaeger-collector.infra.svc.cluster.local:4317"
+      insecure: true
 
 ingressClass:
   enabled: true
@@ -27,10 +47,6 @@ deployment:
   enabled: true
   kind: Deployment
   replicas: 1
-  # podAnnotations:
-  #   prometheus.io/scrape: "true"
-  #   prometheus.io/port: "8082"
-  #   prometheus.io/path: "/metrics"
 
 ports:
   web:
@@ -48,7 +64,7 @@ ports:
   metrics:
     port: 8082
     expose:
-      default: false
+      default: true
     protocol: TCP
     entryPoint: metrics
 

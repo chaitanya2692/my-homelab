@@ -70,6 +70,24 @@ data:
             description: Torrent Tracker Management
             icon: prowlarr
 
+    - Monitoring:
+        - Grafana:
+            href: https://grafana.my-homelab.party
+            description: Metrics Visualization
+            icon: grafana
+        - Prometheus:
+            href: https://prometheus.my-homelab.party
+            description: Metrics Collection
+            icon: prometheus
+        - Alertmanager:
+            href: https://alertmanager.my-homelab.party
+            description: Alert Management
+            icon: alertmanager
+        - Jaeger:
+            href: https://jaeger.my-homelab.party
+            description: Distributed Tracing
+            icon: jaeger
+
     - Infrastructure:
         - Traefik:
             href: https://traefik.my-homelab.party
