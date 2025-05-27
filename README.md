@@ -86,10 +86,11 @@ easy addition of new services while maintaining security and reliability.
 
 | Logo | Service | Description |
 |------|---------|-------------|
-| <img src="https://prometheus.io/assets/prometheus_logo_grey.svg" alt="Prometheus logo" height="40"> | [Prometheus](https://prometheus.io/) | Metrics Collection |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prometheus.svg" alt="Prometheus logo" height="40"> | [Prometheus](https://prometheus.io/) | Metrics Collection |
 | <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana logo" height="40"> | [Grafana](https://grafana.com/) | Visualization |
 | <img src="https://grafana.com/static/img/logos/logo-loki.svg" alt="Loki logo" height="40"> | [Loki](https://grafana.com/oss/loki/) | Log Aggregation |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jaeger.svg" alt="Jaeger logo" height="40"> | [Jaeger](https://www.jaegertracing.io/) | Distributed Tracing |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alloy.svg" alt="Grafana Alloy logo" height="40"> | [Alloy](https://www.jaegertracing.io/) | OpenTelemetry Collector |
 
 ### ☁️ Personal Cloud
 
@@ -170,7 +171,7 @@ Features:
 > Kubernetes-native integration, and robust feature set that allows for
 > both simple and complex routing scenarios.
 
-#### 🏗️ MetalLB (v0.14.9)
+#### 🛠️ MetalLB (v0.14.9)
 
 ```yaml
 Configuration:
@@ -219,11 +220,11 @@ The storage architecture is designed with the following principles:
 
 | Namespace | PVC | Size | Purpose | Design Considerations |
 |-----------|-----|------|---------|---------------------|
-| HTPC | htpc-pvc | Shared | Media & App Data | High throughput, large files |
-| Infra | grafana-data-pvc | 5GB | Dashboards | Fast random access |
+| htpc | htpc-pvc | Shared | Media & App Data | High throughput, large files |
+| infra | grafana-data-pvc | 5GB | Dashboards | Fast random access |
 | | jaeger-data-pvc | 10GB | Tracing | High write frequency |
 | | promtail-positions-pvc | 1GB | Logging | Sequential writes |
-| Utils | immich-library-pvc | 20GB | Photos/Videos | Mixed IO patterns |
+| utils | immich-library-pvc | 20GB | Photos/Videos | Mixed IO patterns |
 | | immich-redis-pvc | 5GB | Cache | In-memory performance |
 | | immich-ml-cache-pvc | 10GB | ML Models | Read-optimized |
 | | nextcloud-pvc | 31GB | Files | Mixed workload |
@@ -355,10 +356,6 @@ Structure:
     htpc/     # Media services
     infra/    # Infrastructure components
     utils/    # Utility services
-
-    # Shared resources
-    common/   # Common configurations
-    secrets/  # Secret definitions
 ```
 
 #### Environment Overlays
@@ -366,15 +363,15 @@ Structure:
 ```yaml
 Structure:
   overlays/:
-    staging/    # Development configurations
-      htpc/     # Media service overrides
-      infra/    # Infrastructure overrides
-      utils/    # Utility overrides
-
-    production/ # Production configurations
-      htpc/     # Production media settings
-      infra/    # Production infrastructure
-      utils/    # Production utility settings
+    argocd/     # ArgoCD specific configurations
+    environment/
+      staging-infra/     # Development infrastructure
+      staging-ingress/   # Development ingress
+      production-infra/  # Production infrastructure
+      production-ingress/# Production ingress
+    htpc/       # Media service overlays
+    infra/      # Infrastructure overlays
+    utils/      # Utility service overlays
 ```
 
 #### Configuration Principles
@@ -449,30 +446,29 @@ The continuous integration and deployment pipeline is designed for reliability a
 
 #### 🏠 Homepage
 
-- 📊 Dashboard Widgets
-- 📈 System Metrics
-- 🐳 Docker Integration
+- Dashboard Widgets
+- System Metrics
 
 #### 📸 Immich
 
-- 📱 Mobile Apps
-- 🤖 ML Features
-- 📍 Location Tracking
+- Mobile Apps
+- ML Features
+- Location Tracking
 
 #### 📝 Tandoor
 
-- 📚 Recipe Book
-- 🛒 Shopping Lists
-- 👥 Multi-user Support
+- Recipe Book
+- Shopping Lists
+- Multi-user Support
 
 ### 9. 🔄 GitOps with ArgoCD
 
 ```yaml
 Features:
-- 🔄 Auto-sync
-- 👀 Live View
-- 🚨 Drift Detection
-- 📊 Health Monitoring
+- Auto-sync
+- Live View
+- Drift Detection
+- Health Monitoring
 ```
 
 ### 10. 📊 Observability Architecture
@@ -492,7 +488,7 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 | Component | Role | Features |
 |-----------|------|----------|
 | Loki | Log Aggregation | - Label-based queries<br>- Log correlation<br>- Real-time tailing |
-| Promtail | Log Collection | - Service discovery<br>- Label extraction<br>- Pipeline processing |
+| Alloy | Log Collection | - Service discovery<br>- Label extraction<br>- Pipeline processing |
 
 #### Distributed Tracing
 
