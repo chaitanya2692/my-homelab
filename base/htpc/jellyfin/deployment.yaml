@@ -19,6 +19,9 @@ spec:
         prometheus.io/port: "8096"
         prometheus.io/path: "/metrics"
     spec:
+      securityContext:
+        supplementalGroups:
+          - 992
       initContainers:
         - name: init-jellyfin-config
           image: alpine:latest
@@ -46,6 +49,8 @@ spec:
           env:
             - name: TZ
               value: "CET"
+          securityContext:
+            privileged: true
           ports:
             - containerPort: 8096
               protocol: TCP
@@ -63,14 +68,19 @@ spec:
             - name: arr-stack-storage
               mountPath: /data/media
               subPath: data/media
+            - name: "render-device"
+              mountPath: "/dev/dri/renderD128"
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "150m"
-            limits:
-              memory: "768Mi"
+              memory: "500Mi"
               cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: "render-device"
+          hostPath:
+            path: "/dev/dri/renderD128"
