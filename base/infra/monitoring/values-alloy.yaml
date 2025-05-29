@@ -1,6 +1,17 @@
 namespaceOverride: "infra" # Ensures Alloy is deployed in the 'infra' namespace.
 
 alloy:
+  # Storage path for persistence
+  storagePath: /data/alloy
+
+  # Add mounts for persistent storage
+  mounts:
+    varlog: true
+    dockercontainers: true
+    extra:
+      - name: storage
+        mountPath: /data/alloy
+
   configMap:
     content: |
       logging {
@@ -99,14 +110,24 @@ alloy:
           url = "http://kube-prometheus-stack-prometheus.infra.svc.cluster.local:9090/api/v1/write"
         }
       }
-  enableReporting: false # Recommended to disable for privacy in homelabs.
-  resources: # Key: Resource requests and limits for the Alloy container. Adjusted for a homelab environment.
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
+
+# Controller configuration - using StatefulSet for persistence
+controller:
+  type: "statefulset"
+  replicas: 1
+
+  # Using existing PVC instead of volumeClaimTemplates
+  volumes:
+    extra:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: alloy-data-pvc
 
 service:
-  nodePort: null
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "12345"
+
+# We don't need ingress here as we're using IngressRoute CRD
+ingress:
+  enabled: false

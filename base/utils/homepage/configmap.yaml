@@ -25,6 +25,9 @@ data:
       Utilities:
         style: row
         columns: 2
+      Monitoring:
+        style: row
+        columns: 2
     theme: dark
     headerStyle: boxedWidgets
     quicklaunch:
@@ -87,6 +90,10 @@ data:
             href: https://jaeger.my-homelab.party
             description: Distributed Tracing
             icon: jaeger
+        - Alloy:
+            href: https://alloy.my-homelab.party
+            description: Observability Platform
+            icon: alloy
 
     - Infrastructure:
         - Traefik:

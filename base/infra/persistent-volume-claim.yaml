@@ -41,3 +41,17 @@ spec:
   resources:
     requests:
       storage: 1Gi
+---
+# PVC for Alloy Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alloy-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

@@ -34,6 +34,14 @@ prometheus:
       limits:
         cpu: "400m"
         memory: "768Mi"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path-infra
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
 
 alertmanager:
   enabled: true

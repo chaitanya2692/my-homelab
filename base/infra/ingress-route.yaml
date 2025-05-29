@@ -51,3 +51,8 @@ spec:
       services:
         - name: loki
           port: 3100
+    - match: Host(`alloy.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: alloy
+          port: 12345
