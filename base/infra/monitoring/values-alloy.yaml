@@ -131,3 +131,8 @@ service:
 # We don't need ingress here as we're using IngressRoute CRD
 ingress:
   enabled: false
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack

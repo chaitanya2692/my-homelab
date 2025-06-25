@@ -87,3 +87,21 @@ lokiCanary:
 memberlist:
   service:
     publishNotReadyAddresses: true
+
+chunksCache:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
+    limits:
+      cpu: "300m"
+      memory: "500Mi"
+
+resultsCache:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "200Mi"
+    limits:
+      cpu: "300m"
+      memory: "500Mi"

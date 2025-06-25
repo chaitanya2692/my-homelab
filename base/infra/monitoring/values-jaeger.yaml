@@ -35,8 +35,8 @@ allInOne:
   enabled: true
   resources:
     requests:
-      cpu: "50m"
+      cpu: "100m"
       memory: "256Mi"
     limits:
-      cpu: "200m"
-      memory: "512Mi"
+      cpu: "300m"
+      memory: "768Mi"
