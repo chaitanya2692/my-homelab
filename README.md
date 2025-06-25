@@ -49,7 +49,7 @@ easy addition of new services while maintaining security and reliability.
 
 - 📊 **Enterprise Monitoring**
   - Full observability stack
-  - Distributed tracing
+  - Tracing
   - Centralized logging
   - Performance analytics
 
@@ -365,10 +365,10 @@ Structure:
   overlays/:
     argocd/     # ArgoCD specific configurations
     environment/
-      staging-infra/     # Development infrastructure
-      staging-ingress/   # Development ingress
-      production-infra/  # Production infrastructure
-      production-ingress/# Production ingress
+      staging-infra/      # Development infrastructure
+      staging-ingress/    # Development ingress
+      production-infra/   # Production infrastructure
+      production-ingress/ # Production ingress
     htpc/       # Media service overlays
     infra/      # Infrastructure overlays
     utils/      # Utility service overlays
@@ -490,7 +490,7 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 | Loki | Log Aggregation | - Label-based queries<br>- Log correlation<br>- Real-time tailing |
 | Alloy | Log Collection | - Service discovery<br>- Label extraction<br>- Pipeline processing |
 
-#### Distributed Tracing
+#### Tracing
 
 | Component | Purpose | Capabilities |
 |-----------|---------|-------------|
@@ -532,12 +532,15 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 
 3. **Available Scripts**
 
-   | Script | Purpose |
-   |--------|---------|
-   | 🔧 bootstrap.sh | Initial Setup |
-   | ✅ validate.sh | Config Check |
-   | 🔄 deploy.sh | Deployment |
-   | 🗑️ nuke.sh | Cleanup |
+  | Script | Purpose |
+  |--------|---------|
+  | 🛠️ bootstrap.sh | Install essential libraries in a new Ubuntu VM |
+  | ✅ validate.sh | Config Check |
+  | 🚀 deploy.sh | Deployment |
+  | 💣 nuke.sh | Reset Cluster |
+  | ⚡ kickstart.sh | Install ArgoCD and deploy services |
+  | 🛠️ update-manifests.sh | Kustomize build Script |
+  | 🔐 encrypt-secrets.sh | Encode secrets in the repo |
 
 ## 👏 Credits
 
