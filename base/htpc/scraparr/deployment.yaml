@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scraparr
+  labels:
+    app: scraparr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraparr
+  template:
+    metadata:
+      labels:
+        app: scraparr
+    spec:
+      containers:
+        - name: scraparr
+          image: ghcr.io/thecfu/scraparr:2.2.2
+          ports:
+            - name: http
+              containerPort: 7100
+              protocol: TCP
+          env:
+            - name: SONARR_URL
+              value: http://sonarr:8989
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: SONARR_API_KEY
+            - name: RADARR_URL
+              value: http://radarr:7878
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: RADARR_API_KEY
+            - name: PROWLARR_URL
+              value: http://prowlarr.htpc.svc.cluster.local:9696
+            - name: PROWLARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: PROWLARR_API_KEY
+            - name: JELLYFIN_URL
+              value: http://jellyfin.htpc.svc.cluster.local:8096
+            - name: JELLYFIN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: JELLYFIN_API_KEY
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

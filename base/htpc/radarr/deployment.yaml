@@ -14,10 +14,6 @@ spec:
     metadata:
       labels:
         run: radarr
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "7878"
-        prometheus.io/path: "/radarr/metrics"
     spec:
       securityContext:
         fsGroup: 1000

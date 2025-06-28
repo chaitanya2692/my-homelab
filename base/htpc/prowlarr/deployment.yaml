@@ -14,10 +14,6 @@ spec:
     metadata:
       labels:
         run: prowlarr
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9696"
-        prometheus.io/path: "/prowlarr/metrics"
     spec:
       securityContext:
         fsGroup: 1000

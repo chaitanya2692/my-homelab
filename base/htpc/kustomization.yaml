@@ -11,6 +11,6 @@ resources:
   - radarr
   - sonarr
   - transmission
-  - exportarr
+  - scraparr
   - ingress-route.yaml
   - persistent-volume-claim.yaml

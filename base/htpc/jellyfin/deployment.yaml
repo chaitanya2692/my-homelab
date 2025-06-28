@@ -14,34 +14,10 @@ spec:
     metadata:
       labels:
         run: jellyfin
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8096"
-        prometheus.io/path: "/metrics"
     spec:
       securityContext:
         supplementalGroups:
           - 992
-      initContainers:
-        - name: init-jellyfin-config
-          image: alpine:latest
-          command: ["sh", "-c"]
-          args:
-            - |
-              apk add --no-cache xmlstarlet
-              CONFIG_FILE="/config/system.xml"
-              if [ -f "$CONFIG_FILE" ]; then
-                # Ensure EnableMetrics exists and is true
-                if xmlstarlet sel -t -c "boolean(/ServerConfiguration/EnableMetrics)" "$CONFIG_FILE"; then
-                  xmlstarlet ed --inplace -u "/ServerConfiguration/EnableMetrics" -v "true" "$CONFIG_FILE"
-                else
-                  xmlstarlet ed --inplace -s "/ServerConfiguration" -t elem -n "EnableMetrics" -v "true" "$CONFIG_FILE"
-                fi
-              fi
-          volumeMounts:
-            - name: arr-stack-storage
-              mountPath: /config
-              subPath: jellyfin/config
       containers:
         - name: jellyfin
           image: jellyfin/jellyfin:latest

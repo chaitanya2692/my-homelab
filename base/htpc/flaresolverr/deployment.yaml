@@ -15,10 +15,6 @@ spec:
     metadata:
       labels:
         run: flaresolverr
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8192"
-        prometheus.io/path: "/metrics"
     spec:
       securityContext:
         fsGroup: 1000
