@@ -45,12 +45,28 @@ alloy:
       discovery.relabel "pods_relabeled" {
         targets = discovery.kubernetes.pods_discovered.targets // Input from the discovery step
 
+        // Keep only pods with prometheus.io/scrape: true annotation
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+          action        = "keep"
+          regex         = "true"
+        }
+
         // Relabeling rules to prepare targets for scraping
-        // Each relabel_config is now a 'rule' block
+        // Set metrics path from annotation, default to /metrics if not set
         rule {
           source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
           target_label  = "__metrics_path__"
-          regex         = "(.+)" // Default regex is "(.*)" so this is fine
+          regex         = "(.+)"
+          replacement   = "$1"
+          action        = "replace"
+        }
+        // If the metrics path is empty, default to /metrics
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+          target_label  = "__metrics_path__"
+          regex         = "^$"
+          replacement   = "/metrics"
           action        = "replace"
         }
         rule {
