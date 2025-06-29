@@ -21,6 +21,13 @@ spec:
         - name: prowlarr
           image: linuxserver/prowlarr:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "200Mi"
           env:
             - name: TZ
               value: "CET"
@@ -31,13 +38,6 @@ spec:
           ports:
             - containerPort: 9696
               name: webui
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config

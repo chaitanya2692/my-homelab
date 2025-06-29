@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: loki
+  namespace: infra
+  labels:
+    release: kube-prometheus-stack
+    app.kubernetes.io/name: loki
+    app.kubernetes.io/instance: loki
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loki
+  namespaceSelector:
+    matchNames:
+      - infra
+  endpoints:
+    - port: http-metrics
+      interval: 15s
+      path: /metrics
+      relabelings:
+        - sourceLabels:
+            [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+          regex: single-binary
+          action: keep

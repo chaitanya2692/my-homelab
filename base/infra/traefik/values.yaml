@@ -1,5 +1,5 @@
 ---
-namespace: infra
+namespaceOverride: infra
 
 globalArguments:
   - "--global.sendanonymoususage=false"
@@ -7,18 +7,53 @@ globalArguments:
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--log.level=DEBUG"
+
+logs:
+  general:
+    level: "INFO"
+
+metrics:
+  addInternals: true
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    service:
+      enabled: true
+    disableAPICheck: true
+    serviceMonitor:
+      enabled: true
+      namespace: infra
+      additionalLabels:
+        release: kube-prometheus-stack
+
+tracing:
+  serviceName: "traefik"
+  addInternals: true
+  sampleRate: 1.0
+  otlp:
+    enabled: true
+    grpc:
+      enabled: true
+      endpoint: "jaeger-collector.infra.svc.cluster.local:4317"
+      insecure: true
+
+ingressClass:
+  enabled: true
+  isDefaultClass: true
 
 deployment:
   enabled: true
+  kind: Deployment
   replicas: 1
-  namespaceOverride: infra
 
 ports:
   web:
     redirections:
       entrypoint:
         to: websecure
+        scheme: https
         priority: 10
   websecure:
     http3:
@@ -26,6 +61,12 @@ ports:
     advertisedPort: 443
     tls:
       enabled: true
+  metrics:
+    port: 8082
+    expose:
+      default: true
+    protocol: TCP
+    entryPoint: metrics
 
 providers:
   kubernetesCRD:
@@ -44,6 +85,10 @@ service:
   type: LoadBalancer
   spec:
     loadBalancerIP: 192.168.1.245
+
+persistence:
+  enabled: true
+  existingClaim: traefik-data-pvc
 
 env:
   - name: TZ

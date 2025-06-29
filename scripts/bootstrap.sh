@@ -167,6 +167,12 @@ if ! grep -q "PATH=$PATH:/usr/local/bin" ~/.bashrc; then
     echo "export PATH=$PATH:/usr/local/bin" >> ~/.bashrc
 fi
 
+# Create and set up cluster storage directories
+echo "Creating cluster storage directories..."
+sudo mkdir -p /opt/cluster/{htpc,utils,infra}
+sudo chown -R $USER:$USER /opt/cluster
+sudo chmod -R 755 /opt/cluster
+
 # Source the updated .bashrc
 source ~/.bashrc
 

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scraparr
+  labels:
+    app: scraparr
+spec:
+  type: ClusterIP
+  ports:
+    - port: 7100
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: scraparr

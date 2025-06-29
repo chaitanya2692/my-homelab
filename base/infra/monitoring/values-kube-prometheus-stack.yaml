@@ -1,0 +1,75 @@
+---
+namespaceOverride: "infra"
+
+grafana:
+  enabled: true
+  defaultDashboardsEnabled: true
+  persistence:
+    enabled: true
+    existingClaim: grafana-data-pvc
+  deploymentStrategy:
+    type: RollingUpdate
+  readinessProbe:
+    httpGet:
+      path: /api/health
+      port: 3000
+  livenessProbe:
+    httpGet:
+      path: /api/health
+      port: 3000
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 10
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    retention: 7d
+    enableFeatures:
+      - remote-write-receiver
+    resources:
+      requests:
+        cpu: "150m"
+        memory: "256Mi"
+      limits:
+        cpu: "400m"
+        memory: "768Mi"
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-path-infra
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+
+prometheus-node-exporter:
+  enabled: true
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"

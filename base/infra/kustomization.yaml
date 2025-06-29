@@ -9,6 +9,6 @@ resources:
   - metallb
   - traefik
   - local-path-provisioner
+  - monitoring
   - ingress-route.yaml
-  # Add PVC back when in use
-  # - persistent-volume-claim.yaml
+  - persistent-volume-claim.yaml

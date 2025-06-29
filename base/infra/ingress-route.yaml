@@ -15,3 +15,44 @@ spec:
       services:
         - name: api@internal
           kind: TraefikService
+    - match: Host(`grafana.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: kube-prometheus-stack-grafana
+          port: 80
+    - match: Host(`jaeger.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: jaeger-query
+          port: 16686
+    - match: Host(`prometheus.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: homelab-auth
+      services:
+        - name: prometheus-operated
+          port: 9090
+    - match: Host(`alertmanager.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: homelab-auth
+      services:
+        - name: alertmanager-operated
+          port: 9093
+    - match: Host(`node-exporter.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: homelab-auth
+      services:
+        - name: kube-prometheus-stack-prometheus-node-exporter
+          port: 9100
+    - match: Host(`loki.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: loki
+          port: 3100
+    - match: Host(`alloy.my-homelab.party`)
+      kind: Rule
+      services:
+        - name: alloy
+          port: 12345

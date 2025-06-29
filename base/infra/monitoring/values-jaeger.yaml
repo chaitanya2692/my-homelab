@@ -1,0 +1,42 @@
+namespaceOverride: "infra"
+
+provisionDataStore:
+  cassandra: false
+  elasticsearch: false
+
+storage:
+  type: badger
+  badger:
+    ephemeral: false
+    persistence:
+      enabled: true
+      useExistingPvcName: "jaeger-data-pvc"
+      storageClassName: local-path-infra
+      size: 10Gi
+
+collector:
+  enabled: false
+query:
+  enabled: false
+agent:
+  enabled: false
+ingester:
+  enabled: false
+schema:
+  enabled: false
+spark:
+  enabled: false
+esIndexCleaner:
+  enabled: false
+esRollover:
+  enabled: false
+
+allInOne:
+  enabled: true
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "300m"
+      memory: "768Mi"

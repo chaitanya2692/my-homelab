@@ -1,0 +1,154 @@
+namespaceOverride: "infra" # Ensures Alloy is deployed in the 'infra' namespace.
+
+alloy:
+  # Storage path for persistence
+  storagePath: /data/alloy
+
+  # Add mounts for persistent storage
+  mounts:
+    varlog: true
+    dockercontainers: true
+    extra:
+      - name: storage
+        mountPath: /data/alloy
+
+  configMap:
+    content: |
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      loki.source.kubernetes "pods" {
+        targets    = discovery.kubernetes.pods_discovered.targets
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.source.kubernetes_events "example" {
+        // Only watch for events in the kube-system namespace.
+        namespaces = ["kube-system", "default", "infra", "htpc", "utils"]
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki.infra.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+      // Step 1: Discover Kubernetes pods
+      discovery.kubernetes "pods_discovered" {
+        role = "pod"
+      }
+
+      // Step 2: Relabel the discovered targets using discovery.relabel
+      discovery.relabel "pods_relabeled" {
+        targets = discovery.kubernetes.pods_discovered.targets // Input from the discovery step
+
+        // Keep only pods with prometheus.io/scrape: true annotation
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+          action        = "keep"
+          regex         = "true"
+        }
+
+        // Relabeling rules to prepare targets for scraping
+        // Set metrics path from annotation, default to /metrics if not set
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+          target_label  = "__metrics_path__"
+          regex         = "(.+)"
+          replacement   = "$1"
+          action        = "replace"
+        }
+        // If the metrics path is empty, default to /metrics
+        rule {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+          target_label  = "__metrics_path__"
+          regex         = "^$"
+          replacement   = "/metrics"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+          target_label  = "__address__"
+          regex         = "([^:]+)(?::\\d+)?;(\\d+)" // Ensure this regex correctly captures your intent
+          replacement   = "$1:$2"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "kubernetes_namespace"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "kubernetes_pod_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "app"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          target_label  = "app_kubernetes_io_name"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_instance"]
+          target_label  = "app_kubernetes_io_instance"
+          action        = "replace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_run"]
+          target_label  = "run"
+          action        = "replace"
+        }
+      }
+
+      // Step 3: Scrape the (now relabeled) targets
+      prometheus.scrape "kubernetes_pods" {
+        targets    = discovery.relabel.pods_relabeled.output // Targets come from the discovery.relabel component
+        forward_to = [prometheus.remote_write.main.receiver]
+        job_name   = "kubernetes-pods"
+        // No relabel_config blocks are needed here as targets are pre-relabeled
+      }
+
+      prometheus.remote_write "main" {
+        endpoint {
+          url = "http://kube-prometheus-stack-prometheus.infra.svc.cluster.local:9090/api/v1/write"
+        }
+      }
+
+# Controller configuration - using StatefulSet for persistence
+controller:
+  type: "statefulset"
+  replicas: 1
+
+  # Using existing PVC instead of volumeClaimTemplates
+  volumes:
+    extra:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: alloy-data-pvc
+
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "12345"
+
+# We don't need ingress here as we're using IngressRoute CRD
+ingress:
+  enabled: false
+
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: kube-prometheus-stack

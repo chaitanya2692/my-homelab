@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: infra
+
+resources:
+  - loki-service-monitor.yaml
+
+helmCharts:
+  - name: kube-prometheus-stack
+    repo: https://prometheus-community.github.io/helm-charts
+    version: 61.4.0
+    releaseName: kube-prometheus-stack
+    namespace: infra
+    valuesFile: values-kube-prometheus-stack.yaml
+    includeCRDs: true
+
+  - name: loki
+    repo: https://grafana.github.io/helm-charts
+    version: 6.30.0
+    releaseName: loki
+    namespace: infra
+    includeCRDs: true
+    valuesFile: values-loki.yaml
+
+  - name: alloy
+    repo: https://grafana.github.io/helm-charts
+    version: 1.0.3
+    releaseName: alloy
+    namespace: infra
+    includeCRDs: true
+    valuesFile: values-alloy.yaml
+
+  - name: jaeger
+    repo: https://jaegertracing.github.io/helm-charts
+    version: 3.4.1
+    releaseName: jaeger
+    namespace: infra
+    includeCRDs: true
+    valuesFile: values-jaeger.yaml

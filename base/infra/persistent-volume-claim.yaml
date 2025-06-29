@@ -1,8 +1,9 @@
 ---
+# PVC for Grafana Data
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: infra-pvc
+  name: grafana-data-pvc
   namespace: infra
 spec:
   storageClassName: local-path-infra
@@ -10,7 +11,47 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 50Gi
-  selector:
-    matchLabels:
-      type: infra
+      storage: 5Gi # For dashboards, plugins, internal DB
+
+---
+# PVC for Jaeger Storage (Only if using persistent storage like Badger)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jaeger-data-pvc # Adjust if needed based on Jaeger chart values
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# PVC for Traefik Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# PVC for Alloy Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alloy-data-pvc
+  namespace: infra
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

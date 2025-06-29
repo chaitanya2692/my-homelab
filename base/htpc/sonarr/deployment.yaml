@@ -1,5 +1,4 @@
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,14 +20,24 @@ spec:
       initContainers:
         - name: check-config-dir
           image: busybox
-          command: ['sh', '-c', 'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/sonarr</UrlBase></Config>" > /config/config.xml']
+          command:
+            [
+              "sh",
+              "-c",
+              'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/sonarr</UrlBase></Config>" > /config/config.xml',
+            ]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
               subPath: sonarr
         - name: fix-permissions
           image: busybox
-          command: ["sh", "-c", "mkdir -p /data/media/tv /data/torrents/tv-sonarr && chown -R 1000:1000 /data"]
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /data/media/tv /data/torrents/tv-sonarr && chown -R 1000:1000 /data",
+            ]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /data
@@ -46,11 +55,11 @@ spec:
               value: "1000"
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "150Mi"
+              cpu: "75m"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "300Mi"
+              cpu: "300m"
           ports:
             - containerPort: 8989
               name: webui
