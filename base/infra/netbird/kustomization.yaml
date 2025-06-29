@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: infra
 
 helmCharts:
-  - name: netbird-operator
-    repo: https://netbirdio.github.io/helm-charts
-    version: 0.1.0 # Update to latest if needed
-    releaseName: netbird-operator
+  - name: kubernetes-operator
+    repo: https://netbirdio.github.io/kubernetes-operator
+    version: 0.1.10
+    releaseName: kubernetes-operator
     valuesFile: values.yaml

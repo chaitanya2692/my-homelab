@@ -192,4 +192,6 @@ cluster:
   name: kubernetes
 
 netbirdAPI:
-  keyFromSecret: "netbird-api-key"
+  keyFromSecret:
+  name: "netbird-api-key"
+  key: "key"
