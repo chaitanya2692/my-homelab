@@ -37,4 +37,4 @@ find . -type f -name ${KUSTOMIZE_CONFIG} -print0 | while IFS= read -r -d $'\0' f
 done
 
 # Code cleanup
-find "$PWD" -maxdepth 3 -type d -name 'charts' -exec rm -rf {} \;
+find "$PWD" -maxdepth 4 -type d -name 'charts' -exec rm -rf {} \;
