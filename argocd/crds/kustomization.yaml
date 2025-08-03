@@ -8,7 +8,7 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.0.12/manifests/crds/applicationset-crd.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.0.12/manifests/crds/appproject-crd.yaml
   # cert-manager CRDs
-  - https://github.com/jetstack/cert-manager/releases/download/v1.17.1/cert-manager.crds.yaml
+  - https://github.com/jetstack/cert-manager/releases/download/v1.18.2/cert-manager.crds.yaml
   # Traefik CRDs
   - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v34.4.1/traefik-crds/crds-files/traefik/traefik.io_ingressroutes.yaml
   - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v34.4.1/traefik-crds/crds-files/traefik/traefik.io_ingressroutetcps.yaml
