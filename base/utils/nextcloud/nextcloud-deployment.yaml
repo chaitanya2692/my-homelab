@@ -19,7 +19,7 @@ spec:
         fsGroup: 33
       initContainers:
         - name: set-perms-and-copy-config
-          image: busybox:1.36.1
+          image: busybox:1.37.0
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -39,7 +39,7 @@ spec:
               mountPath: /config-src
               readOnly: true
         - name: wait-for-db
-          image: busybox:1.36.1
+          image: busybox:1.37.0
           command:
             - /bin/sh
             - -c
