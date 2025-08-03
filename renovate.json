@@ -71,12 +71,5 @@
     "managerFilePatterns": [
       "/(^|/)kustomization\\.ya?ml$/"
     ]
-  },
-  "gitignore": [
-    ".secrets/",
-    "*.log",
-    "install.yaml",
-    "crds.yaml",
-    "non-crds.yaml"
-  ]
+  }
 }
