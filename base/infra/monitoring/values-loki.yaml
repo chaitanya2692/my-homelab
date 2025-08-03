@@ -55,7 +55,7 @@ loki:
     timeoutSeconds: 1
   image:
     repository: grafana/loki
-    tag: "3.4.0"
+    tag: "3.5.3"
   auth_enabled: false
   storage:
     type: filesystem
