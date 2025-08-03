@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: transmission
-          image: linuxserver/transmission:latest
+          image: linuxserver/transmission:4.0.6
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
