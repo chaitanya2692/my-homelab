@@ -23,6 +23,18 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Update Docker images in Kubernetes YAML manifests",
+      "managerFilePatterns": [
+        "/(^|/).*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "(?<indentation>\\s*)image:\\s*[\"']?(?<depName>[^:\\s\"']+):(?<currentValue>[^\\s\"']+)[\"']?\\s*(?:#.*)?$"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    },
+    {
+      "customType": "regex",
       "description": "Update GitHub release URLs in scripts",
       "managerFilePatterns": [
         "/(^|/).*\\.sh$/"
