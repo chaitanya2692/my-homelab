@@ -1,6 +1,82 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:recommended",
+    ":enablePreCommit",
+    ":pinVersions",
+    ":rebaseStalePrs"
+  ],
+  "timezone": "Europe/Berlin",
+  "labels": [
+    "dependencies",
+    "automated"
+  ],
+  "hostRules": [
+    {
+      "matchHost": "ghcr.io",
+      "timeout": 60000
+    },
+    {
+      "matchHost": "docker.io",
+      "timeout": 60000
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update GitHub release URLs in scripts",
+      "managerFilePatterns": [
+        "/(^|/).*\\.sh$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Update CRD URLs with GitHub tags",
+      "managerFilePatterns": [
+        "/(^|/).*kustomization\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/(?<depName>[^/]+/[^/]+)/refs/tags/(?<currentValue>[^/]+)/"
+      ],
+      "datasourceTemplate": "github-tags"
+    },
+    {
+      "customType": "regex",
+      "description": "Update cert-manager CRD URLs",
+      "managerFilePatterns": [
+        "/(^|/).*kustomization\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "https://github\\.com/jetstack/cert-manager/releases/download/(?<currentValue>v[0-9.]+)/cert-manager\\.crds\\.yaml"
+      ],
+      "depNameTemplate": "jetstack/cert-manager",
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "kubernetes": {
+    "managerFilePatterns": [
+      "/(^|/).*\\.ya?ml$/"
+    ]
+  },
+  "helm-values": {
+    "managerFilePatterns": [
+      "/(^|/)values.*\\.ya?ml$/"
+    ]
+  },
+  "kustomize": {
+    "managerFilePatterns": [
+      "/(^|/)kustomization\\.ya?ml$/"
+    ]
+  },
+  "gitignore": [
+    ".secrets/",
+    "*.log",
+    "install.yaml",
+    "crds.yaml",
+    "non-crds.yaml"
   ]
 }
