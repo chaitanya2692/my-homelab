@@ -44,7 +44,7 @@ spec:
               subPath: data
       containers:
         - name: radarr
-          image: linuxserver/radarr:v5.26.2.10099
+          image: linuxserver/radarr:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ

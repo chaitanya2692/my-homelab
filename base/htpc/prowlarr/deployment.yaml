@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: prowlarr
-          image: linuxserver/prowlarr:v1.37.0.5076
+          image: linuxserver/prowlarr:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:

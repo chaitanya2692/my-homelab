@@ -44,7 +44,7 @@ spec:
               subPath: data
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:v4.0.15.2941
+          image: linuxserver/sonarr:4.0.15
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
