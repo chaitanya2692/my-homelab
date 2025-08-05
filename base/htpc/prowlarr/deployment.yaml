@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: prowlarr
-          image: linuxserver/prowlarr:latest
+          image: 11notes/prowlarr:1.37.0
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -31,18 +31,18 @@ spec:
           env:
             - name: TZ
               value: "CET"
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
           ports:
             - containerPort: 9696
               name: webui
           volumeMounts:
             - name: arr-stack-storage
-              mountPath: /config
+              mountPath: /prowlarr/etc
               subPath: prowlarr
+            - name: tmpfs
+              mountPath: /tmp
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: tmpfs
+          emptyDir: {}

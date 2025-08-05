@@ -18,18 +18,6 @@ spec:
       securityContext:
         fsGroup: 1000
       initContainers:
-        - name: check-config-dir
-          image: busybox:1.37.0
-          command:
-            [
-              "sh",
-              "-c",
-              'mkdir -p /config && touch /config/config.xml && echo "<Config><UrlBase>/sonarr</UrlBase></Config>" > /config/config.xml',
-            ]
-          volumeMounts:
-            - name: arr-stack-storage
-              mountPath: /config
-              subPath: sonarr
         - name: fix-permissions
           image: busybox:1.37.0
           command:
@@ -44,15 +32,11 @@ spec:
               subPath: data
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:4.0.15
+          image: 11notes/sonarr:4.0.15
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
               value: "CET"
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
           resources:
             requests:
               memory: "150Mi"
@@ -63,6 +47,8 @@ spec:
           ports:
             - containerPort: 8989
               name: webui
+          # NOTE: Probes are kept but you may need to adjust the path if you remove the URL base in the app's config.
+          # The default for 11notes is '/', not '/sonarr/'. This will work after you set the URL base in the new UI.
           startupProbe:
             httpGet:
               path: /sonarr/
@@ -89,12 +75,16 @@ spec:
             timeoutSeconds: 5
           volumeMounts:
             - name: arr-stack-storage
-              mountPath: /config
+              mountPath: /sonarr/etc
               subPath: sonarr
             - name: arr-stack-storage
               mountPath: /data
               subPath: data
+            - name: tmpfs
+              mountPath: /tmp
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: tmpfs
+          emptyDir: {}
