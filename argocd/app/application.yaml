@@ -32,11 +32,9 @@ spec:
           - ServerSideApply=true # Recommended
       # --- Add or modify this block ---
       ignoreDifferences:
-        # Ignore fields added by CNPG operator to the Cluster spec
+        # Ignore fields added by CNPG operator to ALL Cluster specs
         - group: postgresql.cnpg.io
           kind: Cluster
-          name: immich
-          namespace: utils
           jsonPointers:
             - /spec/managed/roles/0/connectionLimit # Field added by CNPG
             - /spec/managed/roles/0/ensure # Field added by CNPG
