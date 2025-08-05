@@ -13,5 +13,5 @@ helmCharts:
     repo: https://traefik.github.io/charts
     version: 37.0.0
     releaseName: traefik
-    includeCRDs: true
+    includeCRDs: false
     valuesFile: values.yaml
