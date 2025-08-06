@@ -1,8 +1,4 @@
 ---
-global:
-  extraArgs:
-    - -config.expand-env=true
-
 namespaceOverride: "infra"
 
 deploymentMode: SingleBinary
