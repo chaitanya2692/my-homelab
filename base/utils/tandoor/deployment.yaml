@@ -60,7 +60,6 @@ spec:
               done
               echo "Tandoor DB is up. Updating database..."
               python manage.py migrate --noinput
-              python manage.py collectstatic_js_reverse
               python manage.py collectstatic --noinput
               echo "Setting media/static file ownership and permissions"
               mkdir -p /opt/recipes/mediafiles

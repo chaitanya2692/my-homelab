@@ -82,5 +82,14 @@
     "managerFilePatterns": [
       "/(^|/)kustomization\\.ya?ml$/"
     ]
-  }
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    }
+  ]
 }
