@@ -1,5 +1,6 @@
 env:
   REDIS_HOSTNAME: immich-redis-master
+  REDIS_PORT: 6379
   DB_HOSTNAME: immich-rw
   DB_USERNAME:
     valueFrom:
