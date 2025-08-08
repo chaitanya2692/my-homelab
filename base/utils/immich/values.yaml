@@ -1,5 +1,6 @@
 env:
   REDIS_HOSTNAME: immich-redis-master
+  REDIS_PORT: 6379
   DB_HOSTNAME: immich-rw
   DB_USERNAME:
     valueFrom:
@@ -14,7 +15,12 @@ env:
   DB_DATABASE_NAME: immich-db
   IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
 
+image:
+  tag: v1.137.3
+
 immich:
+  metrics:
+    enabled: true
   persistence:
     library:
       existingClaim: immich-library-pvc
