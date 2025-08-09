@@ -4,3 +4,8 @@ config:
 
 # Override operator namespace to utils
 namespaceOverride: utils
+
+monitoring:
+  podMonitorEnabled: true
+  podMonitorAdditionalLabels:
+    release: kube-prometheus-stack
