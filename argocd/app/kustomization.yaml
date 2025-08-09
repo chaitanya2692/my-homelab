@@ -8,6 +8,7 @@ resources:
   - ingress-route.yaml
   - application.yaml
   - argo-non-crds.yaml
+  - servicemonitor.yaml
 
 patches:
   - target:
