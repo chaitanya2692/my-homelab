@@ -5,6 +5,7 @@ namespace: infra
 
 resources:
   - loki-service-monitor.yaml
+  - cert-manager-dashboard-cm.yaml
 
 helmCharts:
   - name: kube-prometheus-stack
