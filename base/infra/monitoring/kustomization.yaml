@@ -6,6 +6,10 @@ namespace: infra
 resources:
   - loki-service-monitor.yaml
   - cert-manager-dashboard-cm.yaml
+  - argocd-dashboard-cm.yaml
+  - k8s-dashboard-cm.yaml
+  - loki-dashboard-cm.yaml
+  - scraparr-dashboard-cm.yaml
 
 helmCharts:
   - name: kube-prometheus-stack
