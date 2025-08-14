@@ -3,25 +3,11 @@ namespaceOverride: "infra"
 
 grafana:
   enabled: true
-  defaultDashboardsEnabled: true
   persistence:
     enabled: true
     existingClaim: grafana-data-pvc
-  deploymentStrategy:
-    type: RollingUpdate
-  readinessProbe:
-    httpGet:
-      path: /api/health
-      port: 3000
   initChownData:
     enabled: false
-  livenessProbe:
-    httpGet:
-      path: /api/health
-      port: 3000
-    initialDelaySeconds: 60
-    timeoutSeconds: 30
-    failureThreshold: 10
 
 prometheus:
   enabled: true
