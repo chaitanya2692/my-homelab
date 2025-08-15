@@ -16,7 +16,7 @@ spec:
             runAsGroup: 33
           containers:
             - name: nextcloud-cron
-              image: nextcloud:31.0.7
+              image: nextcloud:31.0.8
               command:
                 - /bin/sh
                 - -c
