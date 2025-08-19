@@ -10,3 +10,4 @@ generators:
 resources:
   - deployment.yaml
   - service.yaml
+  - servicemonitor.yaml

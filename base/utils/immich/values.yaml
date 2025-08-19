@@ -34,21 +34,16 @@ redis:
     persistence:
       enabled: true
       existingClaim: immich-redis-pvc
-  metrics:
-    enabled: true
-    podAnnotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9121"
 
 server:
   enabled: true
   image:
     repository: ghcr.io/immich-app/immich-server
     pullPolicy: IfNotPresent
-  podAnnotations: # Added
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3001" # Default Immich server metrics port
-    prometheus.io/path: "/metrics"
+  serviceMonitor:
+    main:
+      labels:
+        release: kube-prometheus-stack
 
 machine-learning:
   enabled: true
@@ -64,7 +59,3 @@ machine-learning:
       size: 10Gi
       existingClaim: immich-ml-cache-pvc
       storageClass: local-path-utils
-  podAnnotations: # Added
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3003" # Default Immich ML metrics port
-    prometheus.io/path: "/metrics"

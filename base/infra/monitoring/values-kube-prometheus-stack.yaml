@@ -1,32 +1,44 @@
 ---
 namespaceOverride: "infra"
+fullnameOverride: prometheus
 
 grafana:
   enabled: true
-  defaultDashboardsEnabled: true
+  fullnameOverride: grafana
+  defaultDashboardsTimezone: cet
   persistence:
     enabled: true
     existingClaim: grafana-data-pvc
-  deploymentStrategy:
-    type: RollingUpdate
-  readinessProbe:
-    httpGet:
-      path: /api/health
-      port: 3000
   initChownData:
     enabled: false
-  livenessProbe:
-    httpGet:
-      path: /api/health
-      port: 3000
-    initialDelaySeconds: 60
-    timeoutSeconds: 30
-    failureThreshold: 10
+  sidecar:
+    dashboards:
+      enabled: true
+      skipTlsVerify: true
+    datasources:
+      enabled: true
+      skipTlsVerify: true
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      uid: loki
+      url: http://loki.infra.svc.cluster.local:3100
 
 prometheus:
   enabled: true
+  serviceAccount:
+    create: true
+    name: kube-prometheus-stack-prometheus
   prometheusSpec:
+    replicas: 1
+    replicaExternalLabelName: "replica"
+    ruleSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    probeSelectorNilUsesHelmValues: false
     retention: 7d
+    enableAdminAPI: true
+    walCompression: true
     enableFeatures:
       - remote-write-receiver
     resources:
@@ -45,8 +57,70 @@ prometheus:
             requests:
               storage: 10Gi
 
+nodeExporter:
+  enabled: true
+  serviceMonitor:
+    relabelings:
+      - action: replace
+        regex: (.*)
+        replacement: $1
+        sourceLabels:
+          - __meta_kubernetes_pod_node_name
+        targetLabel: kubernetes_node
+
+prometheus-node-exporter:
+  enabled: true
+  fullnameOverride: node-exporter
+  prometheus:
+    monitor:
+      enabled: true
+      relabelings:
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
+kubeStateMetrics:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
+  fullnameOverride: kube-state-metrics
+  selfMonitor:
+    enabled: true
+  prometheus:
+    monitor:
+      enabled: true
+      relabelings:
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "100m"
+    limits:
+      memory: "128Mi"
+      cpu: "200m"
+
 alertmanager:
   enabled: true
+  fullnameOverride: alertmanager
+  serviceAccount:
+    create: true
+    name: kube-prometheus-stack-alertmanager
   alertmanagerSpec:
     resources:
       requests:
@@ -56,22 +130,44 @@ alertmanager:
         memory: "128Mi"
         cpu: "100m"
 
-prometheus-node-exporter:
+kubeApiServer:
   enabled: true
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "100m"
-    limits:
-      memory: "128Mi"
-      cpu: "200m"
 
-kube-state-metrics:
+kubelet:
   enabled: true
-  resources:
-    requests:
-      memory: "64Mi"
-      cpu: "100m"
-    limits:
-      memory: "128Mi"
-      cpu: "200m"
+  serviceMonitor:
+    metricRelabelings:
+      - action: replace
+        sourceLabels:
+          - node
+        targetLabel: instance
+
+kubeControllerManager:
+  enabled: true
+  endpoints:
+    - 192.168.1.75
+
+coreDns:
+  enabled: true
+
+kubeDns:
+  enabled: false
+
+kubeEtcd:
+  enabled: true
+  endpoints:
+    - 192.168.1.75
+  service:
+    enabled: true
+    port: 2381
+    targetPort: 2381
+
+kubeScheduler:
+  enabled: true
+  endpoints: # ips of servers
+    - 192.168.1.75
+
+kubeProxy:
+  enabled: true
+  endpoints: # ips of servers
+    - 192.168.1.75

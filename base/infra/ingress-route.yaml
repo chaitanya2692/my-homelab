@@ -18,7 +18,7 @@ spec:
     - match: Host(`grafana.my-homelab.party`)
       kind: Rule
       services:
-        - name: kube-prometheus-stack-grafana
+        - name: grafana
           port: 80
     - match: Host(`jaeger.my-homelab.party`)
       kind: Rule
@@ -44,7 +44,7 @@ spec:
       middlewares:
         - name: homelab-auth
       services:
-        - name: kube-prometheus-stack-prometheus-node-exporter
+        - name: node-exporter
           port: 9100
     - match: Host(`loki.my-homelab.party`)
       kind: Rule
