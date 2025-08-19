@@ -56,6 +56,8 @@ loki:
   image:
     repository: grafana/loki
     tag: "3.5.3"
+  sidecar:
+    skipTlsVerify: true
   auth_enabled: false
   storage:
     type: filesystem
