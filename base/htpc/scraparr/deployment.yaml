@@ -28,14 +28,14 @@ spec:
               protocol: TCP
           env:
             - name: SONARR_URL
-              value: http://sonarr:8989
+              value: http://sonarr.htpc.svc.cluster.local:8989
             - name: SONARR_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: exportarr-secrets
                   key: SONARR_API_KEY
             - name: RADARR_URL
-              value: http://radarr:7878
+              value: http://radarr.htpc.svc.cluster.local:7878
             - name: RADARR_API_KEY
               valueFrom:
                 secretKeyRef:

@@ -1,0 +1,17 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: scraparr
+  namespace: htpc
+  labels:
+    app: scraparr
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      app: scraparr
+  endpoints:
+    - port: http # This should match your service's port name
+      path: /metrics
+      interval: 30s
