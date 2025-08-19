@@ -31,7 +31,7 @@ data:
       "editable": true,
       "fiscalYearStartMonth": 0,
       "graphTooltip": 0,
-      "id": 32,
+      "id": 34,
       "links": [],
       "panels": [
         {
@@ -236,26 +236,17 @@ data:
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
-              "expr": "sum(rate(log_messages_total{app=\"loki\",level=~\"error|warn\"}[1m])) by (level)\n",
-              "format": "time_series",
+              "disableTextWrap": false,
+              "editorMode": "code",
+              "expr": "sum by(level) (rate(loki_log_messages_total{namespace=\"infra\", level=~\"error|warn\"}[5m]))",
+              "fullMetaSearch": false,
               "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{level}}",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
-              },
-              "expr": "log_messages_total",
-              "format": "time_series",
-              "hide": true,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "",
-              "refId": "B"
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B",
+              "useBackend": false
             }
           ],
           "title": "Number of error/warning messages logged by Loki itself",
@@ -296,8 +287,8 @@ data:
                 "uid": "${DS_LOKI}"
               },
               "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{instance=\"infra/loki-0:loki\"} |= `level=error` or `level=warn` | logfmt",
+              "editorMode": "code",
+              "expr": "{instance=\"infra/loki-0:loki\"} | logfmt | level=~\"error|warn\"",
               "queryType": "range",
               "refId": "A"
             }
@@ -307,8 +298,8 @@ data:
         },
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "type": "loki",
+            "uid": "${DS_LOKI}"
           },
           "description": "Total number of messages logged by Alloy",
           "fieldConfig": {
@@ -456,16 +447,26 @@ data:
           "targets": [
             {
               "datasource": {
-                "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "type": "loki",
+                "uid": "${DS_LOKI}"
               },
-              "expr": "sum(rate(log_messages_total{app_kubernetes_io_name=\"alloy\",level=~\"error|warn\"}[1m])) by (level)\n",
-              "format": "time_series",
-              "hide": false,
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "{{level}}",
+              "direction": "backward",
+              "editorMode": "builder",
+              "expr": "sum by(service_name) (rate({instance=\"infra/alloy-0:alloy\"} | label_format level=detected_level [$__auto]))",
+              "queryType": "range",
               "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${DS_LOKI}"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "",
+              "hide": false,
+              "queryType": "range",
+              "refId": "B"
             }
           ],
           "title": "Error/warning messages logged by Alloy",
@@ -503,8 +504,11 @@ data:
               "datasource": {
                 "uid": "${DS_LOKI}"
               },
-              "expr": "{instance=\"infra/alloy-0:alloy\"} |= `level=error` or `level=warn`",
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{instance=\"infra/alloy-0:alloy\"} | logfmt | level=~\"error|warn\"",
               "legendFormat": "",
+              "queryType": "range",
               "refId": "A"
             }
           ],
@@ -602,14 +606,32 @@ data:
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
+              "editorMode": "code",
               "expr": "rate(loki_distributor_ingester_append_failures_total[1m])*60",
               "instant": false,
               "interval": "",
               "legendFormat": "",
               "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${DS_PROMETHEUS}"
+              },
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "expr": "rate(loki_distributor_ingester_appends_total[$__rate_interval])",
+              "fullMetaSearch": false,
+              "hide": false,
+              "includeNullMetadata": true,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B",
+              "useBackend": false
             }
           ],
-          "title": "Loki (distributor) - failed batch appends sent to ingesters",
+          "title": "Loki (distributor) - total batch appends sent to ingesters",
           "type": "timeseries"
         },
         {
@@ -704,11 +726,17 @@ data:
                 "type": "prometheus",
                 "uid": "${DS_PROMETHEUS}"
               },
-              "expr": "rate(alloy_loki_dropped_entries_total[1m])*60",
+              "disableTextWrap": false,
+              "editorMode": "builder",
+              "expr": "rate(loki_write_dropped_entries_total[5m])",
+              "fullMetaSearch": false,
+              "hide": false,
+              "includeNullMetadata": true,
               "instant": false,
-              "interval": "",
-              "legendFormat": "pod={{kubernetes_pod_name}}, instance={{instance}}",
-              "refId": "A"
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B",
+              "useBackend": false
             }
           ],
           "title": "Alloy - dropped log entries",
@@ -838,8 +866,57 @@ data:
           "description": "The total number of log entries received per tenant (not necessarily of lines, as an entry can have more than one line of text).",
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -851,9 +928,20 @@ data:
           },
           "id": 56,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -877,8 +965,57 @@ data:
           "description": "The total number of uncompressed bytes received per tenant.\n",
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -890,9 +1027,20 @@ data:
           },
           "id": 137,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -929,8 +1077,57 @@ data:
           "description": "Percentage of actual usage over configured limit",
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -942,9 +1139,20 @@ data:
           },
           "id": 247,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -968,8 +1176,57 @@ data:
           },
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -981,9 +1238,20 @@ data:
           },
           "id": 25,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1030,8 +1298,57 @@ data:
           "description": "Percentage of actual usage over configured limit",
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -1043,9 +1360,20 @@ data:
           },
           "id": 772,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1069,8 +1397,57 @@ data:
           },
           "fieldConfig": {
             "defaults": {
-              "custom": {},
-              "links": []
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
             },
             "overrides": []
           },
@@ -1082,9 +1459,20 @@ data:
           },
           "id": 1103,
           "options": {
-            "alertThreshold": true
+            "alertThreshold": true,
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
           },
-          "pluginVersion": "7.3.5",
+          "pluginVersion": "12.1.0",
           "targets": [
             {
               "datasource": {
@@ -1358,40 +1746,30 @@ data:
         "list": [
           {
             "current": {
-              "selected": true,
               "text": "Prometheus",
               "value": "Prometheus"
             },
-            "hide": 0,
             "includeAll": false,
             "label": "Prometheus",
-            "multi": false,
             "name": "DS_PROMETHEUS",
             "options": [],
             "query": "prometheus",
-            "queryValue": "",
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "type": "datasource"
           },
           {
             "current": {
-              "selected": true,
               "text": "Loki",
               "value": "Loki"
             },
-            "hide": 0,
             "includeAll": false,
             "label": "Loki",
-            "multi": false,
             "name": "DS_LOKI",
             "options": [],
             "query": "loki",
-            "queryValue": "",
             "refresh": 1,
             "regex": "",
-            "skipUrlSync": false,
             "type": "datasource"
           }
         ]
@@ -1416,5 +1794,5 @@ data:
       "timezone": "",
       "title": "Loki stack monitoring (Alloy, Loki)",
       "uid": "loki_stack_monitoring_quortex",
-      "version": 1
+      "version": 2
     }
