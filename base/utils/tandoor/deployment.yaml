@@ -36,7 +36,7 @@ spec:
                 path: nginx.conf
       initContainers:
         - name: init-tandoor-data
-          image: vabene1111/recipes:2.0.2
+          image: vabene1111/recipes:2.0.3
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 0
@@ -132,7 +132,7 @@ spec:
               subPath: nginx.conf
               readOnly: true
         - name: tandoor-app
-          image: vabene1111/recipes:2.0.2
+          image: vabene1111/recipes:2.0.3
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsUser: 65534
