@@ -18,12 +18,7 @@ data:
       'skeletondirectory' => '', // Keep empty
 
       // ### Reverse Proxy Configuration ###
-      // Kubernetes network ranges and local network
-      'trusted_proxies' => [
-        '10.42.0.0/16',     // Kubernetes pod CIDR
-        '10.43.0.0/16',     // Kubernetes service CIDR
-        '192.168.1.0/24'    // Local network range
-      ],
+      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'],
       'overwritehost' => 'nextcloud.my-homelab.party',
       'overwriteprotocol' => 'https',
       'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
