@@ -23,6 +23,19 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Update Docker image tags in Helm values files",
+      "managerFilePatterns": [
+        "/(^|/)values.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*[\\s\\S]*?tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?\\s*$"
+      ],
+      "depNameTemplate": "ghcr.io/immich-app/immich-server",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    },
+    {
+      "customType": "regex",
       "description": "Update Docker images in Kubernetes YAML manifests",
       "managerFilePatterns": [
         "/(^|/).*\\.ya?ml$/"

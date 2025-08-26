@@ -18,13 +18,14 @@ data:
       'skeletondirectory' => '', // Keep empty
 
       // ### Reverse Proxy Configuration ###
-      // !! IMPORTANT: Replace with the actual IP range(s) of your reverse proxy !!
-      // Examples: Kubernetes service CIDR, Ingress controller IPs, LoadBalancer IP
-      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'], // Adjust these ranges!
+      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'],
       'overwritehost' => 'nextcloud.my-homelab.party',
       'overwriteprotocol' => 'https',
       'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
-      'forwarded_for_headers' => ['HTTP_X_FORWARDED_FOR'], // Common header for client IP
+      'forwarded_for_headers' => [
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_REAL_IP'
+      ], // Headers for client IP identification
 
       // ### HTTPS / HSTS Configuration ###
       // 'forcessl' => true, // Deprecated and often handled by overwriteprotocol + webserver/proxy redirect
