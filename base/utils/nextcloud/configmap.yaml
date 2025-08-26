@@ -27,7 +27,10 @@ data:
       'overwritehost' => 'nextcloud.my-homelab.party',
       'overwriteprotocol' => 'https',
       'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
-      'forwarded_for_headers' => ['HTTP_X_FORWARDED_FOR'], // Common header for client IP
+      'forwarded_for_headers' => [
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_REAL_IP'
+      ], // Headers for client IP identification
 
       // ### HTTPS / HSTS Configuration ###
       // 'forcessl' => true, // Deprecated and often handled by overwriteprotocol + webserver/proxy redirect
