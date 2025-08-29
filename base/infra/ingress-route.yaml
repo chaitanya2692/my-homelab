@@ -30,14 +30,14 @@ spec:
       middlewares:
         - name: homelab-auth
       services:
-        - name: prometheus-operated
+        - name: prometheus-prometheus
           port: 9090
     - match: Host(`alertmanager.my-homelab.party`)
       kind: Rule
       middlewares:
         - name: homelab-auth
       services:
-        - name: alertmanager-operated
+        - name: prometheus-alertmanager
           port: 9093
     - match: Host(`node-exporter.my-homelab.party`)
       kind: Rule
