@@ -28,7 +28,7 @@
         "/(^|/)values.*\\.ya?ml$/"
       ],
       "matchStrings": [
-        "image:\\s*[\\s\\S]*?tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?\\s*$"
+        "image:\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?"
       ],
       "depNameTemplate": "ghcr.io/immich-app/immich-server",
       "datasourceTemplate": "docker",

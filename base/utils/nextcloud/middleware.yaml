@@ -51,8 +51,6 @@ metadata:
 spec:
   headers:
     customRequestHeaders:
-      X-Forwarded-For: ""
-      X-Real-IP: ""
       X-Forwarded-Proto: "https"
       X-Forwarded-Host: "nextcloud.my-homelab.party"
     customResponseHeaders:

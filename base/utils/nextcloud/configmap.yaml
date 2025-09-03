@@ -18,7 +18,7 @@ data:
       'skeletondirectory' => '', // Keep empty
 
       // ### Reverse Proxy Configuration ###
-      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/24'],
+      'trusted_proxies' => ['192.168.1.0/24', '10.42.0.0/16', '10.43.0.0/16'],
       'overwritehost' => 'nextcloud.my-homelab.party',
       'overwriteprotocol' => 'https',
       'overwrite.cli.url' => 'https://nextcloud.my-homelab.party',
