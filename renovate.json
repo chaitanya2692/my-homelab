@@ -24,11 +24,11 @@
     {
       "customType": "regex",
       "description": "Update Docker image tags in Helm values files",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/(^|/)values.*\\.ya?ml$/"
       ],
       "matchStrings": [
-        "image:\\s*[\\s\\S]*?tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?\\s*$"
+        "image:\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?"
       ],
       "depNameTemplate": "ghcr.io/immich-app/immich-server",
       "datasourceTemplate": "docker",
@@ -37,7 +37,7 @@
     {
       "customType": "regex",
       "description": "Update Docker images in Kubernetes YAML manifests",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/(^|/).*\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -49,7 +49,7 @@
     {
       "customType": "regex",
       "description": "Update GitHub release URLs in scripts",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/(^|/).*\\.sh$/"
       ],
       "matchStrings": [
@@ -60,7 +60,7 @@
     {
       "customType": "regex",
       "description": "Update CRD URLs with GitHub tags",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/(^|/).*kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -71,7 +71,7 @@
     {
       "customType": "regex",
       "description": "Update cert-manager CRD URLs",
-      "managerFilePatterns": [
+      "fileMatch": [
         "/(^|/).*kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -82,17 +82,17 @@
     }
   ],
   "kubernetes": {
-    "managerFilePatterns": [
+    "fileMatch": [
       "/(^|/).*\\.ya?ml$/"
     ]
   },
   "helm-values": {
-    "managerFilePatterns": [
+    "fileMatch": [
       "/(^|/)values.*\\.ya?ml$/"
     ]
   },
   "kustomize": {
-    "managerFilePatterns": [
+    "fileMatch": [
       "/(^|/)kustomization\\.ya?ml$/"
     ]
   },
