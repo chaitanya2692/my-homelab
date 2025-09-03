@@ -24,7 +24,7 @@
     {
       "customType": "regex",
       "description": "Update Docker image tags in Helm values files",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/)values.*\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -37,7 +37,7 @@
     {
       "customType": "regex",
       "description": "Update Docker images in Kubernetes YAML manifests",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/).*\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -49,7 +49,7 @@
     {
       "customType": "regex",
       "description": "Update GitHub release URLs in scripts",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/).*\\.sh$/"
       ],
       "matchStrings": [
@@ -60,7 +60,7 @@
     {
       "customType": "regex",
       "description": "Update CRD URLs with GitHub tags",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/).*kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -71,7 +71,7 @@
     {
       "customType": "regex",
       "description": "Update cert-manager CRD URLs",
-      "fileMatch": [
+      "managerFilePatterns": [
         "/(^|/).*kustomization\\.ya?ml$/"
       ],
       "matchStrings": [
@@ -82,17 +82,17 @@
     }
   ],
   "kubernetes": {
-    "fileMatch": [
+    "managerFilePatterns": [
       "/(^|/).*\\.ya?ml$/"
     ]
   },
   "helm-values": {
-    "fileMatch": [
+    "managerFilePatterns": [
       "/(^|/)values.*\\.ya?ml$/"
     ]
   },
   "kustomize": {
-    "fileMatch": [
+    "managerFilePatterns": [
       "/(^|/)kustomization\\.ya?ml$/"
     ]
   },
