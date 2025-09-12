@@ -16,7 +16,7 @@ env:
   IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
 
 image:
-  tag: v1.141.1
+  tag: v1.142.0
 
 immich:
   metrics:
