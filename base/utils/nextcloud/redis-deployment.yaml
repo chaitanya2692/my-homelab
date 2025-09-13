@@ -37,7 +37,7 @@ spec:
               memory: "64Mi"
               cpu: "100m"
         - name: redis-exporter
-          image: oliver006/redis_exporter:v1.76.0
+          image: oliver006/redis_exporter:v1.77.0
           env:
             - name: REDIS_ADDR
               value: "redis://localhost:6379"
