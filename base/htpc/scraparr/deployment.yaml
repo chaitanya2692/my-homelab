@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: scraparr
-          image: ghcr.io/thecfu/scraparr:2.2.4
+          image: ghcr.io/thecfu/scraparr:2.2.5
           ports:
             - name: http
               containerPort: 7100
