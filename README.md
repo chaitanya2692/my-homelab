@@ -112,6 +112,16 @@ easy addition of new services while maintaining security and reliability.
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg" alt="Sonarr logo" height="40"> | [Sonarr](https://sonarr.tv/) | TV Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radarr.svg" alt="Radarr logo" height="40"> | [Radarr](https://radarr.video/) | Movie Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg" alt="Prowlarr logo" height="40"> | [Prowlarr](https://prowlarr.com/) | Index Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/transmission.svg" alt="Transmission logo" height="40"> | [Transmission](https://transmissionbt.com/) | BitTorrent Client |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/flaresolverr.png" alt="FlareSolverr logo" height="40"> | [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) | CAPTCHA Solver |
+| <img src="https://raw.githubusercontent.com/thecfu/scraparr/refs/heads/dev/.github/assets/logos/scraparr_logo.svg" alt="Scraparr logo" height="40"> | [Scraparr](https://github.com/TheCfu/Scraparr) | Metadata Scraper |
+
+### 🗄️ Data Layer
+
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://cloudnative-pg.io/images/hero_image.png" alt="CNPG logo" height="40"> | [CloudNativePG](https://cloudnative-pg.io/) | PostgreSQL Operator |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/redis.svg" alt="Redis logo" height="40"> | [Redis](https://redis.io/) | Caching Layer |
 
 ## 🏗️ Architecture and System Design
 
