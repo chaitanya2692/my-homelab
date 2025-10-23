@@ -46,10 +46,13 @@ easy addition of new services while maintaining security and reliability.
   - Continuous integration/deployment
   - Infrastructure as Code
   - Automated operations
+  - Automated dependency management (Renovate)
 
 - 📊 **Enterprise Monitoring**
-  - Full observability stack
-  - Tracing
+  - Full observability stack (Prometheus, Grafana, Loki, Jaeger)
+  - Pre-configured Grafana dashboards for all services
+  - ServiceMonitor-based metrics collection
+  - Distributed tracing
   - Centralized logging
   - Performance analytics
 
@@ -109,6 +112,16 @@ easy addition of new services while maintaining security and reliability.
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg" alt="Sonarr logo" height="40"> | [Sonarr](https://sonarr.tv/) | TV Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radarr.svg" alt="Radarr logo" height="40"> | [Radarr](https://radarr.video/) | Movie Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg" alt="Prowlarr logo" height="40"> | [Prowlarr](https://prowlarr.com/) | Index Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/transmission.svg" alt="Transmission logo" height="40"> | [Transmission](https://transmissionbt.com/) | BitTorrent Client |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/flaresolverr.png" alt="FlareSolverr logo" height="40"> | [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) | CAPTCHA Solver |
+| <img src="https://raw.githubusercontent.com/thecfu/scraparr/refs/heads/dev/.github/assets/logos/scraparr_logo.svg" alt="Scraparr logo" height="40"> | [Scraparr](https://github.com/TheCfu/Scraparr) | Metadata Scraper |
+
+### 🗄️ Data Layer
+
+| Logo | Service | Description |
+|------|---------|-------------|
+| <img src="https://cloudnative-pg.io/images/hero_image.png" alt="CNPG logo" height="40"> | [CloudNativePG](https://cloudnative-pg.io/) | PostgreSQL Operator |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/redis.svg" alt="Redis logo" height="40"> | [Redis](https://redis.io/) | Caching Layer |
 
 ## 🏗️ Architecture and System Design
 
@@ -141,7 +154,7 @@ Kubernetes service. Here's the detailed breakdown:
 
 ### 2. 🌐 Networking and Ingress
 
-#### 🚦 Traefik (v34.4.0)
+#### 🚦 Traefik
 
 ```yaml
 Features:
@@ -190,11 +203,12 @@ Configuration:
 > with DHCP and other network services while providing enough addresses for
 > all planned services.
 
-#### 🔐 cert-manager (v1.17.1)
+#### 🔐 cert-manager
 
 - 🎯 Let's Encrypt Integration
 - ☁️ Cloudflare DNS-01 Challenge
 - 🌟 Wildcard Certificates (*.my-homelab.party)
+- 📊 Prometheus Metrics Integration
 
 ### 3. 💾 Storage Architecture
 
@@ -442,6 +456,39 @@ The continuous integration and deployment pipeline is designed for reliability a
    - Error reporting
    - Alert generation
 
+#### Automated Dependency Management
+
+The platform uses **Renovate Bot** for automated dependency updates:
+
+**Features:**
+
+- 🤖 Automated dependency updates for Docker images, Helm charts, and CRDs
+- 🔄 Auto-merge for minor and patch updates
+- 📝 Custom regex managers for various file patterns
+- 🔐 Support for multiple container registries (ghcr.io, docker.io)
+- 🎯 Intelligent version detection and tracking
+
+**Managed Components:**
+
+- Docker images in Kubernetes manifests
+- Helm chart versions
+- CRD URLs from GitHub releases
+- Pre-commit hook versions
+- GitHub Action versions
+
+**Configuration Highlights:**
+
+```yaml
+Auto-merge: minor & patch updates
+Timezone: Europe/Berlin
+Labels: dependencies, automated
+Timeout: 60s for container registries
+```
+
+> 💡 **Automation Philosophy**: Renovate keeps the platform up-to-date with
+> minimal manual intervention while maintaining stability through smart
+> auto-merge policies and comprehensive testing.
+
 ### 8. 🛠️ Utility Applications
 
 #### 🏠 Homepage
@@ -482,6 +529,7 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 | Prometheus | Time-series DB | - Resource utilization<br>- Application metrics<br>- Service health |
 | Exportarr | Media Stats | - Download status<br>- Queue metrics<br>- Quality stats |
 | Node Exporter | System Metrics | - Hardware stats<br>- System load<br>- Network usage |
+| ServiceMonitor | Service Discovery | - ArgoCD<br>- Scraparr<br>- cert-manager<br>- CNPG operator |
 
 #### Log Management
 
@@ -498,8 +546,15 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 
 #### Visualization & Alerting
 
+Pre-configured Grafana dashboards for comprehensive monitoring:
+
 | Dashboard | Focus | Features |
 |-----------|-------|----------|
+| ArgoCD | GitOps Operations | - Application sync status<br>- Deployment health<br>- API activity |
+| cert-manager | Certificate Management | - Certificate expiry<br>- Renewal status<br>- Issuer health |
+| Kubernetes | Cluster Health | - Resource usage<br>- Node status<br>- Pod metrics |
+| Loki | Log Aggregation | - Log volume<br>- Error rates<br>- Query performance |
+| Scraparr | Media Automation | - Service health<br>- Request metrics<br>- Error tracking |
 | System Health | Infrastructure | - Resource usage<br>- Node status<br>- Network stats |
 | Media Status | Content | - Download progress<br>- Library status<br>- Quality metrics |
 | Application | Services | - Response times<br>- Error rates<br>- Request volume |
