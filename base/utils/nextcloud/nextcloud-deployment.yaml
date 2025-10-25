@@ -50,7 +50,7 @@ spec:
               done
       containers:
         - name: nextcloud
-          image: nextcloud:32.0.0
+          image: nextcloud:32.0.1
           ports:
             - containerPort: 80
           resources:
