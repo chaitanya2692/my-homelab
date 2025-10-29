@@ -6,6 +6,8 @@ grafana:
   enabled: true
   fullnameOverride: grafana
   defaultDashboardsTimezone: cet
+  analytics:
+    check_for_updates: false
   persistence:
     enabled: true
     existingClaim: grafana-data-pvc

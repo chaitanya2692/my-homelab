@@ -12,6 +12,8 @@ alloy:
       - name: storage
         mountPath: /data/alloy
 
+  enablereporting: false
+
   configMap:
     content: |
       logging {
