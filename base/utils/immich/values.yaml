@@ -25,37 +25,24 @@ immich:
     library:
       existingClaim: immich-library-pvc
 
-redis:
+valkey:
   enabled: true
-  architecture: standalone
-  auth:
-    enabled: false
-  master:
-    persistence:
-      enabled: true
-      existingClaim: immich-redis-pvc
+  persistence:
+    data:
+      type: persistentVolumeClaim
+      accessMode: ReadWriteOnce
 
 server:
-  enabled: true
-  image:
-    repository: ghcr.io/immich-app/immich-server
-    pullPolicy: IfNotPresent
   serviceMonitor:
     main:
       labels:
         release: kube-prometheus-stack
 
 machine-learning:
-  enabled: true
-  image:
-    repository: ghcr.io/immich-app/immich-machine-learning
-    pullPolicy: IfNotPresent
-  env:
-    TRANSFORMERS_CACHE: /cache
   persistence:
     cache:
       enabled: true
-      type: pvc
+      type: persistentVolumeClaim
       size: 10Gi
       existingClaim: immich-ml-cache-pvc
       storageClass: local-path-utils
