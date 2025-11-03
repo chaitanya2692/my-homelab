@@ -7,9 +7,9 @@ spec:
   imageName: ghcr.io/immich-app/postgres:16-vectorchord0.5.3-pgvector0.8.1
   instances: 1
 
-  postgresql:
-    shared_preload_libraries:
-      - "vectors.so"
+  # postgresql:
+  #   shared_preload_libraries:
+  #     - "vectors.so"
 
   enableSuperuserAccess: true
 
