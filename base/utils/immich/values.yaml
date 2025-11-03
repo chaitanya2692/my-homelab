@@ -11,6 +11,7 @@ env:
         name: immich-credentials
         key: DB_PASSWORD
   DB_DATABASE_NAME: immich-db
+  REDIS_HOSTNAME: '{{ printf "%s-valkey" .Release.Name }}'
   IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
 
 image:
