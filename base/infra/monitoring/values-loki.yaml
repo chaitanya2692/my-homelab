@@ -59,6 +59,9 @@ loki:
   sidecar:
     skipTlsVerify: true
   auth_enabled: false
+  analytics:
+    reporting_enabled: false
+    reporting_hostname: ""
   storage:
     type: filesystem
   commonConfig:
