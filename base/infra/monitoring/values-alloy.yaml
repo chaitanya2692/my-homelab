@@ -22,10 +22,6 @@ alloy:
         format = "logfmt"
       }
 
-      usage_reporting {
-        enabled = false
-      }
-
       loki.source.kubernetes "pods" {
         targets    = discovery.kubernetes.pods_discovered.targets
         forward_to = [loki.write.default.receiver]
