@@ -12,6 +12,9 @@ alloy:
       - name: storage
         mountPath: /data/alloy
 
+  # Disable anonymous usage reporting
+  enableReporting: false
+
   configMap:
     content: |
       logging {

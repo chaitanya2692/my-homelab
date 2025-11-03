@@ -39,10 +39,10 @@ spec:
               value: "CET"
           resources:
             requests:
-              memory: "150Mi"
+              memory: "200Mi"
               cpu: "75m"
             limits:
-              memory: "300Mi"
+              memory: "600Mi"
               cpu: "300m"
           ports:
             - containerPort: 7878
