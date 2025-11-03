@@ -30,7 +30,8 @@ valkey:
   persistence:
     data:
       type: persistentVolumeClaim
-      accessMode: ReadWriteOnce
+      existingClaim: immich-valkey-pvc
+      storageClass: local-path-utils
 
 server:
   serviceMonitor:

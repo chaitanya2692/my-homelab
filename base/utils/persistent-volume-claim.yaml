@@ -18,7 +18,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-redis-pvc
+  name: immich-valkey-pvc
   namespace: utils
 spec:
   storageClassName: local-path-utils
