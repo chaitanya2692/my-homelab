@@ -18,7 +18,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/chaitanya2692/my-homelab.git
-        targetRevision: fix-immich
+        targetRevision: main
         path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc
