@@ -23,15 +23,15 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update Docker image tags in Helm values files",
+      "description": "Update Immich controller tag in Helm values files",
       "managerFilePatterns": [
         "/(^|/)values.*\\.ya?ml$/"
       ],
       "matchStrings": [
-        "image:\\s*\\n\\s*tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?"
+        "controllers:\\s*\\n(?:[^\\n]*\\n)*?\\s*tag:\\s*[\"']?(?<currentValue>v?\\d+\\.\\d+\\.\\d+)[\"']?"
       ],
-      "depNameTemplate": "ghcr.io/immich-app/immich-server",
-      "datasourceTemplate": "docker",
+      "depNameTemplate": "immich-app/immich",
+      "datasourceTemplate": "github-releases",
       "versioningTemplate": "docker"
     },
     {
