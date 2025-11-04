@@ -9,7 +9,6 @@ spec:
 
   postgresql:
     shared_preload_libraries:
-      - "vectors.so"
       - "vchord.so"
 
   enableSuperuserAccess: true
