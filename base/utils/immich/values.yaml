@@ -1,22 +1,24 @@
-env:
-  REDIS_HOSTNAME: immich-redis-master
-  REDIS_PORT: 6379
-  DB_HOSTNAME: immich-rw
-  DB_USERNAME:
-    valueFrom:
-      secretKeyRef:
-        name: immich-credentials
-        key: DB_USERNAME
-  DB_PASSWORD:
-    valueFrom:
-      secretKeyRef:
-        name: immich-credentials
-        key: DB_PASSWORD
-  DB_DATABASE_NAME: immich-db
-  IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
-
-image:
-  tag: v2.2.2
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          tag: v2.2.2
+        env:
+          DB_HOSTNAME:
+            value: immich-rw
+          DB_USERNAME:
+            valueFrom:
+              secretKeyRef:
+                name: immich-credentials
+                key: DB_USERNAME
+          DB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: immich-credentials
+                key: DB_PASSWORD
+          DB_DATABASE_NAME:
+            value: immich-db
 
 immich:
   metrics:
@@ -30,7 +32,8 @@ valkey:
   persistence:
     data:
       type: persistentVolumeClaim
-      accessMode: ReadWriteOnce
+      existingClaim: immich-valkey-pvc
+      storageClass: local-path-utils
 
 server:
   serviceMonitor:
@@ -41,8 +44,6 @@ server:
 machine-learning:
   persistence:
     cache:
-      enabled: true
       type: persistentVolumeClaim
-      size: 10Gi
       existingClaim: immich-ml-cache-pvc
       storageClass: local-path-utils
