@@ -32,7 +32,7 @@ spec:
               subPath: data
       containers:
         - name: sonarr
-          image: 11notes/sonarr:4.0.15
+          image: 11notes/sonarr:4.0.16
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
