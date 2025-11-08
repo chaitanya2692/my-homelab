@@ -46,6 +46,301 @@ data:
         },
         {
           "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 1
+          },
+          "id": 14,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"jellyfin\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"jellyfin\", resource=\"cpu\"}))",
+              "instant": false,
+              "legendFormat": "CPU Utilization from Requests",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "builder",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"jellyfin\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"jellyfin\", resource=\"cpu\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "CPU Utilization from Limits",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "builder",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"jellyfin\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"jellyfin\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Requests",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "builder",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"jellyfin\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"jellyfin\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Limits",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Jellyfin CPU limits",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 8
+          },
+          "id": 16,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "expr": "quantile_over_time(0.9, sum(container_memory_working_set_bytes{namespace=\"htpc\", container=\"jellyfin\"})[7d:5m]) * 1.15 / 1073741824",
+              "legendFormat": "Requestsed Memory",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory p90 recommendation (bytes) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "quantile_over_time(0.9, sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"jellyfin\"}[5m]))[7d:5m]) * 1.15",
+              "hide": false,
+              "legendFormat": "Requestsed CPU",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU p90 recommendation (cores) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
             "type": "loki",
             "uid": "loki"
           },
@@ -109,7 +404,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 1
+            "y": 16
           },
           "id": 2,
           "options": {
@@ -134,18 +429,7 @@ data:
               },
               "direction": "backward",
               "editorMode": "code",
-              "expr": "{instance=\"htpc/jellyfin-7d4bd47759-ctn74:jellyfin\"} | detected_level = `error`",
-              "queryType": "range",
-              "refId": "A"
-            },
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "loki"
-              },
-              "direction": "backward",
-              "editorMode": "code",
-              "expr": "sum(rate({instance=\"htpc/jellyfin-7d4bd47759-ctn74:jellyfin\"}  | detected_level = `error`[$__auto]))",
+              "expr": "sum(rate({instance=\"htpc/jellyfin-7d4bd47759-ctn74:jellyfin\"}  | detected_level = `error` != \"MediaBrowser.MediaEncoding.Encoder.MediaEncoder\"[$__auto]))",
               "hide": false,
               "queryType": "range",
               "refId": "B"
@@ -167,7 +451,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 1
+            "y": 16
           },
           "id": 1,
           "options": {
@@ -190,7 +474,7 @@ data:
               },
               "direction": "backward",
               "editorMode": "code",
-              "expr": "{instance=\"htpc/jellyfin-7d4bd47759-ctn74:jellyfin\"} | detected_level = `error`",
+              "expr": "{instance=\"htpc/jellyfin-7d4bd47759-ctn74:jellyfin\"} | detected_level = `error` != \"MediaBrowser.MediaEncoding.Encoder.MediaEncoder\"",
               "instant": false,
               "legendFormat": "",
               "queryType": "range",
@@ -207,12 +491,305 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 24
           },
           "id": 12,
           "panels": [],
           "title": "Radarr",
           "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 25
+          },
+          "id": 18,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"radarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"radarr\", resource=\"cpu\"}))",
+              "legendFormat": "CPU Utilization from Requests",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"radarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"radarr\", resource=\"cpu\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "CPU Utilization from Limits",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"radarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"radarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Requests",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"radarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"radarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Limits",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Radarr CPU limits",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 32
+          },
+          "id": 19,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "expr": "quantile_over_time(0.9, sum(container_memory_working_set_bytes{namespace=\"htpc\", container=\"radarr\"})[7d:5m]) * 1.15 / 1073741824",
+              "legendFormat": "Requestsed Memory",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory p90 recommendation (bytes) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 32
+          },
+          "id": 20,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "quantile_over_time(0.9, sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"radarr\"}[5m]))[7d:5m]) * 1.15",
+              "hide": false,
+              "legendFormat": "Requested CPU",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU p90 recommendation (cores) with 15% margin",
+          "type": "timeseries"
         },
         {
           "datasource": {
@@ -279,7 +856,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 10
+            "y": 40
           },
           "id": 6,
           "options": {
@@ -326,7 +903,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 10
+            "y": 40
           },
           "id": 7,
           "options": {
@@ -366,12 +943,305 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 18
+            "y": 48
           },
           "id": 11,
           "panels": [],
           "title": "Sonarr",
           "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 49
+          },
+          "id": 21,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"sonarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"sonarr\", resource=\"cpu\"}))",
+              "legendFormat": "CPU Utilization from Requests",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"sonarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"sonarr\", resource=\"cpu\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "CPU Utilization from Limits",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"sonarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"sonarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Requests",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"sonarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"sonarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Limits",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Sonarr CPU limits",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 56
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "expr": "quantile_over_time(0.9, sum(container_memory_working_set_bytes{namespace=\"htpc\", container=\"sonarr\"})[7d:5m]) * 1.15 / 1073741824",
+              "legendFormat": "Requestsed Memory",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory p90 recommendation (bytes) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 56
+          },
+          "id": 23,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "quantile_over_time(0.9, sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"sonarr\"}[5m]))[7d:5m]) * 1.15",
+              "hide": false,
+              "legendFormat": "Requested CPU",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU p90 recommendation (cores) with 15% margin",
+          "type": "timeseries"
         },
         {
           "datasource": {
@@ -438,7 +1308,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 19
+            "y": 64
           },
           "id": 4,
           "options": {
@@ -485,7 +1355,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 19
+            "y": 64
           },
           "id": 5,
           "options": {
@@ -525,12 +1395,305 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 27
+            "y": 72
           },
           "id": 13,
           "panels": [],
           "title": "Prowlarr",
           "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 73
+          },
+          "id": 24,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"prowlarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"prowlarr\", resource=\"cpu\"}))",
+              "legendFormat": "CPU Utilization from Requests",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"prowlarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"prowlarr\", resource=\"cpu\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "CPU Utilization from Limits",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"prowlarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"prowlarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Requests",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"prowlarr\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"prowlarr\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Limits",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Prowlarr CPU limits",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 80
+          },
+          "id": 25,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "expr": "quantile_over_time(0.9, sum(container_memory_working_set_bytes{namespace=\"htpc\", container=\"prowlarr\"})[7d:5m]) * 1.15 / 1073741824",
+              "legendFormat": "Requestsed Memory",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory p90 recommendation (bytes) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 80
+          },
+          "id": 26,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "quantile_over_time(0.9, sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"prowlarr\"}[5m]))[7d:5m]) * 1.15",
+              "hide": false,
+              "legendFormat": "Requested CPU",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU p90 recommendation (cores) with 15% margin",
+          "type": "timeseries"
         },
         {
           "datasource": {
@@ -597,7 +1760,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 28
+            "y": 88
           },
           "id": 8,
           "options": {
@@ -644,7 +1807,7 @@ data:
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 28
+            "y": 88
           },
           "id": 9,
           "options": {
@@ -677,6 +1840,458 @@ data:
           ],
           "title": "Prowlarr Error Log",
           "type": "logs"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 96
+          },
+          "id": 27,
+          "panels": [],
+          "title": "Transmission",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 97
+          },
+          "id": 28,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "sizing": "auto"
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"transmission\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"transmission\", resource=\"cpu\"}))",
+              "legendFormat": "CPU Utilization from Requests",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "(sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"transmission\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"transmission\", resource=\"cpu\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "CPU Utilization from Limits",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"transmission\"}[5m])) * 100) / (sum(kube_pod_container_resource_requests{namespace=\"htpc\", container=\"transmission\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Requests",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "(sum(rate(container_memory_working_set_bytes{namespace=\"htpc\", container=\"transmission\"}[5m])) * 100) / (sum(kube_pod_container_resource_limits{namespace=\"htpc\", container=\"transmission\", resource=\"memory\"}))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Memory Utilization from Limits",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Transmission CPU limits",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 104
+          },
+          "id": 29,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "builder",
+              "expr": "quantile_over_time(0.9, sum(container_memory_working_set_bytes{namespace=\"htpc\", container=\"transmission\"})[7d:5m]) * 1.15 / 1073741824",
+              "legendFormat": "Requestsed Memory",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory p90 recommendation (bytes) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 104
+          },
+          "id": 30,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "editorMode": "code",
+              "expr": "quantile_over_time(0.9, sum(rate(container_cpu_usage_seconds_total{namespace=\"htpc\", container=\"transmission\"}[5m]))[7d:5m]) * 1.15",
+              "hide": false,
+              "legendFormat": "Requested CPU",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU p90 recommendation (cores) with 15% margin",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "bars",
+                "fillOpacity": 90,
+                "gradientMode": "scheme",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "showValues": false,
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": 0
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 112
+          },
+          "id": 31,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "right",
+              "showLegend": false
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "loki"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "sum(rate({instance=\"htpc/transmission-56c48684bf-pxrwj:transmission\"} | detected_level = `error` [$__auto]))",
+              "hide": false,
+              "queryType": "range",
+              "refId": "B"
+            }
+          ],
+          "title": "Transmission Error Rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "-- Mixed --"
+          },
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 112
+          },
+          "id": 32,
+          "options": {
+            "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": false,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "pluginVersion": "12.2.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "loki"
+              },
+              "direction": "backward",
+              "editorMode": "code",
+              "expr": "{instance=\"htpc/transmission-56c48684bf-pxrwj:transmission\"} | detected_level = `error`",
+              "instant": false,
+              "legendFormat": "",
+              "queryType": "range",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Transmission Error Log",
+          "type": "logs"
         }
       ],
       "preload": false,
@@ -695,5 +2310,5 @@ data:
       "timezone": "browser",
       "title": "HTPC dashboard",
       "uid": "ad9swdm",
-      "version": 16
+      "version": 20
     }
