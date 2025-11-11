@@ -10,16 +10,16 @@ resources:
   # cert-manager CRDs
   - https://github.com/jetstack/cert-manager/releases/download/v1.19.1/cert-manager.crds.yaml
   # Traefik CRDs
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_ingressroutes.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_ingressroutetcps.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_ingressrouteudps.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_middlewares.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_middlewaretcps.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_serverstransports.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_serverstransporttcps.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_tlsoptions.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_tlsstores.yaml
-  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.2.0/traefik-crds/crds-files/traefik/traefik.io_traefikservices.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_ingressroutes.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_ingressroutetcps.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_ingressrouteudps.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_middlewares.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_middlewaretcps.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_serverstransports.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_serverstransporttcps.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_tlsoptions.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_tlsstores.yaml
+  - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v37.3.0/traefik-crds/crds-files/traefik/traefik.io_traefikservices.yaml
 
 # Add labels to all resources
 commonLabels:
