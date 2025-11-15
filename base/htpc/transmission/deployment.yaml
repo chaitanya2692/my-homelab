@@ -45,8 +45,8 @@ spec:
               mountPath: /config
               subPath: transmission/config
             - name: arr-stack-storage
-              mountPath: /data
-              subPath: data
+              mountPath: /downloads
+              subPath: data/torrents
             - name: arr-stack-storage
               mountPath: /watch
               subPath: transmission/watch
