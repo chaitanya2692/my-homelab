@@ -9,6 +9,7 @@ resources:
   - k8s-dashboard-cm.yaml
   - loki-dashboard-cm.yaml
   - scraparr-dashboard-cm.yaml
+  - htpc-dashboard-cm.yaml
 
 helmCharts:
   - name: kube-prometheus-stack
