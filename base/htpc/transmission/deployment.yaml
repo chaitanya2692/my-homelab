@@ -28,8 +28,6 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
-            - name: download-dir
-              value: "/data/torrents"
           ports:
             - containerPort: 9091
               name: webui
@@ -50,6 +48,9 @@ spec:
             - name: arr-stack-storage
               mountPath: /watch
               subPath: transmission/watch
+            - name: arr-stack-storage
+              mountPath: /downloads
+              subPath: data/torrents
           resources:
             requests:
               memory: "64Mi"
