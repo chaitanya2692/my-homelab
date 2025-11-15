@@ -26,12 +26,18 @@ spec:
             [
               "sh",
               "-c",
-              "mkdir -p /data/torrents/incomplete /data/torrents/tv-sonarr && chown -R 1000:1000 /data/torrents /data/transmission",
+              "mkdir -p /data/torrents /config /watch && chown -R 1000:1000 /data /config /watch && chmod -R a=,a+rX,u+w,g+w /data /config /watch",
             ]
           volumeMounts:
             - name: arr-stack-storage
+              mountPath: /config
+              subPath: transmission/config
+            - name: arr-stack-storage
               mountPath: /data
               subPath: data
+            - name: arr-stack-storage
+              mountPath: /watch
+              subPath: transmission/watch
       containers:
         - name: transmission
           image: linuxserver/transmission:4.0.6
@@ -60,8 +66,8 @@ spec:
               mountPath: /config
               subPath: transmission/config
             - name: arr-stack-storage
-              mountPath: /downloads
-              subPath: data/torrents
+              mountPath: /data
+              subPath: data
             - name: arr-stack-storage
               mountPath: /watch
               subPath: transmission/watch
