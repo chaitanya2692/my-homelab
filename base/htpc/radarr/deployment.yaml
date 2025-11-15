@@ -22,6 +22,9 @@ spec:
       initContainers:
         - name: fix-permissions
           image: busybox:1.37.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           command:
             [
               "sh",

@@ -17,11 +17,12 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
-        runAsUser: 1000
-        runAsGroup: 1000
       initContainers:
         - name: fix-permissions
           image: busybox:1.37.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
           command:
             [
               "sh",
