@@ -19,6 +19,19 @@ spec:
         fsGroup: 1000
         runAsUser: 1000
         runAsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.37.0
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /data/torrents/incomplete /data/torrents/tv-sonarr && chown -R 1000:1000 /data/torrents /data/transmission",
+            ]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /data
+              subPath: data
       containers:
         - name: transmission
           image: linuxserver/transmission:4.0.6
