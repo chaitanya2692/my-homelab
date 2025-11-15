@@ -17,6 +17,8 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: transmission
           image: linuxserver/transmission:4.0.6
