@@ -121,7 +121,8 @@ easy addition of new services while maintaining security and reliability.
 | Logo | Service | Description |
 | ------ | --------- | ------------- |
 | <img src="https://cloudnative-pg.io/images/hero_image.png" alt="CNPG logo" height="40"> | [CloudNativePG](https://cloudnative-pg.io/) | PostgreSQL Operator |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/redis.svg" alt="Redis logo" height="40"> | [Redis](https://redis.io/) | Caching Layer |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/valkey.svg" alt="Valkey logo" height="40"> | [Valkey](https://valkey.io/) | (Immich) Caching Layer |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/redis.svg" alt="Redis logo" height="40"> | [Redis](https://redis.io/) | (General) Caching Layer |
 
 ## 🏗️ Architecture and System Design
 
@@ -237,11 +238,11 @@ The storage architecture is designed with the following principles:
 | htpc | htpc-pvc | Shared | Media & App Data | High throughput, large files |
 | infra | grafana-data-pvc | 5GB | Dashboards | Fast random access |
 | | jaeger-data-pvc | 10GB | Tracing | High write frequency |
-| | promtail-positions-pvc | 1GB | Logging | Sequential writes |
 | utils | immich-library-pvc | 20GB | Photos/Videos | Mixed IO patterns |
-| | immich-redis-pvc | 5GB | Cache | In-memory performance |
+| | immich-valkey-pvc | 5GB | Cache | In-memory performance |
 | | immich-ml-cache-pvc | 10GB | ML Models | Read-optimized |
 | | nextcloud-pvc | 31GB | Files | Mixed workload |
+| | nextcloud-redis-pvc | 1GB | Redis Data | Fast access |
 | | tandoor-data-pvc | 20GB | Recipes | Small files, frequent access |
 
 > 🔄 All storage is dynamically provisioned by local-path-provisioner
