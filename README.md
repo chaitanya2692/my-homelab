@@ -587,6 +587,7 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
 | Kubernetes | Cluster Health | - Resource usage<br>- Node status<br>- Pod metrics |
 | Loki | Log Aggregation | - Log volume<br>- Error rates<br>- Query performance |
 | Scraparr | Media Automation | - Service health<br>- Request metrics<br>- Error tracking |
+| HTPC | Media Services | - Arr stack metrics<br>- Error Log<br>- Resource limit recomendations |
 | System Health | Infrastructure | - Resource usage<br>- Node status<br>- Network stats |
 | Media Status | Content | - Download progress<br>- Library status<br>- Quality metrics |
 | Application | Services | - Response times<br>- Error rates<br>- Request volume |
