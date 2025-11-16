@@ -46,10 +46,13 @@ easy addition of new services while maintaining security and reliability.
   - Continuous integration/deployment
   - Infrastructure as Code
   - Automated operations
+  - Automated dependency management (Renovate)
 
 - 📊 **Enterprise Monitoring**
-  - Full observability stack
-  - Tracing
+  - Full observability stack (Prometheus, Grafana, Loki, Jaeger)
+  - Pre-configured Grafana dashboards for all services
+  - ServiceMonitor-based metrics collection
+  - Distributed tracing
   - Centralized logging
   - Performance analytics
 
@@ -75,7 +78,7 @@ easy addition of new services while maintaining security and reliability.
 ### 🖥️ Core Platform
 
 | Logo | Service | Description |
-|------|---------|-------------|
+| ------ | ------ | ------ |
 | <img src="https://k3s.io/img/k3s-logo-light.svg" alt="k3s logo" height="40"> | [k3s](https://k3s.io/) | Lightweight Kubernetes |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/argo-cd.svg" alt="ArgoCD logo" height="40"> | [ArgoCD](https://argoproj.github.io/cd/) | GitOps Deployment |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/traefik.svg" alt="Traefik logo" height="40"> | [Traefik](https://traefik.io/) | Ingress Controller |
@@ -85,7 +88,7 @@ easy addition of new services while maintaining security and reliability.
 ### 🔭 Observability
 
 | Logo | Service | Description |
-|------|---------|-------------|
+| ------ | ------ | ------ |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prometheus.svg" alt="Prometheus logo" height="40"> | [Prometheus](https://prometheus.io/) | Metrics Collection |
 | <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana logo" height="40"> | [Grafana](https://grafana.com/) | Visualization |
 | <img src="https://grafana.com/static/img/logos/logo-loki.svg" alt="Loki logo" height="40"> | [Loki](https://grafana.com/oss/loki/) | Log Aggregation |
@@ -95,7 +98,7 @@ easy addition of new services while maintaining security and reliability.
 ### ☁️ Personal Cloud
 
 | Logo | Service | Description |
-|------|---------|-------------|
+| ------ | --------- | ------------- |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/nextcloud.svg" alt="Nextcloud logo" width="40"> | [Nextcloud](https://nextcloud.com/) | File Sync & Share |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/homepage.png" alt="Homepage logo" height="40"> | [Homepage](https://gethomepage.dev/) | Service Dashboard |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/immich.svg" alt="Immich logo" height="40"> | [Immich](https://immich.app/) | Photo Management |
@@ -104,11 +107,22 @@ easy addition of new services while maintaining security and reliability.
 ### 🎬 Media Services
 
 | Logo | Service | Description |
-|------|---------|-------------|
+| ------ | --------- | ------------- |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jellyfin.svg" alt="Jellyfin logo" height="40"> | [Jellyfin](https://jellyfin.org/) | Media Streaming |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/sonarr.svg" alt="Sonarr logo" height="40"> | [Sonarr](https://sonarr.tv/) | TV Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/radarr.svg" alt="Radarr logo" height="40"> | [Radarr](https://radarr.video/) | Movie Management |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prowlarr.svg" alt="Prowlarr logo" height="40"> | [Prowlarr](https://prowlarr.com/) | Index Management |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/transmission.svg" alt="Transmission logo" height="40"> | [Transmission](https://transmissionbt.com/) | BitTorrent Client |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/png/flaresolverr.png" alt="FlareSolverr logo" height="40"> | [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) | CAPTCHA Solver |
+| <img src="https://raw.githubusercontent.com/thecfu/scraparr/refs/heads/dev/.github/assets/logos/scraparr_logo.svg" alt="Scraparr logo" height="40"> | [Scraparr](https://github.com/TheCfu/Scraparr) | Metadata Scraper |
+
+### 🗄️ Data Layer
+
+| Logo | Service | Description |
+| ------ | --------- | ------------- |
+| <img src="https://cloudnative-pg.io/images/hero_image.png" alt="CNPG logo" height="40"> | [CloudNativePG](https://cloudnative-pg.io/) | PostgreSQL Operator |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/valkey.svg" alt="Valkey logo" height="40"> | [Valkey](https://valkey.io/) | (Immich) Caching Layer |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/redis.svg" alt="Redis logo" height="40"> | [Redis](https://redis.io/) | (General) Caching Layer |
 
 ## 🏗️ Architecture and System Design
 
@@ -141,7 +155,7 @@ Kubernetes service. Here's the detailed breakdown:
 
 ### 2. 🌐 Networking and Ingress
 
-#### 🚦 Traefik (v34.4.0)
+#### 🚦 Traefik
 
 ```yaml
 Features:
@@ -171,7 +185,7 @@ Features:
 > Kubernetes-native integration, and robust feature set that allows for
 > both simple and complex routing scenarios.
 
-#### 🛠️ MetalLB (v0.14.9)
+#### 🛠️ MetalLB
 
 ```yaml
 Configuration:
@@ -190,11 +204,12 @@ Configuration:
 > with DHCP and other network services while providing enough addresses for
 > all planned services.
 
-#### 🔐 cert-manager (v1.17.1)
+#### 🔐 cert-manager
 
 - 🎯 Let's Encrypt Integration
 - ☁️ Cloudflare DNS-01 Challenge
 - 🌟 Wildcard Certificates (*.my-homelab.party)
+- 📊 Prometheus Metrics Integration
 
 ### 3. 💾 Storage Architecture
 
@@ -219,15 +234,15 @@ The storage architecture is designed with the following principles:
 > reliability while maintaining flexibility for future growth.
 
 | Namespace | PVC | Size | Purpose | Design Considerations |
-|-----------|-----|------|---------|---------------------|
+| ----------- | ----- | ------ | --------- | --------------------- |
 | htpc | htpc-pvc | Shared | Media & App Data | High throughput, large files |
 | infra | grafana-data-pvc | 5GB | Dashboards | Fast random access |
 | | jaeger-data-pvc | 10GB | Tracing | High write frequency |
-| | promtail-positions-pvc | 1GB | Logging | Sequential writes |
 | utils | immich-library-pvc | 20GB | Photos/Videos | Mixed IO patterns |
-| | immich-redis-pvc | 5GB | Cache | In-memory performance |
+| | immich-valkey-pvc | 5GB | Cache | In-memory performance |
 | | immich-ml-cache-pvc | 10GB | ML Models | Read-optimized |
 | | nextcloud-pvc | 31GB | Files | Mixed workload |
+| | nextcloud-redis-pvc | 1GB | Redis Data | Fast access |
 | | tandoor-data-pvc | 20GB | Recipes | Small files, frequent access |
 
 > 🔄 All storage is dynamically provisioned by local-path-provisioner
@@ -283,18 +298,49 @@ The media management system is built on four key pillars:
    - Hardware transcoding support
    - Adaptive streaming
    - Client-specific optimization
+   - Advanced bitstreaming with dedicated hardware for lossless audio/video passthrough
 
    ```mermaid
    graph TD
      A[Client Request] --> B[Format Check]
-     B --> C[Direct Play?]
-     C -->|Yes| D[Direct Stream]
-     C -->|No| E[Transcode]
+     B --> C{Can Direct Play?}
+     C -->|Yes| D[Direct Play<br/>Original Format<br/>No Processing]
+     C -->|No| E{Can Direct Stream?}
+     E -->|Yes| F[Direct Stream<br/>Remux Container<br/>No Re-encoding]
+     E -->|No| G[Transcode<br/>Re-encode<br/>Server Processing]
+     D --> H[Bitstreaming Supported?]
+     F --> H
+     H -->|Yes| I[Hardware Passthrough]
+     H -->|No| J[Software Decode]
    ```
 
-> 💡 **Workflow Design**: The media management workflow is designed to be
-> fully automated while maintaining high quality standards and optimal
-> resource usage.
+   #### Advanced Hardware Setup for Bitstreaming
+
+   For optimal quality with high-end audio/video formats, a dedicated client setup
+   can eliminate transcoding issues common with TV-integrated clients:
+
+   - **Client Device**: [Homatics Box R 4K Plus](https://www.homatics.com/products/box-r-4k-plus) running [CoreElec](https://coreelec.org/)
+     - Enables hardware-accelerated decoding and HDMI passthrough for Dolby Vision, HDR10/10+,
+       Dolby Atmos, DTS:X, and lossless codecs. (Ref: [Supported Formats](https://docs.google.com/spreadsheets/u/0/d/15i0a84uiBtWiHZ5CXZZ7wygLFXwYOd84/htmlview#gid=845372636))
+     - Avoids transcoding limitations of WebOS clients that force AAC audio conversion and
+       HDR fallbacks from Dolby Vision 7.
+
+   - **Connection Chain**: LAN to Jellyfin server → HDMI to Samsung HW-Q995D Q-Series Soundbar
+     → HDMI eARC to LG G4 OLED TV.
+     - **HDMI eARC Benefits**: Bidirectional high-bandwidth audio channel (up to 37 Mbps)
+       supporting uncompressed multi-channel audio, Dolby Atmos/DTS:X metadata, and video
+       passthrough up to 8K/60Hz.
+     - **Compatibility**: Full support for Dolby Vision 7.6 (with FEL) and Dolby TrueHD Atmos lossless audio
+       passthrough. (Ref: [Test Results](https://discourse.coreelec.org/t/ce-ng-dolby-vision-fel-for-dv-licensed-socs-s905x2-s922x-z-s905x4/50953))
+
+   - **Key Advantages**:
+     - Eliminates audio transcoding to AAC and video fallbacks to standard HDR
+     - Reduces latency and server load through direct bitstreaming
+     - Future-proofs for 8K/120Hz content with HDMI 2.1 compliance
+
+    > 💡 **Hardware Optimization**: This setup prioritizes direct play over compatibility,
+    > ensuring lossless transmission of advanced formats like Dolby Vision 7 and Dolby Atmos
+    > through the entire chain.
 
 ### 5. 🔒 Security Architecture
 
@@ -410,7 +456,7 @@ The continuous integration and deployment pipeline is designed for reliability a
 #### Pipeline Stages
 
 | Stage | Tool | Purpose | Implementation Details |
-|-------|------|---------|----------------------|
+| ------- | ------ | --------- | ---------------------- |
 | Lint | yamllint | YAML Validation | - Syntax checking<br>- Style enforcement<br>- Custom rules |
 | Test | kubeconform | Manifest Validation | - Schema validation<br>- Version checking<br>- Resource validation |
 | Build | kustomize | Generate install.yaml | - Overlay composition<br>- Resource generation<br>- Configuration merging |
@@ -441,6 +487,39 @@ The continuous integration and deployment pipeline is designed for reliability a
    - Performance tracking
    - Error reporting
    - Alert generation
+
+#### Automated Dependency Management
+
+The platform uses **Renovate Bot** for automated dependency updates:
+
+**Features:**
+
+- 🤖 Automated dependency updates for Docker images, Helm charts, and CRDs
+- 🔄 Auto-merge for minor and patch updates
+- 📝 Custom regex managers for various file patterns
+- 🔐 Support for multiple container registries (ghcr.io, docker.io)
+- 🎯 Intelligent version detection and tracking
+
+**Managed Components:**
+
+- Docker images in Kubernetes manifests
+- Helm chart versions
+- CRD URLs from GitHub releases
+- Pre-commit hook versions
+- GitHub Action versions
+
+**Configuration Highlights:**
+
+```yaml
+Auto-merge: minor & patch updates
+Timezone: Europe/Berlin
+Labels: dependencies, automated
+Timeout: 60s for container registries
+```
+
+> 💡 **Automation Philosophy**: Renovate keeps the platform up-to-date with
+> minimal manual intervention while maintaining stability through smart
+> auto-merge policies and comprehensive testing.
 
 ### 8. 🛠️ Utility Applications
 
@@ -478,28 +557,37 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 #### Metrics Collection
 
 | Component | Purpose | Key Metrics |
-|-----------|---------|-------------|
+| ----------- | --------- | ------------- |
 | Prometheus | Time-series DB | - Resource utilization<br>- Application metrics<br>- Service health |
 | Exportarr | Media Stats | - Download status<br>- Queue metrics<br>- Quality stats |
 | Node Exporter | System Metrics | - Hardware stats<br>- System load<br>- Network usage |
+| ServiceMonitor | Service Discovery | - ArgoCD<br>- Scraparr<br>- cert-manager<br>- CNPG operator |
 
 #### Log Management
 
 | Component | Role | Features |
-|-----------|------|----------|
+| ----------- | ------ | ---------- |
 | Loki | Log Aggregation | - Label-based queries<br>- Log correlation<br>- Real-time tailing |
 | Alloy | Log Collection | - Service discovery<br>- Label extraction<br>- Pipeline processing |
 
 #### Tracing
 
 | Component | Purpose | Capabilities |
-|-----------|---------|-------------|
+| ----------- | --------- | ------------- |
 | Jaeger | Request Tracing | - Latency analysis<br>- Error tracking<br>- Dependency mapping |
 
 #### Visualization & Alerting
 
+Pre-configured Grafana dashboards for comprehensive monitoring:
+
 | Dashboard | Focus | Features |
-|-----------|-------|----------|
+| ----------- | ------- | ---------- |
+| ArgoCD | GitOps Operations | - Application sync status<br>- Deployment health<br>- API activity |
+| cert-manager | Certificate Management | - Certificate expiry<br>- Renewal status<br>- Issuer health |
+| Kubernetes | Cluster Health | - Resource usage<br>- Node status<br>- Pod metrics |
+| Loki | Log Aggregation | - Log volume<br>- Error rates<br>- Query performance |
+| Scraparr | Media Automation | - Service health<br>- Request metrics<br>- Error tracking |
+| HTPC | Media Services | - Arr stack metrics<br>- Error Log<br>- Resource limit recomendations |
 | System Health | Infrastructure | - Resource usage<br>- Node status<br>- Network stats |
 | Media Status | Content | - Download progress<br>- Library status<br>- Quality metrics |
 | Application | Services | - Response times<br>- Error rates<br>- Request volume |
@@ -533,7 +621,7 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 3. **Available Scripts**
 
   | Script | Purpose |
-  |--------|---------|
+  | -------- | --------- |
   | 🛠️ bootstrap.sh | Install essential libraries in a new Ubuntu VM |
   | ✅ validate.sh | Config Check |
   | 🚀 deploy.sh | Deployment |
