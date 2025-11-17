@@ -20,7 +20,7 @@ spec:
           - 992
       containers:
         - name: jellyfin
-          image: jellyfin/jellyfin:10.11.2
+          image: jellyfin/jellyfin:10.11.3
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
