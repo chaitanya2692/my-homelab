@@ -37,7 +37,7 @@ spec:
               subPath: data
       containers:
         - name: radarr
-          image: 11notes/radarr:5.28.0
+          image: 11notes/radarr:6.0.4
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
