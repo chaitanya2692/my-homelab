@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:8.2.3
+          image: redis:8.4.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 6379
