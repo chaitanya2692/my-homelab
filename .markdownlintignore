@@ -1,0 +1,4 @@
+# Ignore non-documentation files
+
+README.md
+MKDOCS_MIGRATION_PLAN.md
