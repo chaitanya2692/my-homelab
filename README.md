@@ -342,7 +342,6 @@ The media management system is built on four key pillars:
 
     - Get a USB Drive and flash CoreElec 21.3 using [Balena Etcher](https://etcher.balena.io/).
       - Image: <https://github.com/CoreELEC/CoreELEC/releases/download/21.3-Omega/CoreELEC-Amlogic-ng.arm-21.3-Omega-Generic.img.gz>
-
     - Browse to the Device Trees folder on USB flash drive, and:
       - copy the correct sc2_s905x4_sei_smb_280.dtb image file for the device to the root folder, the same level as kernel.img.
       - rename it to dtb.img. Ignore any warnings after renaming.
@@ -356,15 +355,17 @@ The media management system is built on four key pillars:
         SSH for debugging or development.
     - In the GUI, navigate to Settings —> Services —> [Caching](https://kodi.wiki/view/Settings/Services/Caching) and
         turn on expert settings. Modify below:
-      - Memory Size: 512Mb
-      - Read Factor: 10x
+      - **Buffer mode**: All network filesystems
+      - **Memory Size**: 512MB
+      - **Read Factor**: 10.00x
     - navigate to Settings —> Services —> Audio and modify below:
-      - Audio Output Device:
-      - Number of Channels: 7.1
-      - Keep Audio Device Alive: Always(?)
-      - Enable "Audio Passthrough"
-      - Passthrough output Device:
-      - Enable all audio codecs below
+      - **Audio Output Device**: ASLA:AML-AUGESOUND, HDMI Multi Ch PCM
+      - **Number of Channels**: 7.1
+      - **Output Configuration**: Best Match
+      - **Keep Audio Device Alive**: Always
+      - **Enable "Audio Passthrough"**: Enabled
+      - **Passthrough Output Device**: ALSA: AML-AUGESOUND, HDMI
+      - Enable all audio codecs below (AC3, E-AC3, DTS, TrueHD, DTS-HD)
     - (Optional) navigate to Settings —> Services —> Logging
       - Enable Debug logging
     - Install [Jellyfin](https://jellyfin.org/docs/general/clients/kodi/#embedded-devices-android-tv-firestick-and-other-tv-boxes)
@@ -372,8 +373,8 @@ The media management system is built on four key pillars:
     - Shutdown the device. Connect it to Dolby Vision display or surroundbar with passthrough capabilitites. Ensure a
         wired LAN connection as well.
     - navigate to Settings —> Services —> Display and turn on expert settings. Modify below
-      - Enable "Disable Noise Reduction"
-      - Dolby Vision Led Mode should be set at TV-Led.
+      - **Enable "Disable Noise Reduction"**: Enabled
+      - **Dolby Vision Led Mode**: TV-Led
     - navigate to Settings —> CoreElec —> Network:
       - Turn off wireless connection.
     - navigate to Settings —> CoreElec —> Updates:
