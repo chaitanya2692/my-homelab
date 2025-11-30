@@ -1,0 +1,9 @@
+config:
+  extends: .markdownlint.yaml
+
+ignores:
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/.github/prompts/**"
+  - "**/site/**"
+  - "**/node_modules/**"

@@ -1,0 +1,201 @@
+site_name: My Kubernetes Homelab Platform
+site_url: https://chaitanya2692.github.io/my-homelab/
+site_description: A modern, extensible Kubernetes-based homelab platform
+site_author: chaitanya2692
+repo_url: https://github.com/chaitanya2692/my-homelab
+repo_name: chaitanya2692/my-homelab
+edit_uri: edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2025 chaitanya2692
+
+# Theme Configuration
+theme:
+  name: material
+  language: en
+  logo: material/kubernetes
+  favicon: material/kubernetes
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    # Navigation
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - navigation.tracking
+    # Table of contents
+    - toc.follow
+    - toc.integrate
+    # Search
+    - search.suggest
+    - search.highlight
+    - search.share
+    # Content
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    # Header
+    - header.autohide
+
+# Plugins
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+      cache_safe: true
+  - redirects:
+      redirect_maps: {}
+
+# Extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  # PyMdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      auto_title: true
+      linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: chaitanya2692
+      repo: my-homelab
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      base_path:
+        - docs
+        - .
+      auto_append:
+        - includes/abbreviations.md
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.striphtml
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/chaitanya2692
+      name: GitHub Profile
+  generator: false
+  analytics:
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! Help us improve by submitting an issue.
+
+# Navigation
+nav:
+  - Home: index.md
+  - Getting Started:
+      - getting-started/index.md
+      - Prerequisites: getting-started/prerequisites.md
+      - Installation: getting-started/installation.md
+      - Scripts Reference: getting-started/scripts-reference.md
+  - Architecture:
+      - architecture/index.md
+      - Overview: architecture/overview.md
+      - Kubernetes Infrastructure: architecture/kubernetes-infrastructure.md
+      - Networking: architecture/networking.md
+      - Storage: architecture/storage.md
+      - Security: architecture/security.md
+      - Configuration Management: architecture/configuration-management.md
+      - CI/CD: architecture/cicd.md
+      - Observability: architecture/observability.md
+  - Services:
+      - services/index.md
+      - Core Platform: services/core-platform.md
+      - Observability Stack: services/observability-stack.md
+      - Personal Cloud: services/personal-cloud.md
+      - Media Services: services/media-services.md
+      - Hardware Setup: services/hardware-setup.md
+      - Data Layer: services/data-layer.md
+  - Configuration:
+      - configuration/index.md
+      - Base Configurations: configuration/base-configurations.md
+      - Overlays: configuration/overlays.md
+      - Secrets: configuration/secrets.md
+  - Reference:
+      - reference/index.md
+      - Storage Reference: reference/storage-reference.md
+      - Network Reference: reference/network-reference.md
+      - Scripts API: reference/scripts-api.md
