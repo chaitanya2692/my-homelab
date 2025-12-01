@@ -1,0 +1,27 @@
+[project]
+name = "my-homelab-docs"
+version = "1.0.0"
+description = "Kubernetes Homelab Platform Documentation"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [
+    { name = "chaitanya2692", email = "chaitanya2692@users.noreply.github.com" }
+]
+
+[project.urls]
+Repository = "https://github.com/chaitanya2692/my-homelab"
+Homepage = "https://chaitanya2692.github.io/my-homelab/"
+
+[dependency-groups]
+dev = [
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "pymdown-extensions>=10.7.0",
+    "mkdocs-git-revision-date-localized-plugin>=1.2.0",
+    "mkdocs-minify-plugin>=0.8.0",
+    "mkdocs-redirects>=1.2.0",
+]
+
+[tool.uv]
+dev-dependencies = []
