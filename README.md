@@ -317,19 +317,15 @@ The media management system is built on four key pillars:
    #### Advanced Hardware Setup for Bitstreaming
 
    For optimal quality with high-end audio/video formats, a dedicated client setup
-   can eliminate transcoding issues common with TV-integrated clients:
+   eliminates transcoding issues common with TV-integrated clients:
 
    - **Client Device**: [Homatics Box R 4K Plus](https://www.homatics.com/products/box-r-4k-plus) running [CoreElec](https://coreelec.org/)
      - Enables hardware-accelerated decoding and HDMI passthrough for Dolby Vision, HDR10/10+,
-       Dolby Atmos, DTS:X, and lossless codecs. (Ref: [Supported Formats](https://docs.google.com/spreadsheets/u/0/d/15i0a84uiBtWiHZ5CXZZ7wygLFXwYOd84/htmlview#gid=845372636))
+       Dolby Atmos, DTS:X, and lossless codecs. (Ref: [Device Codec Compatibility](https://docs.google.com/spreadsheets/u/0/d/15i0a84uiBtWiHZ5CXZZ7wygLFXwYOd84/htmlview#gid=845372636))
      - Avoids transcoding limitations of WebOS clients that force AAC audio conversion and
        HDR fallbacks from Dolby Vision 7.
 
-   - **Connection Chain**: LAN to Jellyfin server → HDMI to Samsung HW-Q995D Q-Series Soundbar
-     → HDMI eARC to LG G4 OLED TV.
-     - **HDMI eARC Benefits**: Bidirectional high-bandwidth audio channel (up to 37 Mbps)
-       supporting uncompressed multi-channel audio, Dolby Atmos/DTS:X metadata, and video
-       passthrough up to 8K/60Hz.
+   - **Connection Chain**: Router —> LAN —> Homatics Box —> HDMI —> Samsung HW-Q995D Soundbar —> HDMI eARC —> LG G4 TV.
      - **Compatibility**: Full support for Dolby Vision 7.6 (with FEL) and Dolby TrueHD Atmos lossless audio
        passthrough. (Ref: [Test Results](https://discourse.coreelec.org/t/ce-ng-dolby-vision-fel-for-dv-licensed-socs-s905x2-s922x-z-s905x4/50953))
 
@@ -341,6 +337,73 @@ The media management system is built on four key pillars:
     > 💡 **Hardware Optimization**: This setup prioritizes direct play over compatibility,
     > ensuring lossless transmission of advanced formats like Dolby Vision 7 and Dolby Atmos
     > through the entire chain.
+
+   #### Setup Instructions
+
+   ##### Initial Installation
+
+    - Get a USB Drive and flash [CoreELEC 21.3](https://github.com/CoreELEC/CoreELEC/releases/download/21.3-Omega/CoreELEC-Amlogic-ng.arm-21.3-Omega-Generic.img.gz)
+     using [Balena Etcher](https://etcher.balena.io/).
+    - Browse to the Device Trees folder on USB flash drive, and:
+      - Copy the correct `sc2_s905x4_sei_smb_280.dtb` image file for the device to the root folder, the same level as `kernel.img`
+      - Rename it to `dtb.img` (ignore any warnings after renaming)
+    - Copy the [dovi.ko](https://drive.google.com/file/d/1985DIi9Bh6ZIm2IXCpCuhCvQQk9xCNCQ/view?usp=drive_link) file
+      into the same location.
+    - Insert the USB drive into any of the USB ports on the box and insert the power adapter. The device should boot
+      to CoreELEC via the USB.
+      - If not, either restart the device from the Android TV GUI until it identifies the USB drive or try the reset
+        button technique on the [official website](https://wiki.coreelec.org/coreelec:ceboot) and try to reboot from
+        the android recovery menu
+    - Once you see the CoreELEC logo and the OS has successfully booted, complete the initial setup
+      - Enable SSH for debugging or development (recommended)
+
+   ##### Kodi Configuration
+
+   **Cache Settings** (Settings → Services → [Caching](https://kodi.wiki/view/Settings/Services/Caching))
+    - Turn on expert settings and modify:
+      - **Buffer mode**: All network filesystems (optimizes network streaming)
+      - **Memory Size**: 512MB (allocates sufficient buffer for 4K Remuxes)
+      - **Read Factor**: 10.00x (reduces buffering during playback)
+
+   **Audio Settings** (Settings → Services → Audio)
+    - Configure for lossless ATMOS passthrough:
+      - **Audio Output Device**: ALSA:AML-AUGESOUND, HDMI Multi Ch PCM
+      - **Number of Channels**: 7.1
+      - **Output Configuration**: Best Match
+      - **Keep Audio Device Alive**: Always (prevents audio device reinitialization)
+      - **Enable "Audio Passthrough"**: Enabled
+      - **Passthrough Output Device**: ALSA:AML-AUGESOUND, HDMI
+      - **Enable all audio codecs**: AC3, E-AC3, DTS, TrueHD, DTS-HD (for Dolby Atmos/DTS:X support)
+
+   **Display Settings** (Settings → Services → Display)
+    - Turn on expert settings and modify:
+      - **Enable "Disable Noise Reduction"**: Enabled (preserves original video quality)
+      - **Dolby Vision LED Mode**: TV-Led (optimizes DV tone mapping)
+
+   **(Optional) Debug Logging** (Settings → Services → Logging)
+    - **Enable Debug logging**: For troubleshooting only (disable after resolving issues as it consumes CPU)
+
+   ##### System Configuration
+
+   **Network Settings** (Settings → CoreELEC → Network)
+    - **Turn off wireless connection** (wired Ethernet ensures stable streaming for high-bitrate content)
+
+   **Update Settings** (Settings → CoreELEC → Updates)
+    - **Turn off all settings** (prevents automatic updates that may cause instability)
+
+   ##### Jellyfin Integration
+
+    - Install [Jellyfin](https://jellyfin.org/docs/general/clients/kodi/#embedded-devices-android-tv-firestick-and-other-tv-boxes)
+    and navigate the GUI to add all libraries.
+    - Shutdown the device. Connect it to Dolby Vision display or soundbar with passthrough capabilities. Ensure a wired
+      LAN connection as well.
+
+   ##### Playback Verification
+
+    - Movies which are in Dolby Vision 7.6 with FEL should work now. There might be a few frame drops for a few seconds
+      while the TV display switches between SDR to Dolby Vision.
+      - **Workaround**: Rewind the movie to the beginning. It should play perfectly as the display has already switched
+        to the desired mode.
 
 ### 5. 🔒 Security Architecture
 
