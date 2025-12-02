@@ -6,7 +6,7 @@ jobs:
   yaml-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
       - name: yaml-lint
         uses: ibiqlik/action-yamllint@v3.1.1
         with:
@@ -15,7 +15,7 @@ jobs:
   markdownlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
       - name: markdownlint-cli2-action
         uses: DavidAnson/markdownlint-cli2-action@v21
         with:
@@ -28,7 +28,7 @@ jobs:
     needs: [markdownlint, yaml-lint]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
       - name: Setup yq
         uses: fluxcd/pkg/actions/yq@main
       - name: Setup kubeconform
@@ -51,7 +51,7 @@ jobs:
     needs: [yaml-lint]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
       - name: TruffleHog OSS
         uses: trufflesecurity/trufflehog@v3.91.2
         with:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.0
+        uses: actions/checkout@v6.0.1
       - name: Setup kustomize
         uses: fluxcd/pkg/actions/kustomize@main
       - name: Setup ksops
