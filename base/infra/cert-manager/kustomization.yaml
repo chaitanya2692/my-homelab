@@ -13,7 +13,7 @@ resources:
 helmCharts:
   - name: cert-manager
     repo: https://charts.jetstack.io
-    version: v1.19.1 # helm search repo --regexp 'jetstack/cert-manager[[:space:]]' -o json | jq -r '.[].version'
+    version: v1.19.2 # helm search repo --regexp 'jetstack/cert-manager[[:space:]]' -o json | jq -r '.[].version'
     releaseName: cert-manager
     includeCRDs: false
     valuesFile: values.yaml
