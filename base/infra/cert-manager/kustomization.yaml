@@ -19,5 +19,5 @@ helmCharts:
     valuesFile: values.yaml
   - name: reflector
     repo: https://emberstack.github.io/helm-charts
-    version: 9.1.44
+    version: 9.1.45
     releaseName: reflector
