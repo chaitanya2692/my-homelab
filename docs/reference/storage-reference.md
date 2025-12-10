@@ -139,11 +139,6 @@ For optimal performance:
 | Database Backups | 100-500 MB/s | SSD |
 | Log Aggregation | 10-50 MB/s | SSD |
 
-## Volume Snapshot Configuration
-
-If supported by the CSI driver, volume snapshots can be created using VolumeSnapshotClass and VolumeSnapshot resources.
-The snapshot references the source PVC and uses the configured snapshot class with appropriate deletion policies.
-
 ## Backup Strategy
 
 ### Recommended Backup Schedule
@@ -165,19 +160,6 @@ kubectl exec -n utils nextcloud-pod -- tar czf - /data > nextcloud-backup.tar.gz
 
 # Restore
 kubectl exec -n utils nextcloud-pod -- tar xzf - -C / < nextcloud-backup.tar.gz
-```
-
-## Automated Backup (Velero)
-
-```bash
-# Install Velero
-velero install --provider aws --plugins velero/velero-plugin-for-aws:latest
-
-# Create backup
-velero backup create <backup-name> --include-namespaces utils
-
-# Restore
-velero restore create --from-backup <backup-name>
 ```
 
 ## Storage Monitoring

@@ -98,7 +98,6 @@ flowchart TB
 | Service | Port | Protocol | Purpose |
 | ------- | ---- | -------- | ------- |
 | Jellyfin | 8096 | TCP | Web interface and streaming |
-| Jellyfin HTTPS | 8920 | TCP | Secure streaming |
 | Sonarr | 8989 | TCP | Web interface |
 | Radarr | 7878 | TCP | Web interface |
 | Prowlarr | 9696 | TCP | Web interface |
@@ -119,13 +118,13 @@ flowchart TB
 ### Domain Structure
 
 ```text
-example.com                     # Root domain
-├── *.example.com              # Wildcard (all services)
-├── argocd.example.com         # ArgoCD UI
-├── grafana.example.com        # Grafana dashboards
-├── nextcloud.example.com      # Nextcloud
-├── immich.example.com         # Immich
-├── jellyfin.example.com       # Jellyfin
+my-homelab.party               # Root domain
+├── *.my-homelab.party         # Wildcard (all services)
+├── argocd.my-homelab.party    # ArgoCD UI
+├── grafana.my-homelab.party   # Grafana dashboards
+├── nextcloud.my-homelab.party # Nextcloud
+├── immich.my-homelab.party    # Immich
+├── jellyfin.my-homelab.party  # Jellyfin
 └── ...                        # Other services
 ```
 
@@ -205,74 +204,6 @@ graph TD
 | 80, 443 | TCP | Any | HTTP/HTTPS (updates, downloads) |
 | 53 | UDP | DNS Servers | DNS queries |
 
-## Network Policies
-
-### Default Deny
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-all
-  namespace: utils
-spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
-    - Egress
-```
-
-### Allow from Traefik
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-from-traefik
-  namespace: utils
-spec:
-  podSelector:
-    matchLabels:
-      app: my-app
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              name: infra
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: traefik
-      ports:
-        - protocol: TCP
-          port: 8080
-```
-
-### Allow DNS
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-dns
-spec:
-  podSelector: {}
-  policyTypes:
-    - Egress
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              name: kube-system
-        - podSelector:
-            matchLabels:
-              k8s-app: kube-dns
-      ports:
-        - protocol: UDP
-          port: 53
-```
-
 ## Load Balancer Configuration
 
 ### MetalLB Layer 2 Configuration
@@ -324,7 +255,7 @@ This creates a LoadBalancer service that MetalLB assigns to `192.168.1.245`. The
 ### IngressRoute Example
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: service-ingress
@@ -347,7 +278,7 @@ spec:
 ### Middleware Example
 
 ```yaml
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: security-headers

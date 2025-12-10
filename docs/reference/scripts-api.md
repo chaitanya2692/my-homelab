@@ -58,10 +58,11 @@ Prepares a fresh Ubuntu system with all required dependencies for running the ho
 12. Moves Age key from `~/key.txt` to `~/.sops/key.txt`
 13. Installs yq (YAML processor)
 14. Installs pip and pre-commit
-15. Installs K3s with flags: `--disable servicelb --disable traefik --disable local-storage`
-16. Configures kubeconfig at `~/.kube/config`
-17. Creates cluster storage directories at `/opt/cluster/{htpc,utils,infra}`
-18. Sets proper permissions on storage directories
+15. Sets up pre-commit hooks with `pre-commit install`
+16. Installs K3s with flags: `--disable servicelb --disable traefik --disable local-storage`
+17. Configures kubeconfig at `~/.kube/config`
+18. Creates cluster storage directories at `/opt/cluster/{htpc,utils,infra}`
+19. Sets proper permissions on storage directories
 
 ### bootstrap.sh Prerequisites
 
@@ -270,10 +271,11 @@ Builds Kustomize overlays and generates deployment manifests for specified envir
 ### update-manifests.sh What It Does
 
 1. Checks for changes in relevant files (argocd, base, overlays, scripts)
-2. Updates environment in kustomization files
-3. Builds each overlay (htpc, utils, infra, argocd) with kustomize
-4. Generates consolidated install.yaml file
-5. Cleans up temporary chart directories
+2. If no changes are detected, exits successfully without rebuilding
+3. Updates environment in kustomization files
+4. Builds each overlay (htpc, utils, infra, argocd) with kustomize
+5. Generates consolidated install.yaml file
+6. Cleans up temporary chart directories
 
 ### update-manifests.sh Arguments
 
@@ -289,7 +291,7 @@ Generated file is placed at `install.yaml` in the repository root.
 
 | Code | Meaning |
 | ------ | --------- |
-| 0 | Build successful or no changes |
+| 0 | Build successful, no changes detected, or no rebuild needed |
 | 1 | Build failed |
 
 ### update-manifests.sh Example
@@ -424,8 +426,8 @@ command -v kubectl >/dev/null 2>&1 |  | { |
 - name: Build
   run: ./scripts/update-manifests.sh
 
-- name: Deploy (dry-run)
-  run: ./scripts/deploy.sh --dry-run
+- name: Deploy
+  run: ./scripts/deploy.sh
 ```
 
 ### Pre-commit Hook
