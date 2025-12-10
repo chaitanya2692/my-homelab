@@ -21,7 +21,7 @@ jobs:
         with:
           fix: true
           globs: "**/*.md"
-          config: .markdownlint.yaml
+          config: .markdownlint-cli2.yaml
 
   validate:
     runs-on: ubuntu-latest

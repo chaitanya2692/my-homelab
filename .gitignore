@@ -6,3 +6,4 @@ non-crds.yaml
 install*.yaml
 *.log
 *.txt
+.venv/
