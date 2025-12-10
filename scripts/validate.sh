@@ -25,7 +25,7 @@ do
 done
 
 echo "INFO - Validating Kubernetes manifests"
-find . -type f -name '*.yaml' ! -name '*values*.yaml' ! -name '.pre-commit-config.yaml' ! -name '.sops.yaml' ! -name '.markdownlint.yaml' -print0 | while IFS= read -r -d $'\0' file; do
+find . -type f -name '*.yaml' ! -name '*values*.yaml' ! -name '.pre-commit-config.yaml' ! -name '.sops.yaml' ! -name '.markdownlint-cli2.yaml' -print0 | while IFS= read -r -d $'\0' file; do
   kubeconform ${KUBECONFORM_FLAGS} ${KUBECONFORM_CONFIG} "${file}"
 done
 

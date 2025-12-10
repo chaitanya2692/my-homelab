@@ -17,11 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.1
       - name: markdownlint-cli2-action
-        uses: DavidAnson/markdownlint-cli2-action@v21
+        uses: DavidAnson/markdownlint-cli2-action@v22
         with:
           fix: true
           globs: "**/*.md"
-          config: .markdownlint.yaml
+          config: .markdownlint-cli2.yaml
 
   validate:
     runs-on: ubuntu-latest

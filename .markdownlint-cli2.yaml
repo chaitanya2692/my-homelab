@@ -1,0 +1,15 @@
+config:
+  default: true
+
+  line-length:
+    code_blocks: false
+    tables: false
+    line_length: 800
+  no-inline-html: false
+
+ignores:
+  - "**/.venv/**"
+  - "**/venv/**"
+  - "**/.github/prompts/**"
+  - "**/site/**"
+  - "**/node_modules/**"
