@@ -55,7 +55,7 @@ loki:
     timeoutSeconds: 1
   image:
     repository: grafana/loki
-    tag: "3.6.2"
+    tag: "3.6.3"
   sidecar:
     skipTlsVerify: true
   auth_enabled: false
