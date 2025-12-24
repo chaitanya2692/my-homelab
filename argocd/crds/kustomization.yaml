@@ -4,9 +4,9 @@ kind: Kustomization
 
 resources:
   # Argo CD CRDs
-  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.2/manifests/crds/application-crd.yaml
-  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.2/manifests/crds/applicationset-crd.yaml
-  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.2/manifests/crds/appproject-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.3/manifests/crds/application-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.3/manifests/crds/applicationset-crd.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v3.2.3/manifests/crds/appproject-crd.yaml
   # cert-manager CRDs
   - https://github.com/jetstack/cert-manager/releases/download/v1.19.2/cert-manager.crds.yaml
   # Traefik CRDs
