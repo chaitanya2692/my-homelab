@@ -41,7 +41,7 @@ spec:
               subPath: transmission/watch
       containers:
         - name: transmission
-          image: linuxserver/transmission:4.0.6
+          image: linuxserver/transmission:4.1.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
