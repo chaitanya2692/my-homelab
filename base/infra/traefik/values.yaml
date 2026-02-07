@@ -4,20 +4,9 @@ namespaceOverride: infra
 global:
   checkNewVersion: false
 
-additionalArguments:
-  - "--serversTransport.insecureSkipVerify=true"
-
-logs:
-  general:
-    level: "INFO"
-
 metrics:
   addInternals: true
   prometheus:
-    entryPoint: metrics
-    addEntryPointsLabels: true
-    addRoutersLabels: true
-    addServicesLabels: true
     service:
       enabled: true
     disableAPICheck: true
@@ -35,15 +24,6 @@ tracing:
     grpc:
       enabled: true
       endpoint: "jaeger:14250"
-
-ingressClass:
-  enabled: true
-  isDefaultClass: true
-
-deployment:
-  enabled: true
-  kind: Deployment
-  replicas: 1
 
 ports:
   web:
@@ -64,23 +44,16 @@ ports:
     port: 8082
     expose:
       default: true
-    protocol: TCP
 
 providers:
   kubernetesCRD:
-    enabled: true
     ingressClass: traefik-external
     allowExternalNameServices: true
     allowCrossNamespace: true
   kubernetesIngress:
     enabled: false
 
-rbac:
-  enabled: true
-
 service:
-  enabled: true
-  type: LoadBalancer
   spec:
     loadBalancerIP: 192.168.1.245
     externalTrafficPolicy: Local
