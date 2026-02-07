@@ -4,6 +4,10 @@ namespaceOverride: infra
 global:
   checkNewVersion: false
 
+logs:
+  access:
+    timezone: "CET"
+
 metrics:
   addInternals: true
   prometheus:
@@ -61,7 +65,3 @@ service:
 persistence:
   enabled: true
   existingClaim: traefik-data-pvc
-
-env:
-  - name: TZ
-    value: "CET"
