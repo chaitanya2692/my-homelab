@@ -1,9 +1,8 @@
 ---
 namespaceOverride: infra
 
-globalArguments:
-  - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"
+global:
+  checkNewVersion: false
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
@@ -50,17 +49,19 @@ deployment:
 
 ports:
   web:
-    redirections:
-      entrypoint:
-        to: websecure
-        scheme: https
-        priority: 10
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+          priority: 10
   websecure:
     http3:
       enabled: true
       advertisedPort: 443
-    tls:
-      enabled: true
+    http:
+      tls:
+        enabled: true
   metrics:
     port: 8082
     expose:
