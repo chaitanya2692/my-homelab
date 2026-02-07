@@ -23,7 +23,7 @@ spec:
     - match: Host(`jaeger.my-homelab.party`)
       kind: Rule
       services:
-        - name: jaeger-query
+        - name: jaeger
           port: 16686
     - match: Host(`prometheus.my-homelab.party`)
       kind: Rule
