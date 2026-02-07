@@ -28,15 +28,13 @@ metrics:
         release: kube-prometheus-stack
 
 tracing:
-  serviceName: "traefik"
   addInternals: true
-  sampleRate: 1.0
   otlp:
     enabled: true
+    endpoint: "jaeger:4318"
     grpc:
       enabled: true
-      endpoint: "jaeger-collector.infra.svc.cluster.local:4317"
-      insecure: true
+      endpoint: "jaeger:14250"
 
 ingressClass:
   enabled: true
