@@ -4,6 +4,9 @@ namespaceOverride: infra
 global:
   checkNewVersion: false
 
+additionalArguments:
+  - "--serversTransport.insecureSkipVerify=true"
+
 logs:
   access:
     timezone: "CET"
