@@ -10,6 +10,9 @@
     "dependencies",
     "automated"
   ],
+  "schedule": [
+    "0 3 * * 0"
+  ],
   "hostRules": [
     {
       "matchHost": "ghcr.io",
