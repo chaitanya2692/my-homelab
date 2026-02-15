@@ -3,15 +3,13 @@
   "extends": [
     "config:recommended",
     ":enablePreCommit",
-    ":rebaseStalePrs"
+    ":rebaseStalePrs",
+    "schedule:earlyMondays"
   ],
   "timezone": "Europe/Berlin",
   "labels": [
     "dependencies",
     "automated"
-  ],
-  "schedule": [
-    "0 3 * * 0"
   ],
   "hostRules": [
     {
