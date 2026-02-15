@@ -356,6 +356,8 @@ The media management system is built on four key pillars:
         the android recovery menu
     - Once you see the CoreELEC logo and the OS has successfully booted, complete the initial setup
       - Enable SSH for debugging or development (recommended)
+    - SSH into the device after it is assigned an IP address and copy the latest release from [avdvbuilds](https://github.com/avdvplus/Builds)
+      in the [update folder](https://wiki.coreelec.org/coreelec:updates#update_by_manual_place_a_update_file) and reboot.
 
    ##### Kodi Configuration
 
@@ -397,6 +399,8 @@ The media management system is built on four key pillars:
     and navigate the GUI to add all libraries.
     - Shutdown the device. Connect it to Dolby Vision display or soundbar with passthrough capabilities. Ensure a wired
       LAN connection as well.
+
+    **NOTE** - Prefer [sambashare](https://wiki.coreelec.org/coreelec:smb) to reduce complexity.
 
    ##### Playback Verification
 

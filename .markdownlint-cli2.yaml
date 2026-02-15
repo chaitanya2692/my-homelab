@@ -10,6 +10,7 @@ config:
 ignores:
   - "**/.venv/**"
   - "**/venv/**"
-  - "**/.github/prompts/**"
+  - "**/.github/**"
   - "**/site/**"
   - "**/node_modules/**"
+  - plan_*.md
