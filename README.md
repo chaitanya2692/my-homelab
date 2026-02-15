@@ -1,6 +1,6 @@
 # 🏠 My Kubernetes Homelab Platform
 
-![htk8s diagrams](test_link.svg)
+![htk8s diagrams](system_design.png)
 
 > 🚀 A modern, extensible homelab powered by Kubernetes
 
