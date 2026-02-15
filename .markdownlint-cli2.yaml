@@ -10,6 +10,8 @@ config:
 ignores:
   - "**/.venv/**"
   - "**/venv/**"
-  - "**/.github/prompts/**"
+  - "**/.github/**"
   - "**/site/**"
   - "**/node_modules/**"
+  - plan_authelia.md
+  - plan_vault.md
