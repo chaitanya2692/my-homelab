@@ -207,8 +207,8 @@ Configuration:
 #### 🔐 cert-manager
 
 - 🎯 Let's Encrypt Integration
-- 🌐 HTTP-01 Challenge via Traefik ingress class
-- 🔐 Automatic certificate renewal
+- ☁️ Cloudflare DNS-01 Challenge
+- 🌟 Wildcard Certificates (*.my-homelab.party)
 - 📊 Prometheus Metrics Integration
 
 ### 3. 💾 Storage Architecture
@@ -682,10 +682,11 @@ This repository now uses **HashiCorp Vault** and **Vault Secrets Operator (VSO)*
 - `kv/utils/immich` → `immich-credentials`
 - `kv/utils/tandoor` → `tandoor-credentials`
 - `kv/htpc/scraparr` → `exportarr-secrets`
+- `kv/infra/cert-manager` → `cloudflare-token-secret`
 
 ### TLS issuer changes
 
-To avoid paid-cloud dependencies, cert-manager now uses HTTP-01 with Traefik instead of Cloudflare DNS challenge.
+cert-manager uses Cloudflare DNS-01 challenge for wildcard certificate management.
 
 ## 🚀 Deployment Guide
 

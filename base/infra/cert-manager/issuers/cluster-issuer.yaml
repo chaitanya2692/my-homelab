@@ -10,6 +10,11 @@ spec:
     privateKeySecretRef:
       name: placeholder-name
     solvers:
-      - http01:
-          ingress:
-            class: traefik-external
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-token-secret
+              key: cloudflare-token
+        selector:
+          dnsZones:
+            - "my-homelab.party"
