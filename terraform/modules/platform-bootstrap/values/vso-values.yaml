@@ -1,0 +1,7 @@
+defaultVaultConnection:
+  enabled: false
+
+controller:
+  manager:
+    clientCache:
+      persistenceModel: direct-encrypted

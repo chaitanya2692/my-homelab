@@ -5,6 +5,7 @@ kind: Kustomization
 namespace: infra
 
 resources:
+  - security
   - cert-manager
   - metallb
   - traefik
