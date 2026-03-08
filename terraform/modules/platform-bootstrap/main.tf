@@ -46,6 +46,8 @@ resource "helm_release" "vault_secrets_operator" {
 }
 
 resource "kubernetes_manifest" "argocd_ingress_route" {
+  count = var.enable_argocd_custom_resources ? 1 : 0
+
   manifest = {
     apiVersion = "traefik.io/v1alpha1"
     kind       = "IngressRoute"
@@ -77,6 +79,8 @@ resource "kubernetes_manifest" "argocd_ingress_route" {
 }
 
 resource "kubernetes_manifest" "argocd_service_monitor_metrics" {
+  count = var.enable_argocd_custom_resources ? 1 : 0
+
   manifest = {
     apiVersion = "monitoring.coreos.com/v1"
     kind       = "ServiceMonitor"
@@ -101,6 +105,8 @@ resource "kubernetes_manifest" "argocd_service_monitor_metrics" {
 }
 
 resource "kubernetes_manifest" "argocd_service_monitor_server" {
+  count = var.enable_argocd_custom_resources ? 1 : 0
+
   manifest = {
     apiVersion = "monitoring.coreos.com/v1"
     kind       = "ServiceMonitor"
@@ -125,6 +131,8 @@ resource "kubernetes_manifest" "argocd_service_monitor_server" {
 }
 
 resource "kubernetes_manifest" "argocd_service_monitor_repo" {
+  count = var.enable_argocd_custom_resources ? 1 : 0
+
   manifest = {
     apiVersion = "monitoring.coreos.com/v1"
     kind       = "ServiceMonitor"
