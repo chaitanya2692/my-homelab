@@ -1,0 +1,17 @@
+crds:
+  install: true
+
+configs:
+  cm:
+    kustomize.buildOptions: --enable-alpha-plugins --enable-helm --enable-exec
+    resource.exclusions: |
+      - apiGroups:
+        - kustomize.config.k8s.io
+        kinds:
+        - Kustomization
+        clusters:
+        - "*"
+
+server:
+  ingress:
+    enabled: false

@@ -207,8 +207,8 @@ Configuration:
 #### 🔐 cert-manager
 
 - 🎯 Let's Encrypt Integration
-- ☁️ Cloudflare DNS-01 Challenge
-- 🌟 Wildcard Certificates (*.my-homelab.party)
+- 🌐 HTTP-01 Challenge via Traefik ingress class
+- 🔐 Automatic certificate renewal
 - 📊 Prometheus Metrics Integration
 
 ### 3. 💾 Storage Architecture
@@ -662,6 +662,31 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
 > 💡 **Observability Philosophy**: Complete system visibility with correlation
 > across metrics, logs, and traces for rapid problem resolution.
 
+
+## 🔐 Secrets and Identity Hardening
+
+This repository now uses **HashiCorp Vault** and **Vault Secrets Operator (VSO)** as the primary secret-management pattern.
+
+- Vault runs in the `infra` namespace and stores secrets in a `kv-v2` mount.
+- VSO synchronizes namespace-scoped secrets from Vault into Kubernetes `Secret` objects.
+- Each namespace uses its own Vault policy and Kubernetes auth role:
+  - `infra-vso` → `kv/data/infra/*`
+  - `utils-vso` → `kv/data/utils/*`
+  - `htpc-vso` → `kv/data/htpc/*`
+- Sensitive application values are no longer stored as encrypted payloads in Git for core apps.
+
+### Vault paths used by default
+
+- `kv/infra/traefik` → `homelab-credentials`
+- `kv/utils/nextcloud` → `nextcloud-credentials`
+- `kv/utils/immich` → `immich-credentials`
+- `kv/utils/tandoor` → `tandoor-credentials`
+- `kv/htpc/scraparr` → `exportarr-secrets`
+
+### TLS issuer changes
+
+To avoid paid-cloud dependencies, cert-manager now uses HTTP-01 with Traefik instead of Cloudflare DNS challenge.
+
 ## 🚀 Deployment Guide
 
 1. **Prerequisites**
@@ -674,28 +699,28 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
    ```bash
    # 1. Clone repository
    git clone <repo-url>
-
-   # 2. Configure environment
    cd my-homelab
-   ./scripts/bootstrap.sh
 
-   # 3. Kickstart your ArgoCD installation
-   ./scripts/kickstart.sh
+   # 2. Bootstrap platform with Terraform
+   cd terraform
+   cp terraform.tfvars.example terraform.tfvars
+   terraform init
+   terraform plan
+   terraform apply
 
-   # 4. Login to ArgoCD via the password from the CLI
+   # 3. Initialize Vault once (manual operator step)
+   # vault operator init
+   # vault operator unseal
+
+   # 4. Back to repo root
+   cd ..
    ```
 
-3. **Available Scripts**
+3. **Validation**
 
-  | Script | Purpose |
+  | Command | Purpose |
   | -------- | --------- |
-  | 🛠️ bootstrap.sh | Install essential libraries in a new Ubuntu VM |
-  | ✅ validate.sh | Config Check |
-  | 🚀 deploy.sh | Deployment |
-  | 💣 nuke.sh | Reset Cluster |
-  | ⚡ kickstart.sh | Install ArgoCD and deploy services |
-  | 🛠️ update-manifests.sh | Kustomize build Script |
-  | 🔐 encrypt-secrets.sh | Encode secrets in the repo |
+  | ✅ `./scripts/validate.sh` | Validate YAML, manifests, overlays, and Terraform config |
 
 ## 👏 Credits
 

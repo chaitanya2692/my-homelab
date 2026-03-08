@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: vault
+    repo: https://helm.releases.hashicorp.com
+    version: 0.30.1
+    releaseName: vault
+    namespace: infra
+    includeCRDs: true
+    valuesFile: values.yaml

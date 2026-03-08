@@ -4,6 +4,3 @@ kind: Kustomization
 
 resources:
   - cluster-issuer.yaml
-
-generators:
-  - secret-generator.yaml
