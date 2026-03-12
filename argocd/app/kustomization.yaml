@@ -15,7 +15,3 @@ patches:
       kind: ConfigMap
       name: argocd-cm
     path: configmap.yaml
-  - target:
-      kind: Deployment
-      name: argocd-repo-server
-    path: deployment.yaml

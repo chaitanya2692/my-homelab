@@ -1,0 +1,10 @@
+kubeconfig_path = "~/.kube/config"
+vault_address   = "http://127.0.0.1:8200"
+
+# Populate these after bootstrapping the cluster and Vault.
+# kubernetes_ca_cert = <<EOT
+# -----BEGIN CERTIFICATE-----
+# ...
+# -----END CERTIFICATE-----
+# EOT
+# vault_token_reviewer_jwt = "<service-account-jwt>"

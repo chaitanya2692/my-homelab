@@ -7,13 +7,23 @@ spec:
   generators:
     - list:
         elements:
-          - path: argocd
-          - path: htpc
-          - path: utils
+          - path: infra-security
+            namespace: infra
+            syncWave: "-1"
           - path: infra
+            namespace: infra
+            syncWave: "0"
+          - path: utils
+            namespace: utils
+            syncWave: "1"
+          - path: htpc
+            namespace: htpc
+            syncWave: "1"
   template:
     metadata:
       name: "{{path}}-apps"
+      annotations:
+        argocd.argoproj.io/sync-wave: "{{syncWave}}"
     spec:
       project: default
       source:
@@ -22,30 +32,27 @@ spec:
         path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{path}}"
+        namespace: "{{namespace}}"
       syncPolicy:
         automated:
           prune: true
         syncOptions:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
-          - ServerSideApply=true # Recommended
-      # --- Add or modify this block ---
+          - ServerSideApply=true
       ignoreDifferences:
-        # Ignore fields added by CNPG operator to ALL Cluster specs
         - group: postgresql.cnpg.io
           kind: Cluster
           jsonPointers:
-            - /spec/managed/roles/0/connectionLimit # Field added by CNPG
-            - /spec/managed/roles/0/ensure # Field added by CNPG
-            - /spec/managed/roles/0/inherit # Field added by CNPG
-            - /status # Always ignore status
-        # Ignore fields added by Kubernetes to the StatefulSet volumeClaimTemplate
+            - /spec/managed/roles/0/connectionLimit
+            - /spec/managed/roles/0/ensure
+            - /spec/managed/roles/0/inherit
+            - /status
         - group: apps
           kind: StatefulSet
           name: recipes-postgresql
           namespace: utils
           jsonPointers:
-            - /spec/volumeClaimTemplates/0/apiVersion # Field added by K8s
-            - /spec/volumeClaimTemplates/0/kind # Field added by K8s
-            - /status # Always ignore status
+            - /spec/volumeClaimTemplates/0/apiVersion
+            - /spec/volumeClaimTemplates/0/kind
+            - /status
