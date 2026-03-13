@@ -6,13 +6,12 @@ metadata:
 spec:
   acme:
     server: placeholder-server
-    email: chaitanya2692@gmail.com
+    email: admin@my-homelab.party
     privateKeySecretRef:
       name: placeholder-name
     solvers:
       - dns01:
           cloudflare:
-            email: chaitanya2692@gmail.com
             apiTokenSecretRef:
               name: cloudflare-token-secret
               key: cloudflare-token
