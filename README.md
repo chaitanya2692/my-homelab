@@ -440,9 +440,9 @@ The security framework is built on multiple layers of protection:
 #### Secrets Management
 
 - 🤫 **Secure Configuration**
-  - Encrypted secrets storage
-  - Runtime injection
-  - Rotation policies
+  - Sealed Secrets (Bitnami) encrypted manifests
+  - Controller-side runtime decryption
+  - Rotation-friendly workflow
   - Least privilege principle
 
 #### DNS Security
@@ -508,7 +508,7 @@ Structure:
    - Drift detection
 
 4. **Secret Management**
-   - Encrypted at rest
+   - Sealed Secrets encryption in Git
    - Environment separation
    - Access auditing
    - Automated rotation
@@ -682,7 +682,7 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
    # 3. Kickstart your ArgoCD installation
    ./scripts/kickstart.sh
 
-   # 4. Login to ArgoCD via the password from the CLI
+   # 4. ArgoCD ApplicationSet syncs the rest of the platform automatically
    ```
 
 3. **Available Scripts**
@@ -695,7 +695,7 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
   | 💣 nuke.sh | Reset Cluster |
   | ⚡ kickstart.sh | Install ArgoCD and deploy services |
   | 🛠️ update-manifests.sh | Kustomize build Script |
-  | 🔐 encrypt-secrets.sh | Encode secrets in the repo |
+  | 🔐 seal-secrets.sh | Convert plain Secret manifests to SealedSecrets |
 
 ## 👏 Credits
 

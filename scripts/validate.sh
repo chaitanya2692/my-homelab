@@ -12,7 +12,7 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 # Set necessary environment variables
-KUSTOMIZE_FLAGS="--load-restrictor=LoadRestrictionsNone --enable-helm --enable-alpha-plugins --enable-exec"
+KUSTOMIZE_FLAGS="--load-restrictor=LoadRestrictionsNone --enable-helm"
 KUSTOMIZE_CONFIG="kustomization.yaml"
 KUBECONFORM_FLAGS="-skip=Secret"
 KUBECONFORM_CONFIG="-strict -ignore-missing-schemas -verbose"
@@ -25,7 +25,7 @@ do
 done
 
 echo "INFO - Validating Kubernetes manifests"
-find . -type f -name '*.yaml' ! -name '*values*.yaml' ! -name '.pre-commit-config.yaml' ! -name '.sops.yaml' ! -name '.markdownlint-cli2.yaml' -print0 | while IFS= read -r -d $'\0' file; do
+find . -type f -name '*.yaml' ! -name '*values*.yaml' ! -name '.pre-commit-config.yaml' ! -name '.markdownlint-cli2.yaml' -print0 | while IFS= read -r -d $'\0' file; do
   kubeconform ${KUBECONFORM_FLAGS} ${KUBECONFORM_CONFIG} "${file}"
 done
 

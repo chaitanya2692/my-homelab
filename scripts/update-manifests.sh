@@ -34,7 +34,7 @@ build() {
     # Build each overlay separately
     for app in htpc utils infra argocd; do
         echo "---" >> "${PWD}/install.yaml"
-        kustomize build "${PWD}/overlays/${app}" --enable-helm --enable-alpha-plugins --enable-exec >> "${PWD}/install.yaml"
+        kustomize build "${PWD}/overlays/${app}" --enable-helm >> "${PWD}/install.yaml"
     done
 
     echo "Successfully updated install.yaml for ${ENVIRONMENT} environment"
