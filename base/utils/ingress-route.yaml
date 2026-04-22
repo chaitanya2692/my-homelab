@@ -47,3 +47,10 @@ spec:
         - kind: Service
           name: immich-server
           port: 2283
+    - kind: Rule
+      match: Host(`actual.my-homelab.party`)
+      priority: 0
+      services:
+        - kind: Service
+          name: actual
+          port: 5006

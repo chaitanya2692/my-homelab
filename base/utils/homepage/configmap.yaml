@@ -110,6 +110,10 @@ data:
             href: https://immich.my-homelab.party
             description: Photo Backup
             icon: immich
+        - Actual Budget:
+            href: https://actual.my-homelab.party
+            description: Personal budgeting
+            icon: actual-budget
         - Tandoor Recipes:
             href: https://recipes.my-homelab.party
             description: Recipe Manager
