@@ -5,29 +5,36 @@ metadata:
   name: ingressroute
   namespace: infra
   annotations:
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik-internal
 spec:
   entryPoints:
     - websecure
   routes:
     - match: Host(`traefik.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
       services:
         - name: api@internal
           kind: TraefikService
     - match: Host(`grafana.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
       services:
         - name: grafana
           port: 80
     - match: Host(`jaeger.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
       services:
         - name: jaeger
           port: 16686
     - match: Host(`prometheus.my-homelab.party`)
       kind: Rule
       middlewares:
+        - name: local-only
         - name: homelab-auth
       services:
         - name: prometheus-prometheus
@@ -35,6 +42,7 @@ spec:
     - match: Host(`alertmanager.my-homelab.party`)
       kind: Rule
       middlewares:
+        - name: local-only
         - name: homelab-auth
       services:
         - name: prometheus-alertmanager
@@ -42,17 +50,22 @@ spec:
     - match: Host(`node-exporter.my-homelab.party`)
       kind: Rule
       middlewares:
+        - name: local-only
         - name: homelab-auth
       services:
         - name: node-exporter
           port: 9100
     - match: Host(`loki.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
       services:
         - name: loki
           port: 3100
     - match: Host(`alloy.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
       services:
         - name: alloy
           port: 12345

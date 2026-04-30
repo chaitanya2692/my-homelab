@@ -1,0 +1,65 @@
+---
+# Default deny all ingress traffic to htpc namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: htpc
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+---
+# Allow Traefik (from infra namespace) to reach all htpc pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-traefik-ingress
+  namespace: htpc
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infra
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: traefik
+---
+# Allow inter-pod communication within htpc namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-htpc-internal
+  namespace: htpc
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: htpc
+---
+# Allow Prometheus (from infra namespace) to scrape htpc pods
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scrape
+  namespace: htpc
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: infra
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus

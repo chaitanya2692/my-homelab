@@ -10,8 +10,18 @@ patches:
       kind: IngressRoute
       metadata:
         name: ingressroute
-        annotations:
-          kubernetes.io/ingress.class: traefik-external
+      spec:
+        tls:
+          secretName: production-certificate-secret
+  - target:
+      kind: IngressRoute
+      name: jellyfin-ingressroute
+    patch: |-
+      ---
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        name: jellyfin-ingressroute
       spec:
         tls:
           secretName: production-certificate-secret
