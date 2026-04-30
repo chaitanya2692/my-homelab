@@ -30,9 +30,11 @@ lapi:
   persistentVolume:
     data:
       enabled: true
+      storageClassName: local-path-infra
       size: 1Gi
     config:
       enabled: true
+      storageClassName: local-path-infra
       size: 100Mi
   resources:
     requests:
