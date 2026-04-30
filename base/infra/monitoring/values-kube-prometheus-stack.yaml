@@ -52,7 +52,7 @@ prometheus:
         memory: "256Mi"
       limits:
         cpu: "400m"
-        memory: "768Mi"
+        memory: "1536Mi"
     storageSpec:
       volumeClaimTemplate:
         spec:
