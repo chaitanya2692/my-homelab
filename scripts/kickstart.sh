@@ -11,8 +11,8 @@ set -e
 
 # Build and apply CRDs
 echo "Building and applying CRDs..."
-# kustomize build "${PWD}/argocd/crds" --enable-helm > crds.yaml
-# kubectl apply -f crds.yaml
+kustomize build "${PWD}/argocd/crds" --enable-helm > crds.yaml
+kubectl apply -f crds.yaml
 
 # Wait for the ArgoCD Application CRD to be established
 echo "Waiting for the ArgoCD Application CRD to be established..."
