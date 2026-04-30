@@ -17,6 +17,7 @@ spec:
         - name: crowdsec-bouncer
           namespace: infra
         - name: jellyfin-ratelimit
+        - name: jellyfin-headers
       services:
         - kind: Service
           name: jellyfin
