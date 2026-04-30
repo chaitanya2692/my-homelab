@@ -48,5 +48,6 @@ for full_path in "${SECRET_FILES[@]}"; do
     else
         rm -f "${full_path}.sealed"
         echo "  ERROR: Failed to seal ${full_path}"
+        exit 1
     fi
 done
