@@ -20,9 +20,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: encrypt-secrets
-        name: Encrypt Secrets
-        entry: ./scripts/encrypt-secrets.sh
+      - id: seal-secrets
+        name: Seal Secrets
+        entry: ./scripts/seal-secrets.sh
         language: system
         pass_filenames: false
 

@@ -11,21 +11,30 @@ set -e
 
 # Build and apply CRDs
 echo "Building and applying CRDs..."
-kustomize build "${PWD}/argocd/crds" --enable-helm --enable-alpha-plugins --enable-exec > crds.yaml
-kubectl apply -f crds.yaml
+# kustomize build "${PWD}/argocd/crds" --enable-helm > crds.yaml
+# kubectl apply -f crds.yaml
 
 # Wait for the ArgoCD Application CRD to be established
 echo "Waiting for the ArgoCD Application CRD to be established..."
 kubectl wait --for=condition=Established --timeout=60s crd/applications.argoproj.io
 
-# Ensure the argocd namespace exists and create the sops secret
-echo "Creating namespace and sops secret..."
+# Ensure the argocd namespace exists
+echo "Creating namespace..."
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl create secret generic sops-age --from-file=/home/chaitanya/.sops/key.txt -n argocd --dry-run=client -o yaml | kubectl apply -f -
+
+# Deploy Sealed Secrets controller (needed before secrets can be sealed)
+echo "Deploying Sealed Secrets controller..."
+kubectl create namespace infra --dry-run=client -o yaml | kubectl apply -f -
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm repo update
+helm upgrade --install sealed-secrets sealed-secrets/sealed-secrets \
+    --namespace infra \
+    --set fullnameOverride=sealed-secrets-controller \
+    --wait
 
 # Build and apply the rest of the application
 echo "Building and applying ArgoCD application resources..."
-kustomize build "${PWD}/argocd/app" --enable-helm --enable-alpha-plugins --enable-exec > install_argocd.yaml
+kustomize build "${PWD}/argocd/app" --enable-helm > install_argocd.yaml
 kubectl apply -n argocd -f install_argocd.yaml
 
 # Wait for all pods to be running

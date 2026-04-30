@@ -7,8 +7,6 @@ namespace: infra
 resources:
   - issuers
   - certificates
-  - role.yaml
-  - rolebinding.yaml
 
 helmCharts:
   - name: cert-manager

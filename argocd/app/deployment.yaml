@@ -9,33 +9,8 @@ spec:
       app.kubernetes.io/name: argocd-repo-server
   template:
     spec:
-      initContainers:
-        - name: install-ksops
-          image: viaductoss/ksops:v4.3.3
-          command: ["/bin/sh", "-c"]
-          args:
-            - echo "Installing KSOPS..."; mv ksops /custom-tools/; mv kustomize
-              /custom-tools/; echo "Done.";
-          volumeMounts:
-            - mountPath: /custom-tools
-              name: custom-tools
       containers:
         - name: argocd-repo-server
-          volumeMounts:
-            - mountPath: /usr/local/bin/kustomize
-              name: custom-tools
-              subPath: kustomize
-            - mountPath: /usr/local/bin/ksops
-              name: custom-tools
-              subPath: ksops
-            - mountPath: /.config/sops/age/keys.txt
-              name: sops-age
-              subPath: key.txt
-          env:
-            - name: XDG_CONFIG_HOME
-              value: /.config
-            - name: SOPS_AGE_KEY_FILE
-              value: /.config/sops/age/keys.txt
           resources:
             requests:
               memory: "128Mi"
@@ -43,9 +18,3 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
-      volumes:
-        - name: custom-tools
-          emptyDir: {}
-        - name: sops-age
-          secret:
-            secretName: sops-age
