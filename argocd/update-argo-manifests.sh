@@ -6,8 +6,8 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 OUTPUT="${SCRIPT_DIR}/app/argo-non-crds.yaml"
 CRD_KUSTOMIZATION="${SCRIPT_DIR}/crds/kustomization.yaml"
 
-# Extract ArgoCD version from argocd/crds/kustomization.yaml
-VERSION=$(grep -oP 'refs/tags/\Kv[\d.]+' "${CRD_KUSTOMIZATION}" | head -1)
+# Extract ArgoCD version from argocd/crds/kustomization.yaml (only argoproj/argo-cd URLs)
+VERSION=$(grep -oP 'argoproj/argo-cd/refs/tags/\Kv[\d.]+' "${CRD_KUSTOMIZATION}" | head -1)
 
 if [[ -z "${VERSION}" ]]; then
     echo "ERROR: Could not determine ArgoCD version from ${CRD_KUSTOMIZATION}" >&2
