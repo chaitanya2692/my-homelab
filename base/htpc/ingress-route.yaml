@@ -2,10 +2,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: jellyfin-ingressroute
+  name: ingressroute-external
   namespace: htpc
   annotations:
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
@@ -27,10 +27,10 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: ingressroute
+  name: ingressroute-internal
   namespace: htpc
   annotations:
-    kubernetes.io/ingress.class: traefik-internal
+    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
