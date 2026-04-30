@@ -14,3 +14,4 @@ resources:
   - scraparr
   - ingress-route.yaml
   - persistent-volume-claim.yaml
+  - network-policy.yaml

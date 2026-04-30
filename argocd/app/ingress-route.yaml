@@ -2,15 +2,18 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: ingressroute
+  name: ingressroute-internal
   annotations:
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
   routes:
     - match: Host(`argocd.my-homelab.party`)
       kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
       services:
         - name: argocd-server
           port: 443

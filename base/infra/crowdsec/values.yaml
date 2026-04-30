@@ -1,0 +1,85 @@
+---
+container_runtime: containerd
+
+image:
+  pullPolicy: IfNotPresent
+
+config:
+  config.yaml.local: |
+    api:
+      client:
+        unregister_on_exit: true
+      server:
+        auto_registration:
+          enabled: true
+          token: "${REGISTRATION_TOKEN}"
+          allowed_ranges:
+            - "127.0.0.1/32"
+            - "10.0.0.0/8"
+            - "172.16.0.0/12"
+            - "192.168.0.0/16"
+
+lapi:
+  replicas: 1
+  env:
+    - name: BOUNCER_KEY_traefik
+      valueFrom:
+        secretKeyRef:
+          name: crowdsec-secrets
+          key: BOUNCER_KEY_traefik
+  persistentVolume:
+    data:
+      enabled: true
+      storageClassName: local-path-infra
+      size: 1Gi
+    config:
+      enabled: true
+      storageClassName: local-path-infra
+      size: 100Mi
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+agent:
+  isDeployment: true
+  replicas: 1
+  acquisition:
+    - namespace: infra
+      podName: traefik-*
+      program: traefik
+  env:
+    - name: COLLECTIONS
+      value: "crowdsecurity/traefik crowdsecurity/http-cve
+        crowdsecurity/base-http-scenarios crowdsecurity/appsec-virtual-patching
+        crowdsecurity/appsec-crs crowdsecurity/appsec-generic-rules"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+appsec:
+  enabled: true
+  env:
+    - name: COLLECTIONS
+      value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs
+        crowdsecurity/appsec-generic-rules"
+  acquisitions:
+    - source: appsec
+      listen_addr: "0.0.0.0:7422"
+      path: /
+      appsec_configs:
+        - crowdsecurity/appsec-default
+        - crowdsecurity/crs
+      labels:
+        type: appsec
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi

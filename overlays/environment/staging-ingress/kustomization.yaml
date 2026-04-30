@@ -4,14 +4,25 @@ kind: Component
 patches:
   - target:
       kind: IngressRoute
+      name: ingressroute-internal
     patch: |-
       ---
       apiVersion: traefik.io/v1alpha1
       kind: IngressRoute
       metadata:
-        name: ingressroute
-        annotations:
-          kubernetes.io/ingress.class: traefik-external
+        name: ingressroute-internal
+      spec:
+        tls:
+          secretName: staging-certificate-secret
+  - target:
+      kind: IngressRoute
+      name: ingressroute-external
+    patch: |-
+      ---
+      apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        name: ingressroute-external
       spec:
         tls:
           secretName: staging-certificate-secret

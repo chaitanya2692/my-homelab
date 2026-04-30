@@ -2,10 +2,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: ingressroute
+  name: ingressroute-internal
   namespace: utils
   annotations:
-    kubernetes.io/ingress.class: traefik-external
+    kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
@@ -14,6 +14,8 @@ spec:
       match: Host(`nextcloud.my-homelab.party`)
       priority: 0
       middlewares:
+        - name: local-only
+          namespace: infra
         - name: nextcloud-forwarded-headers
         - name: nextcloud-securityheaders
         - name: nextcloud-redirectregex1
@@ -26,6 +28,8 @@ spec:
     - kind: Rule
       match: Host(`home.my-homelab.party`)
       middlewares:
+        - name: local-only
+          namespace: infra
         - name: homelab-auth
           namespace: infra
       priority: 0
@@ -36,6 +40,9 @@ spec:
     - kind: Rule
       match: Host(`recipes.my-homelab.party`)
       priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
       services:
         - kind: Service
           name: recipes
@@ -43,6 +50,9 @@ spec:
     - kind: Rule
       match: Host(`immich.my-homelab.party`)
       priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
       services:
         - kind: Service
           name: immich-server
