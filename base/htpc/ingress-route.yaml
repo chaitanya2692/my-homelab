@@ -14,11 +14,10 @@ spec:
       match: Host(`jellyfin.my-homelab.party`)
       priority: 0
       middlewares:
-        - name: default-headers
-          namespace: infra
         - name: crowdsec-bouncer
           namespace: infra
         - name: jellyfin-ratelimit
+        - name: jellyfin-headers
       services:
         - kind: Service
           name: jellyfin

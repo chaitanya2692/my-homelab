@@ -6,3 +6,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - ratelimit.yaml
+  - headers.yaml
