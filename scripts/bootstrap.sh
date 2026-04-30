@@ -4,8 +4,8 @@
 # Bootstrap Script
 # This script installs necessary tools and dependencies
 # for setting up the Kubernetes-based HTPC environment.
-# It includes installations for k3s, Helm, kustomize, SOPS,
-# ksops, age, yq, pip, pre-commit, and Docker.
+# It includes installations for k3s, Helm, kustomize, kubeseal,
+# yq, pip, pre-commit, and Docker.
 ###########################################
 
 # Exit immediately if a command exits with a non-zero status
@@ -86,39 +86,12 @@ else
     brew install kustomize
 fi
 
-# Check and install SOPS
-if command_exists sops; then
-    echo "SOPS is already installed"
+# Check and install kubeseal
+if command_exists kubeseal; then
+    echo "kubeseal is already installed"
 else
-    echo "Installing SOPS..."
-    SOPS_VERSION=$(curl  "https://api.github.com/repos/getsops/sops/tags" | jq -r '.[0].name')
-    curl -LO https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.amd64
-    sudo mv sops-${SOPS_VERSION}.linux.amd64 /usr/local/bin/sops
-    chmod +x /usr/local/bin/sops
-fi
-
-# Check and install ksops
-if command_exists ksops; then
-    echo "ksops is already installed"
-else
-    echo "Installing ksops..."
-    curl -s https://raw.githubusercontent.com/viaduct-ai/kustomize-sops/master/scripts/install-ksops-archive.sh | bash
-fi
-
-# Check and install age
-if command_exists age; then
-    echo "age is already installed"
-else
-    echo "Installing age..."
-    sudo apt install age
-    mkdir -p ~/.sops
-    # The key needs to be present in home folder before the next step
-    if [ ! -f ~/key.txt ]; then
-        echo "AGE Key not found."
-        exit 1
-    fi
-    mv ~/key.txt ~/.sops
-    export SOPS_AGE_KEY_FILE=$HOME/.sops/key.txt
+    echo "Installing kubeseal..."
+    brew install kubeseal
 fi
 
 # Check and install yq

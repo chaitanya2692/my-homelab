@@ -11,5 +11,6 @@ resources:
   - crowdsec
   - local-path-provisioner
   - monitoring
+  - sealed-secrets
   - ingress-route.yaml
   - persistent-volume-claim.yaml

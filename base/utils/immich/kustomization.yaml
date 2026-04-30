@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: utils
 
 resources:
-  - secret
+  - secrets.yaml
   - backup.yaml
   - postgres-cluster.yaml
 

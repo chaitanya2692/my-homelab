@@ -4,10 +4,8 @@ kind: Kustomization
 
 namespace: htpc
 
-generators:
-  - secret-generator.yaml
-
 resources:
   - deployment.yaml
   - service.yaml
   - servicemonitor.yaml
+  - secrets.yaml
