@@ -22,6 +22,8 @@ config:
 lapi:
   replicas: 1
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: BOUNCER_KEY_traefik
       valueFrom:
         secretKeyRef:
@@ -51,6 +53,8 @@ agent:
       podName: traefik-*
       program: traefik
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: COLLECTIONS
       value: "crowdsecurity/traefik crowdsecurity/http-cve
         crowdsecurity/base-http-scenarios crowdsecurity/appsec-virtual-patching
@@ -65,6 +69,8 @@ agent:
 appsec:
   enabled: true
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: COLLECTIONS
       value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs
         crowdsecurity/appsec-generic-rules"
