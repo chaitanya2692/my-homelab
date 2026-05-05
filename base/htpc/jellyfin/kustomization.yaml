@@ -5,5 +5,4 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - ratelimit.yaml
-  - headers.yaml
+  - middlewares.yaml

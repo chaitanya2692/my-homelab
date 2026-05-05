@@ -22,6 +22,8 @@ config:
 lapi:
   replicas: 1
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: BOUNCER_KEY_traefik
       valueFrom:
         secretKeyRef:
@@ -42,6 +44,14 @@ lapi:
       memory: 128Mi
     limits:
       memory: 256Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels: {}
+    podMonitor:
+      enabled: true
+      additionalLabels: {}
 
 agent:
   isDeployment: true
@@ -51,6 +61,8 @@ agent:
       podName: traefik-*
       program: traefik
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: COLLECTIONS
       value: "crowdsecurity/traefik crowdsecurity/http-cve
         crowdsecurity/base-http-scenarios crowdsecurity/appsec-virtual-patching
@@ -61,10 +73,20 @@ agent:
       memory: 128Mi
     limits:
       memory: 256Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels: {}
+    podMonitor:
+      enabled: true
+      additionalLabels: {}
 
 appsec:
   enabled: true
   env:
+    - name: TZ
+      value: "Europe/Stockholm"
     - name: COLLECTIONS
       value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-crs
         crowdsecurity/appsec-generic-rules"
@@ -83,3 +105,11 @@ appsec:
       memory: 128Mi
     limits:
       memory: 256Mi
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels: {}
+    podMonitor:
+      enabled: true
+      additionalLabels: {}
