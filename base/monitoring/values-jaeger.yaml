@@ -11,7 +11,7 @@ storage:
     persistence:
       enabled: true
       useExistingPvcName: "jaeger-data-pvc"
-      storageClassName: local-path-infra
+      storageClassName: local-path-monitoring
       size: 10Gi
 
 collector:

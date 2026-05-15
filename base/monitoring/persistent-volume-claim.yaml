@@ -6,22 +6,22 @@ metadata:
   name: grafana-data-pvc
   namespace: monitoring
 spec:
-  storageClassName: local-path-infra
+  storageClassName: local-path-monitoring
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi # For dashboards, plugins, internal DB
+      storage: 5Gi
 
 ---
-# PVC for Jaeger Storage (Only if using persistent storage like Badger)
+# PVC for Jaeger Storage
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jaeger-data-pvc
   namespace: monitoring
 spec:
-  storageClassName: local-path-infra
+  storageClassName: local-path-monitoring
   accessModes:
     - ReadWriteOnce
   resources:
@@ -36,7 +36,7 @@ metadata:
   name: alloy-data-pvc
   namespace: monitoring
 spec:
-  storageClassName: local-path-infra
+  storageClassName: local-path-monitoring
   accessModes:
     - ReadWriteOnce
   resources:

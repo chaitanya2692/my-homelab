@@ -7,7 +7,7 @@ singleBinary:
   replicas: 1
   persistence:
     size: 4Gi
-    storageClass: local-path-infra
+    storageClass: local-path-monitoring
   resources:
     requests:
       cpu: "100m"
