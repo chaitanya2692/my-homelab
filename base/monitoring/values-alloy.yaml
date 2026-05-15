@@ -1,4 +1,4 @@
-namespaceOverride: "infra" # Ensures Alloy is deployed in the 'infra' namespace.
+namespaceOverride: "monitoring" # Ensures Alloy is deployed in the 'monitoring' namespace.
 
 alloy:
   # Storage path for persistence
@@ -29,13 +29,13 @@ alloy:
 
       loki.source.kubernetes_events "example" {
         // Only watch for events in the kube-system namespace.
-        namespaces = ["kube-system", "default", "infra", "htpc", "utils"]
+        namespaces = ["kube-system", "default", "infra", "htpc", "utils", "monitoring"]
         forward_to = [loki.write.default.receiver]
       }
 
       loki.write "default" {
         endpoint {
-          url = "http://loki.infra.svc.cluster.local:3100/loki/api/v1/push"
+          url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
         }
       }
 
@@ -126,7 +126,7 @@ alloy:
 
       prometheus.remote_write "main" {
         endpoint {
-          url = "http://kube-prometheus-stack-prometheus.infra.svc.cluster.local:9090/api/v1/write"
+          url = "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
         }
       }
 

@@ -1,5 +1,5 @@
 ---
-namespaceOverride: "infra"
+namespaceOverride: "monitoring"
 
 deploymentMode: SingleBinary
 

@@ -1,0 +1,44 @@
+---
+# PVC for Grafana Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data-pvc
+  namespace: monitoring
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi # For dashboards, plugins, internal DB
+
+---
+# PVC for Jaeger Storage (Only if using persistent storage like Badger)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jaeger-data-pvc
+  namespace: monitoring
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# PVC for Alloy Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alloy-data-pvc
+  namespace: monitoring
+spec:
+  storageClassName: local-path-infra
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

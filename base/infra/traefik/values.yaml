@@ -46,10 +46,10 @@ tracing:
   addInternals: true
   otlp:
     enabled: true
-    endpoint: "jaeger:4318"
+    endpoint: "jaeger.monitoring.svc.cluster.local:4318"
     grpc:
       enabled: true
-      endpoint: "jaeger:14250"
+      endpoint: "jaeger.monitoring.svc.cluster.local:14250"
 
 ports:
   web:

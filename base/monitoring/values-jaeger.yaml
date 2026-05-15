@@ -1,4 +1,4 @@
-namespaceOverride: "infra"
+namespaceOverride: "monitoring"
 
 provisionDataStore:
   cassandra: false
