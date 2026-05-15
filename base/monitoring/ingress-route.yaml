@@ -44,7 +44,7 @@ spec:
         - name: homelab-auth
           namespace: infra
       services:
-        - name: alertmanager
+        - name: prometheus-alertmanager
           port: 9093
     - match: Host(`node-exporter.my-homelab.party`)
       kind: Rule
