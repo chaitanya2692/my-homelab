@@ -1,42 +1,8 @@
-namespaceOverride: "monitoring"
-
-provisionDataStore:
-  cassandra: false
-  elasticsearch: false
-
-storage:
-  type: badger
-  badger:
-    ephemeral: false
-    persistence:
-      enabled: true
-      useExistingPvcName: "jaeger-data-pvc"
-      storageClassName: local-path-monitoring
-      size: 10Gi
-
-collector:
-  enabled: false
-query:
-  enabled: false
-agent:
-  enabled: false
-ingester:
-  enabled: false
-schema:
-  enabled: false
-spark:
-  enabled: false
-esIndexCleaner:
-  enabled: false
-esRollover:
-  enabled: false
-
-allInOne:
-  enabled: true
+jaeger:
   resources:
     requests:
-      cpu: "100m"
+      cpu: "50m"
       memory: "256Mi"
     limits:
       cpu: "300m"
-      memory: "768Mi"
+      memory: "512Mi"
