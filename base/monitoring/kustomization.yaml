@@ -1,22 +1,20 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: infra
+namespace: monitoring
 
 resources:
-  - cert-manager-dashboard-cm.yaml
-  - argocd-dashboard-cm.yaml
-  - k8s-dashboard-cm.yaml
-  - loki-dashboard-cm.yaml
-  - scraparr-dashboard-cm.yaml
-  - htpc-dashboard-cm.yaml
+  - namespace.yaml
+  - persistent-volume-claim.yaml
+  - ingress-route.yaml
+  - dashboards
 
 helmCharts:
   - name: kube-prometheus-stack
     repo: https://prometheus-community.github.io/helm-charts
     version: 85.1.1
     releaseName: kube-prometheus-stack
-    namespace: infra
+    namespace: monitoring
     valuesFile: values-kube-prometheus-stack.yaml
     includeCRDs: true
 
@@ -24,7 +22,7 @@ helmCharts:
     repo: https://grafana.github.io/helm-charts
     version: 7.0.0
     releaseName: loki
-    namespace: infra
+    namespace: monitoring
     includeCRDs: true
     valuesFile: values-loki.yaml
 
@@ -32,7 +30,7 @@ helmCharts:
     repo: https://grafana.github.io/helm-charts
     version: 1.8.1
     releaseName: alloy
-    namespace: infra
+    namespace: monitoring
     includeCRDs: true
     valuesFile: values-alloy.yaml
 
@@ -40,6 +38,6 @@ helmCharts:
     repo: https://jaegertracing.github.io/helm-charts
     version: 4.7.0
     releaseName: jaeger
-    namespace: infra
+    namespace: monitoring
     includeCRDs: true
     valuesFile: values-jaeger.yaml

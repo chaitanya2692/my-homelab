@@ -13,10 +13,6 @@ spec:
     - kind: Rule
       match: Host(`jellyfin.my-homelab.party`)
       priority: 0
-      middlewares:
-        - name: jellyfin-bouncer
-        - name: jellyfin-ratelimit
-        - name: jellyfin-headers
       services:
         - kind: Service
           name: jellyfin

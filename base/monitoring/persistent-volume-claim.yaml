@@ -1,0 +1,29 @@
+---
+# PVC for Grafana Data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-data-pvc
+  namespace: monitoring
+spec:
+  storageClassName: local-path-monitoring
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+# PVC for Alloy Storage
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alloy-data-pvc
+  namespace: monitoring
+spec:
+  storageClassName: local-path-monitoring
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

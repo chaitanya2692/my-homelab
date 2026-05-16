@@ -1,0 +1,74 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroute-internal
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - name: grafana
+          port: 80
+    - match: Host(`jaeger.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - name: jaeger
+          port: 16686
+    - match: Host(`prometheus.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+        - name: homelab-auth
+          namespace: infra
+      services:
+        - name: prometheus-prometheus
+          port: 9090
+    - match: Host(`alertmanager.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+        - name: homelab-auth
+          namespace: infra
+      services:
+        - name: prometheus-alertmanager
+          port: 9093
+    - match: Host(`node-exporter.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+        - name: homelab-auth
+          namespace: infra
+      services:
+        - name: node-exporter
+          port: 9100
+    - match: Host(`loki.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - name: loki
+          port: 3100
+    - match: Host(`alloy.my-homelab.party`)
+      kind: Rule
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - name: alloy
+          port: 12345
