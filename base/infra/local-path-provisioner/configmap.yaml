@@ -40,4 +40,4 @@ data:
           effect: NoSchedule
       containers:
       - name: helper-pod
-        image: busybox:1.37.0
+        image: busybox:1.38.0
