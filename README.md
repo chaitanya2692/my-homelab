@@ -84,6 +84,8 @@ easy addition of new services while maintaining security and reliability.
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/traefik.svg" alt="Traefik logo" height="40"> | [Traefik](https://traefik.io/) | Ingress Controller |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo.svg" alt="cert-manager logo" height="40"> | [cert-manager](https://cert-manager.io/) | Certificate Management |
 | <img src="https://raw.githubusercontent.com/metallb/metallb/main/website/static/images/logo/metallb-blue.svg" alt="MetalLB logo" height="40"> | [MetalLB](https://metallb.universe.tf/) | Load Balancer |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/crowdsec.svg" alt="CrowdSec logo" height="40"> | [CrowdSec](https://www.crowdsec.net/) | Edge Security & AppSec |
+| <img src="https://avatars.githubusercontent.com/u/34656521" alt="Sealed Secrets logo" height="40"> | [Sealed Secrets](https://sealed-secrets.netlify.app/) | GitOps Secret Management |
 
 ### 🔭 Observability
 
@@ -93,7 +95,8 @@ easy addition of new services while maintaining security and reliability.
 | <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana logo" height="40"> | [Grafana](https://grafana.com/) | Visualization |
 | <img src="https://grafana.com/static/img/logos/logo-loki.svg" alt="Loki logo" height="40"> | [Loki](https://grafana.com/oss/loki/) | Log Aggregation |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jaeger.svg" alt="Jaeger logo" height="40"> | [Jaeger](https://www.jaegertracing.io/) | Distributed Tracing |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alloy.svg" alt="Grafana Alloy logo" height="40"> | [Alloy](https://www.jaegertracing.io/) | OpenTelemetry Collector |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alloy.svg" alt="Grafana Alloy logo" height="40"> | [Grafana Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/) | OpenTelemetry Collector |
+| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alertmanager.svg" alt="Alertmanager logo" height="40"> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Alert Routing |
 
 ### ☁️ Personal Cloud
 
@@ -143,10 +146,12 @@ Kubernetes service. Here's the detailed breakdown:
   - Base configurations for reusability
   - No templating engine required
 
-- 🏢 **Organized**: Three dedicated namespaces
+- 🏢 **Organized**: Dedicated namespaces by responsibility
+  - `argocd`: GitOps controller and ApplicationSet bootstrap
   - `htpc`: Media management and streaming services
   - `infra`: Core infrastructure components
-  - `utils`: Supporting applications and tools
+  - `monitoring`: Metrics, logs, traces, dashboards, and alerting
+  - `utils`: Personal cloud applications and shared data services
   - Resource isolation and quota management
 
 > 💡 **Architecture Note**: The infrastructure follows the principle of separation
@@ -179,6 +184,15 @@ Features:
   - Basic auth support
   - Forward authentication
   - Custom middleware chains
+
+- 🧱 Edge Protection
+  - CrowdSec Traefik bouncer plugin
+  - CrowdSec AppSec virtual patching
+  - Local-only middleware for internal tools
+
+- 📈 Telemetry
+  - Prometheus metrics and ServiceMonitor support
+  - OTLP traces sent to Jaeger
 ```
 
 > 💡 **Design Choice**: Traefik was chosen for its ease of configuration,
@@ -235,15 +249,16 @@ The storage architecture is designed with the following principles:
 
 | Namespace | PVC | Size | Purpose | Design Considerations |
 | ----------- | ----- | ------ | --------- | --------------------- |
-| htpc | htpc-pvc | Shared | Media & App Data | High throughput, large files |
-| infra | grafana-data-pvc | 5GB | Dashboards | Fast random access |
-| | jaeger-data-pvc | 10GB | Tracing | High write frequency |
-| utils | immich-library-pvc | 20GB | Photos/Videos | Mixed IO patterns |
-| | immich-valkey-pvc | 5GB | Cache | In-memory performance |
-| | immich-ml-cache-pvc | 10GB | ML Models | Read-optimized |
-| | nextcloud-pvc | 31GB | Files | Mixed workload |
-| | nextcloud-redis-pvc | 1GB | Redis Data | Fast access |
-| | tandoor-data-pvc | 20GB | Recipes | Small files, frequent access |
+| htpc | htpc-pvc | 500Gi | Media & App Data | High throughput, large files |
+| infra | traefik-data-pvc | 1Gi | Traefik ACME/runtime data | Small persistent config |
+| monitoring | grafana-data-pvc | 5Gi | Dashboards | Fast random access |
+| | alloy-data-pvc | 10Gi | Alloy state | Log pipeline durability |
+| utils | immich-library-pvc | 20Gi | Photos/Videos | Mixed IO patterns |
+| | immich-valkey-pvc | 5Gi | Cache | In-memory performance |
+| | immich-ml-cache-pvc | 10Gi | ML Models | Read-optimized |
+| | nextcloud-pvc | 31Gi | Files, app data, DB backups | Mixed workload |
+| | nextcloud-redis-pvc | 1Gi | Redis Data | Fast access |
+| | tandoor-data-pvc | 20Gi | Recipes | Small files, frequent access |
 
 > 🔄 All storage is dynamically provisioned by local-path-provisioner
 
@@ -439,11 +454,19 @@ The security framework is built on multiple layers of protection:
 
 #### Secrets Management
 
-- 🤫 **Secure Configuration**
-  - Encrypted secrets storage
-  - Runtime injection
-  - Rotation policies
-  - Least privilege principle
+- 🤫 **Sealed Secrets Workflow**
+  - Kubernetes `Secret` manifests are sealed with `kubeseal`
+  - Sealed Secrets controller runs in the `infra` namespace
+  - `scripts/seal-secrets.sh` discovers and seals secret manifests under `base/`
+  - Pre-commit hook prevents plaintext secret drift before commit
+
+#### Edge Protection
+
+- 🧱 **CrowdSec Integration**
+  - Traefik access logs feed CrowdSec agent
+  - LAPI and AppSec services run in `infra`
+  - Traefik bouncer middleware blocks malicious requests
+  - Virtual patching and OWASP CRS rules protect exposed services
 
 #### DNS Security
 
@@ -466,9 +489,10 @@ The configuration system follows modern GitOps principles:
 Structure:
   base/:
     # Core service definitions
-    htpc/     # Media services
-    infra/    # Infrastructure components
-    utils/    # Utility services
+    htpc/        # Media services
+    infra/       # Infrastructure, ingress, security, storage
+    monitoring/  # Metrics, logs, traces, dashboards
+    utils/       # Utility services
 ```
 
 #### Environment Overlays
@@ -476,15 +500,16 @@ Structure:
 ```yaml
 Structure:
   overlays/:
-    argocd/     # ArgoCD specific configurations
+    argocd/      # ArgoCD bootstrap overlay
     environment/
-      staging-infra/      # Development infrastructure
-      staging-ingress/    # Development ingress
-      production-infra/   # Production infrastructure
-      production-ingress/ # Production ingress
-    htpc/       # Media service overlays
-    infra/      # Infrastructure overlays
-    utils/      # Utility service overlays
+      staging-infra/      # Let's Encrypt staging issuer
+      staging-ingress/    # Staging certificate wiring
+      production-infra/   # Let's Encrypt production issuer
+      production-ingress/ # Production certificate wiring
+    htpc/        # Media service overlay
+    infra/       # Infrastructure overlay
+    monitoring/  # Observability overlay
+    utils/       # Utility service overlay
 ```
 
 #### Configuration Principles
@@ -508,13 +533,20 @@ Structure:
    - Drift detection
 
 4. **Secret Management**
-   - Encrypted at rest
-   - Environment separation
-   - Access auditing
-   - Automated rotation
+   - Secrets sealed with Sealed Secrets
+   - `kubeseal` uses the controller in `infra`
+   - Cluster-wide sealed secret scope supports shared manifests
+   - `seal-secrets` pre-commit hook seals changes before commit
 
 > 💡 **Configuration Strategy**: The configuration management system is designed
 > to be maintainable, secure, and scalable while following GitOps best practices.
+
+#### Agent Tooling
+
+- `AGENTS.md` defines repository-local AI agent behavior and response style.
+- `.agents/skills/` stores local agent skills used for compressed reviews, commits,
+  skill installation, and context-saving delegation.
+- `skills-lock.json` records the installed skill set for reproducibility.
 
 ### 7. 🔄 CI/CD Architecture
 
@@ -524,10 +556,11 @@ The continuous integration and deployment pipeline is designed for reliability a
 
 | Stage | Tool | Purpose | Implementation Details |
 | ------- | ------ | --------- | ---------------------- |
-| Lint | yamllint | YAML Validation | - Syntax checking<br>- Style enforcement<br>- Custom rules |
-| Test | kubeconform | Manifest Validation | - Schema validation<br>- Version checking<br>- Resource validation |
-| Build | kustomize | Generate install.yaml | - Overlay composition<br>- Resource generation<br>- Configuration merging |
-| Deploy | kubectl | Apply to Cluster | - Rolling updates<br>- Health checking<br>- Rollback capability |
+| Lint | yamllint / markdownlint-cli2 | YAML and Markdown validation | - Syntax checking<br>- Style enforcement<br>- Documentation checks |
+| Validate | yq / kubeconform / kustomize | Manifest validation | - YAML parsing<br>- Strict Kubernetes schema checks<br>- Helm-enabled overlay builds |
+| Secret Scan | TruffleHog / gitleaks | Secret detection | - PR diff scanning<br>- Merge scanning<br>- Pre-commit leak checks |
+| Build | kustomize | Generate manifests | - Overlay composition<br>- Helm chart rendering<br>- `install.yaml` generation for manual use |
+| Deploy | ArgoCD ApplicationSet | GitOps sync | - `argocd`, `infra`, `monitoring`, `htpc`, and `utils` app sync<br>- Prune enabled<br>- Server-side apply |
 
 #### Pipeline Design Principles
 
@@ -544,10 +577,10 @@ The continuous integration and deployment pipeline is designed for reliability a
    - Resource validation
 
 3. **Deployment Strategy**
-   - Rolling updates
-   - Canary deployments
-   - Blue-green capability
-   - Automated rollbacks
+   - ArgoCD ApplicationSet owns each overlay
+   - Automated sync with prune enabled
+   - Server-side apply for Kubernetes resources
+   - Manifest changes are deployed through GitOps sync
 
 4. **Monitoring Integration**
    - Deployment metrics
@@ -610,8 +643,16 @@ Timeout: 60s for container registries
 ### 9. 🔄 GitOps with ArgoCD
 
 ```yaml
+Applications:
+- argocd
+- infra
+- monitoring
+- htpc
+- utils
+
 Features:
-- Auto-sync
+- Auto-sync with prune
+- Server-side apply
 - Live View
 - Drift Detection
 - Health Monitoring
@@ -668,6 +709,8 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
    - ✅ k3s cluster
    - ✅ kubectl configured
    - ✅ Git installed
+   - ✅ Helm and Kustomize installed
+   - ✅ kubeseal installed for secret updates
 
 2. **Setup Steps**
 
@@ -690,12 +733,13 @@ Pre-configured Grafana dashboards for comprehensive monitoring:
   | Script | Purpose |
   | -------- | --------- |
   | 🛠️ bootstrap.sh | Install essential libraries in a new Ubuntu VM |
-  | ✅ validate.sh | Config Check |
-  | 🚀 deploy.sh | Deployment |
+  | ✅ validate.sh | YAML, kubeconform, and kustomize validation |
+  | 🚀 deploy.sh | Apply generated manifests manually |
   | 💣 nuke.sh | Reset Cluster |
-  | ⚡ kickstart.sh | Install ArgoCD and deploy services |
-  | 🛠️ update-manifests.sh | Kustomize build Script |
-  | 🔐 encrypt-secrets.sh | Encode secrets in the repo |
+  | ⚡ kickstart.sh | Install ArgoCD and bootstrap Sealed Secrets |
+  | 🛠️ update-manifests.sh | Build overlay manifests with Kustomize and Helm |
+  | 🔄 update-argo-manifests.sh | Refresh vendored ArgoCD non-CRD manifests |
+  | 🔐 seal-secrets.sh | Seal Kubernetes Secret manifests with kubeseal |
 
 ## 👏 Credits
 
