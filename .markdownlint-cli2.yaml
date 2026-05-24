@@ -13,4 +13,5 @@ ignores:
   - "**/.github/**"
   - "**/site/**"
   - "**/node_modules/**"
+  - "**/.agents/**"
   - plan_*.md
