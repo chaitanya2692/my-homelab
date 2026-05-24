@@ -13,3 +13,4 @@ helmCharts:
     version: 0.16.0
     releaseName: metallb
     includeCRDs: true
+    valuesFile: values.yaml
