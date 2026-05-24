@@ -48,10 +48,10 @@ spec:
               subPath: flaresolverr
           resources:
             requests:
-              memory: "512Mi"
+              memory: "1Gi"
               cpu: "200m"
             limits:
-              memory: "1Gi"
+              memory: "2Gi"
               cpu: "1000m"
       volumes:
         - name: arr-stack-storage
