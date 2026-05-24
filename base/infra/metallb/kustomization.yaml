@@ -10,6 +10,7 @@ resources:
 helmCharts:
   - name: metallb
     repo: https://metallb.github.io/metallb
-    version: 0.15.3
+    version: 0.16.0
     releaseName: metallb
     includeCRDs: true
+    valuesFile: values.yaml

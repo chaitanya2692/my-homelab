@@ -1,0 +1,7 @@
+# MetalLB Helm chart values
+# frr-k8s is the default BGP backend in v0.16.0
+# prometheus.serviceMonitor must be explicitly set to avoid nil pointer in chart template
+frr-k8s:
+  prometheus:
+    serviceMonitor:
+      enabled: false
