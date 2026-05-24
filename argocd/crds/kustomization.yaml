@@ -22,6 +22,8 @@ resources:
   - https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/tags/v40.2.0/traefik/crds/traefik.io_traefikservices.yaml
 
 # Add labels to all resources
-commonLabels:
-  app.kubernetes.io/part-of: infrastructure-crds
-  app.kubernetes.io/managed-by: kustomize
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: infrastructure-crds

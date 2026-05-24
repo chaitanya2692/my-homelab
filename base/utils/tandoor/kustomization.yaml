@@ -12,5 +12,7 @@ resources:
   - secrets.yaml
   - serviceaccount.yaml
 
-commonLabels:
-  app: recipes
+labels:
+  - includeSelectors: true
+    pairs:
+      app: recipes
