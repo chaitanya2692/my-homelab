@@ -70,10 +70,6 @@ spec:
               value: "5432"
             - name: REDIS_HOST
               value: "redis"
-            - name: PHP_MEMORY_LIMIT
-              value: "512M"
-            - name: PHP_UPLOAD_LIMIT
-              value: "512M"
             - name: POSTGRES_DB
               value: nextcloud-db
             - name: POSTGRES_USER

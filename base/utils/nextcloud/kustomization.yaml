@@ -5,14 +5,12 @@ kind: Kustomization
 
 resources:
   - secrets.yaml
-  - configmap.yaml
   - nextcloud-deployment.yaml
   - nextcloud-service.yaml
   - nextcloud-cronjob.yaml
   - postgres-cluster.yaml
   - redis-deployment.yaml
   - redis-service.yaml
-  - middleware.yaml
 
 generatorOptions:
   disableNameSuffixHash: true
