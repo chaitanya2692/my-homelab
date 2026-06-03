@@ -29,15 +29,18 @@ spec:
             [
               "sh",
               "-c",
-              "mkdir -p /config /watch && chown -R 1000:1000 /config /watch && chmod -R a=,a+rX,u+w,g+w /config /watch",
+              "chown -R 1000:1000 /config /data && chmod -R a=,a+rX,u+w,g+w /config /data",
             ]
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
               subPath: crossseed/config
             - name: arr-stack-storage
-              mountPath: /watch
-              subPath: transmission/watch
+              mountPath: /data
+              subPath: data
+            - name: crossseed-config
+              mountPath: /crossseed-config
+              subPath: config.js
       containers:
         - name: crossseed
           image: ghcr.io/cross-seed/cross-seed:6
@@ -46,8 +49,6 @@ spec:
           env:
             - name: TZ
               value: "CET"
-            - name: CROSSSEED_CONFIG_DIR
-              value: "/crossseed-config"
             - name: PROWLARR_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -72,21 +73,14 @@ spec:
               mountPath: /config
               subPath: crossseed/config
             - name: arr-stack-storage
-              mountPath: /data/media
-              subPath: data/media
-              readOnly: true
-            - name: arr-stack-storage
-              mountPath: /transmission-config
-              subPath: transmission/config
-              readOnly: true
-            - name: arr-stack-storage
-              mountPath: /watch
-              subPath: transmission/watch
+              mountPath: /data
+              subPath: data
             - name: crossseed-config
-              mountPath: /crossseed-config
+              mountPath: /config/config.js
+              subPath: config.js
           livenessProbe:
             httpGet:
-              path: /api/healthcheck
+              path: /api/ping
               port: 2468
             initialDelaySeconds: 30
             periodSeconds: 30
@@ -94,7 +88,7 @@ spec:
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /api/healthcheck
+              path: /api/ping
               port: 2468
             initialDelaySeconds: 15
             periodSeconds: 10
