@@ -74,11 +74,11 @@ spec:
               subPath: transmission/watch
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "25m"
+              memory: "512Mi"
+              cpu: "1"
             limits:
-              memory: "256Mi"
-              cpu: "100m"
+              memory: "1Gi"
+              cpu: "3"
       volumes:
         - name: arr-stack-storage
           persistentVolumeClaim:
