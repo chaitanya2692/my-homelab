@@ -29,7 +29,7 @@ data:
       port: 2468,
 
       // API key for incoming webhook requests (from autobrr)
-      apiKey: process.env.CROSSSEED_API_KEY,
+      apiKey: undefined,
 
       // Sonarr/Radarr for ID-based title matching (better match rates)
       sonarr: [`http://sonarr:8989/?apikey=${process.env.SONARR_API_KEY}`],

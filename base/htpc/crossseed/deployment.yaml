@@ -48,11 +48,6 @@ spec:
               value: "CET"
             - name: CROSSSEED_CONFIG_DIR
               value: "/crossseed-config"
-            - name: CROSSSEED_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: crossseed-secrets
-                  key: API_KEY
             - name: PROWLARR_API_KEY
               valueFrom:
                 secretKeyRef:
