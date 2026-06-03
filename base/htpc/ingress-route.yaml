@@ -79,3 +79,23 @@ spec:
         - kind: Service
           name: flaresolverr
           port: 8191
+    - kind: Rule
+      match: Host(`autobrr.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - kind: Service
+          name: autobrr
+          port: 7474
+    - kind: Rule
+      match: Host(`crossseed.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - kind: Service
+          name: crossseed
+          port: 2468
