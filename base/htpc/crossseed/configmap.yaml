@@ -22,7 +22,7 @@ data:
       //   `http://prowlarr.htpc.svc.cluster.local:9696/1/api?apikey=${process.env.PROWLARR_API_KEY}`,
       torznab: [
         // Add one entry per Prowlarr indexer. Get the number from Prowlarr > Settings > Indexers.
-        // `http://prowlarr:9696/1/api?apikey=${process.env.PROWLARR_API_KEY}`,
+        `http://prowlarr:9696/1/api?apikey=${process.env.PROWLARR_API_KEY}`,
       ],
 
       host: "0.0.0.0",
@@ -36,19 +36,20 @@ data:
       radarr: [`http://radarr:7878/?apikey=${process.env.RADARR_API_KEY}`],
 
       // Directories containing your media files (for data-based matching)
-      dataDirs: ["/media/movies", "/media/tv"],
+      dataDirs: ["/data/media/movies", "/data/media/tv"],
 
-      // Directory containing .torrent files from Transmission
-      torrentDir: "/transmission/config/torrents",
-
-      // Where cross-seed writes new .torrent files (Transmission watch dir)
-      outputDir: "/watch",
+      // Where cross-seed writes new .torrent files (null = disabled, using inject instead)
+      outputDir: null,
 
       // Inject matched torrents directly into Transmission — no re-download
       action: "inject",
 
       // Skip re-hash check when injecting; trust the data is correct → instant seeding
       skipRecheck: true,
+
+      // Hardlink matched content into linkDirs (same PVC filesystem as dataDirs)
+      linkDirs: ["/data/torrents/"],
+      linkType: "hardlink",
 
       // Flexible matching finds more cross-seed candidates
       matchMode: "flexible",
