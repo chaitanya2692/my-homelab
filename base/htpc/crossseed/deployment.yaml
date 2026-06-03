@@ -1,0 +1,121 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: crossseed
+  name: crossseed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: crossseed
+  template:
+    metadata:
+      labels:
+        run: crossseed
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.38.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /config /watch && chown -R 1000:1000 /config /watch && chmod -R a=,a+rX,u+w,g+w /config /watch",
+            ]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: crossseed/config
+            - name: arr-stack-storage
+              mountPath: /watch
+              subPath: transmission/watch
+      containers:
+        - name: crossseed
+          image: ghcr.io/cross-seed/cross-seed:6
+          imagePullPolicy: IfNotPresent
+          command: ["cross-seed", "daemon"]
+          env:
+            - name: TZ
+              value: "CET"
+            - name: CROSSSEED_CONFIG_DIR
+              value: "/crossseed-config"
+            - name: CROSSSEED_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: crossseed-secrets
+                  key: API_KEY
+            - name: PROWLARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: PROWLARR_API_KEY
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: SONARR_API_KEY
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: exportarr-secrets
+                  key: RADARR_API_KEY
+          ports:
+            - containerPort: 2468
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: crossseed/config
+            - name: arr-stack-storage
+              mountPath: /data/media
+              subPath: data/media
+              readOnly: true
+            - name: arr-stack-storage
+              mountPath: /transmission-config
+              subPath: transmission/config
+              readOnly: true
+            - name: arr-stack-storage
+              mountPath: /watch
+              subPath: transmission/watch
+            - name: crossseed-config
+              mountPath: /crossseed-config
+          livenessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: 2468
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/healthcheck
+              port: 2468
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "25m"
+            limits:
+              memory: "512Mi"
+              cpu: "300m"
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: htpc-pvc
+        - name: crossseed-config
+          configMap:
+            name: cross-seed-config

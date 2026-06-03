@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cross-seed-config
+data:
+  config.js: |
+    module.exports = {
+      // Torrent clients — v6 format
+      // No auth needed if Transmission has no password set
+      torrentClients: [
+        "transmission:http://transmission:9091/transmission/rpc",
+      ],
+
+      // Use torrents already tracked by Transmission for matching
+      // (more coverage than scanning files alone)
+      useClientTorrents: true,
+
+      // Prowlarr Torznab URLs — add one entry per indexer.
+      // Get the number from Prowlarr: Settings > Indexers > click indexer > Torznab Feed.
+      // Example:
+      //   `http://prowlarr.htpc.svc.cluster.local:9696/1/api?apikey=${process.env.PROWLARR_API_KEY}`,
+      torznab: [
+        // Add one entry per Prowlarr indexer. Get the number from Prowlarr > Settings > Indexers.
+        // `http://prowlarr:9696/1/api?apikey=${process.env.PROWLARR_API_KEY}`,
+      ],
+
+      host: "0.0.0.0",
+      port: 2468,
+
+      // API key for incoming webhook requests (from autobrr)
+      apiKey: process.env.CROSSSEED_API_KEY,
+
+      // Sonarr/Radarr for ID-based title matching (better match rates)
+      sonarr: [`http://sonarr:8989/?apikey=${process.env.SONARR_API_KEY}`],
+      radarr: [`http://radarr:7878/?apikey=${process.env.RADARR_API_KEY}`],
+
+      // Directories containing your media files (for data-based matching)
+      dataDirs: ["/media/movies", "/media/tv"],
+
+      // Directory containing .torrent files from Transmission
+      torrentDir: "/transmission/config/torrents",
+
+      // Where cross-seed writes new .torrent files (Transmission watch dir)
+      outputDir: "/watch",
+
+      // Inject matched torrents directly into Transmission — no re-download
+      action: "inject",
+
+      // Skip re-hash check when injecting; trust the data is correct → instant seeding
+      skipRecheck: true,
+
+      // Flexible matching finds more cross-seed candidates
+      matchMode: "flexible",
+
+      // Cross-seed at season-pack level when you have all episodes
+      seasonFromEpisodes: 1,
+
+      // Include single-episode torrents
+      includeSingleEpisodes: true,
+
+      // Exclude non-video files from matching
+      includeNonVideos: false,
+
+      // Seed same content under multiple tracker categories
+      duplicateCategories: true,
+
+      // RSS scan cadence — picks up new releases quickly
+      rssCadence: "30 minutes",
+
+      // Daily bulk search of entire catalog
+      searchCadence: "1 day",
+
+      // Max torrents per bulk search run
+      searchLimit: 400,
+
+      // Don't search for torrents older than 2 weeks (reduces noise)
+      excludeOlder: "2 weeks",
+
+      // Don't re-search torrents searched in the last 3 days
+      excludeRecentSearch: "3 days",
+
+      // Delay (ms) between API calls to avoid hammering indexers
+      delay: 30,
+
+      verbose: true,
+    };
