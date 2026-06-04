@@ -13,7 +13,6 @@ resources:
   - transmission
   - scraparr
   - autobrr
-  - crossseed
   - ingress-route.yaml
   - persistent-volume-claim.yaml
   - network-policy.yaml
