@@ -50,6 +50,8 @@ spec:
             - name: arr-stack-storage
               mountPath: /config
               subPath: autobrr/config
+            - name: sizechecker-bin
+              mountPath: /usr/local/bin/sizechecker
           livenessProbe:
             httpGet:
               path: /api/healthz/liveness
@@ -77,3 +79,7 @@ spec:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: sizechecker-bin
+          hostPath:
+            path: /usr/local/bin/sizechecker
+            type: File
