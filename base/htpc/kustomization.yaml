@@ -8,6 +8,7 @@ resources:
   - flaresolverr
   - jellyfin
   - prowlarr
+  - qbittorrent
   - radarr
   - sonarr
   - transmission
