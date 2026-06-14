@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: qbittorrent
+  name: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: qbittorrent
+  template:
+    metadata:
+      labels:
+        run: qbittorrent
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.38.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /qbittorrent/etc /qbittorrent/var && chown -R 1000:1000 /qbittorrent && chmod -R a=,a+rX,u+w,g+w /qbittorrent",
+            ]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/etc
+              subPath: qbittorrent/etc
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/var
+              subPath: qbittorrent/var
+      containers:
+        - name: qbittorrent
+          image: 11notes/qbittorrent:5.2.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "CET"
+          ports:
+            - containerPort: 8080
+              name: webui
+              protocol: TCP
+            - containerPort: 6881
+              name: torrent-tcp
+              protocol: TCP
+            - containerPort: 6881
+              name: torrent-udp
+              protocol: UDP
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/etc
+              subPath: qbittorrent/etc
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/var
+              subPath: qbittorrent/var
+            - name: arr-stack-storage
+              mountPath: /data
+              subPath: data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "2"
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: htpc-pvc
