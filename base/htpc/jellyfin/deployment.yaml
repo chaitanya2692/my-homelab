@@ -41,6 +41,14 @@ spec:
                 secretKeyRef:
                   name: protonvpn-wireguard
                   key: WIREGUARD_PRIVATE_KEY
+            - name: PORT_FORWARD_ONLY
+              value: "on"
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: VPN_PORT_FORWARDING_PORTS_COUNT
+              value: "1"
+            - name: VPN_PORT_FORWARDING_LISTENING_PORT
+              value: "8096"
             - name: FIREWALL_INPUT_PORTS
               value: "8096,8920"
             - name: TZ
