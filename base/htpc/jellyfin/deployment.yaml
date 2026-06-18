@@ -5,6 +5,7 @@ kind: Deployment
 metadata:
   labels:
     run: jellyfin
+    vpn: gluetun
   name: jellyfin
 spec:
   selector:
@@ -14,11 +15,50 @@ spec:
     metadata:
       labels:
         run: jellyfin
+        vpn: gluetun
     spec:
       securityContext:
         supplementalGroups:
           - 992
       containers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41.1
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "wireguard"
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: protonvpn-wireguard
+                  key: WIREGUARD_PRIVATE_KEY
+            - name: SERVER_COUNTRIES
+              value: "Switzerland"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8096,8920"
+            - name: TZ
+              value: "CET"
+            - name: UPDATER_PERIOD
+              value: "720h"
+            - name: LOG_LEVEL
+              value: "info"
+          volumeMounts:
+            - name: tun-device
+              mountPath: /dev/net/tun
+            - name: gluetun-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
         - name: jellyfin
           image: jellyfin/jellyfin:10.11.11
           imagePullPolicy: IfNotPresent
@@ -56,3 +96,8 @@ spec:
         - name: "render-device"
           hostPath:
             path: "/dev/dri/renderD128"
+        - name: tun-device
+          hostPath:
+            path: /dev/net/tun
+        - name: gluetun-data
+          emptyDir: {}

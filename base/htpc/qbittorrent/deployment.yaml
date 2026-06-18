@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   labels:
     run: qbittorrent
+    vpn: gluetun
   name: qbittorrent
 spec:
   replicas: 1
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         run: qbittorrent
+        vpn: gluetun
     spec:
       securityContext:
         runAsUser: 1000
@@ -39,6 +41,56 @@ spec:
               mountPath: /qbittorrent/var
               subPath: qbittorrent/var
       containers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41.1
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "wireguard"
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: protonvpn-wireguard
+                  key: WIREGUARD_PRIVATE_KEY
+            - name: SERVER_COUNTRIES
+              value: "Switzerland"
+            - name: PORT_FORWARD_ONLY
+              value: "on"
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: VPN_PORT_FORWARDING_PORTS_COUNT
+              value: "1"
+            - name: VPN_PORT_FORWARDING_UP_COMMAND
+              value: "/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORT}},\\\"random_port\\\":false,\\\"upnp\\\":false}\" http://127.0.0.1:8080/api/v2/app/setPreferences'"
+            - name: VPN_PORT_FORWARDING_DOWN_COMMAND
+              value: "/bin/sh -c 'wget -O- -nv --retry-connrefused --post-data \"json={\\\"listen_port\\\":0}\" http://127.0.0.1:8080/api/v2/app/setPreferences'"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"
+            - name: TZ
+              value: "CET"
+            - name: UPDATER_PERIOD
+              value: "720h"
+            - name: LOG_LEVEL
+              value: "info"
+          volumeMounts:
+            - name: tun-device
+              mountPath: /dev/net/tun
+            - name: gluetun-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
         - name: qbittorrent
           image: 11notes/qbittorrent:5.2.1
           imagePullPolicy: IfNotPresent
@@ -49,12 +101,6 @@ spec:
             - containerPort: 8080
               name: webui
               protocol: TCP
-            - containerPort: 6881
-              name: torrent-tcp
-              protocol: TCP
-            - containerPort: 6881
-              name: torrent-udp
-              protocol: UDP
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /qbittorrent/etc
@@ -76,3 +122,8 @@ spec:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: tun-device
+          hostPath:
+            path: /dev/net/tun
+        - name: gluetun-data
+          emptyDir: {}
