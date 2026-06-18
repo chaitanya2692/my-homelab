@@ -53,15 +53,11 @@ spec:
               value: "protonvpn"
             - name: VPN_TYPE
               value: "wireguard"
-            - name: DNS_UPSTREAM_RESOLVER_TYPE
-              value: "doh"
             - name: WIREGUARD_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
                   name: protonvpn-wireguard
                   key: WIREGUARD_PRIVATE_KEY
-            - name: SERVER_COUNTRIES
-              value: "Switzerland"
             - name: PORT_FORWARD_ONLY
               value: "on"
             - name: VPN_PORT_FORWARDING
@@ -85,7 +81,7 @@ spec:
             - name: UPDATER_PERIOD
               value: "720h"
             - name: LOG_LEVEL
-              value: "info"
+              value: "debug"
           volumeMounts:
             - name: tun-device
               mountPath: /dev/net/tun
