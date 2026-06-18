@@ -53,6 +53,8 @@ spec:
               value: "protonvpn"
             - name: VPN_TYPE
               value: "wireguard"
+            - name: DNS_UPSTREAM_RESOLVER_TYPE
+              value: "doh"
             - name: WIREGUARD_PRIVATE_KEY
               valueFrom:
                 secretKeyRef:
