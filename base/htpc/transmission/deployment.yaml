@@ -68,8 +68,16 @@ spec:
               value: "on"
             - name: VPN_PORT_FORWARDING_PORTS_COUNT
               value: "1"
-            - name: VPN_PORT_FORWARDING_LISTENING_PORT
-              value: "51413"
+            - name: VPN_PORT_FORWARDING_UP_COMMAND
+              value: >-
+                /bin/sh -c 'sid="$(wget -S -O- --post-data
+                "{\"method\":\"session-get\"}"
+                http://127.0.0.1:9091/transmission/rpc 2>&1 | sed -n
+                "s/.*X-Transmission-Session-Id: //p" | tr -d "\r" | tail -n1)"
+                && wget -qO- --header "X-Transmission-Session-Id: ${sid}"
+                --post-data
+                "{\"method\":\"session-set\",\"arguments\":{\"peer-port\":{{PORT}},\"port-forwarding-enabled\":false}}"
+                http://127.0.0.1:9091/transmission/rpc'
             - name: FIREWALL_INPUT_PORTS
               value: "9091"
             - name: TZ
