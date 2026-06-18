@@ -4,6 +4,7 @@ kind: Deployment
 metadata:
   labels:
     run: transmission
+    vpn: gluetun
   name: transmission
 spec:
   replicas: 1
@@ -14,6 +15,7 @@ spec:
     metadata:
       labels:
         run: transmission
+        vpn: gluetun
     spec:
       securityContext:
         fsGroup: 1000
@@ -40,6 +42,52 @@ spec:
               mountPath: /watch
               subPath: transmission/watch
       containers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41.1
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "wireguard"
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: protonvpn-wireguard
+                  key: WIREGUARD_PRIVATE_KEY
+            - name: SERVER_COUNTRIES
+              value: "Switzerland"
+            - name: PORT_FORWARD_ONLY
+              value: "on"
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: VPN_PORT_FORWARDING_PORTS_COUNT
+              value: "1"
+            - name: VPN_PORT_FORWARDING_LISTENING_PORT
+              value: "51413"
+            - name: FIREWALL_INPUT_PORTS
+              value: "9091"
+            - name: TZ
+              value: "CET"
+            - name: UPDATER_PERIOD
+              value: "720h"
+            - name: LOG_LEVEL
+              value: "info"
+          volumeMounts:
+            - name: tun-device
+              mountPath: /dev/net/tun
+            - name: gluetun-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
         - name: transmission
           image: linuxserver/transmission:4.1.2
           imagePullPolicy: IfNotPresent
@@ -52,16 +100,12 @@ spec:
               value: "1000"
             - name: download-dir
               value: "/data/torrents"
+            - name: PEERPORT
+              value: "51413"
           ports:
             - containerPort: 9091
               name: webui
               protocol: TCP
-            - containerPort: 51413
-              name: torrent-tcp
-              protocol: TCP
-            - containerPort: 51413
-              name: torrent-udp
-              protocol: UDP
           volumeMounts:
             - name: arr-stack-storage
               mountPath: /config
@@ -83,3 +127,8 @@ spec:
         - name: arr-stack-storage
           persistentVolumeClaim:
             claimName: htpc-pvc
+        - name: tun-device
+          hostPath:
+            path: /dev/net/tun
+        - name: gluetun-data
+          emptyDir: {}
