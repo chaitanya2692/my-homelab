@@ -6,6 +6,7 @@ namespace: htpc
 
 resources:
   - flaresolverr
+  - gluetun
   - jellyfin
   - prowlarr
   - qbittorrent

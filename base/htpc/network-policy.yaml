@@ -63,3 +63,19 @@ spec:
           podSelector:
             matchLabels:
               app.kubernetes.io/name: prometheus
+---
+# Allow gluetun pods to reach the internet for VPN tunnel setup.
+# Gluetun manages its own iptables kill switch internally.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-gluetun-egress
+  namespace: htpc
+spec:
+  podSelector:
+    matchLabels:
+      vpn: gluetun
+  policyTypes:
+    - Egress
+  egress:
+    - {}

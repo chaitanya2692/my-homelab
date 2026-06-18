@@ -15,4 +15,3 @@ ignores:
   - "**/node_modules/**"
   - "**/.agents/**"
   - plan_*.md
-  - base/htpc/crossseed/SETUP.md
