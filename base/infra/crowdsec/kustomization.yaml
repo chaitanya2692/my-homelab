@@ -6,7 +6,6 @@ namespace: infra
 
 resources:
   - secret
-  - bouncer-middleware.yaml
 
 helmCharts:
   - name: crowdsec
