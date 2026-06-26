@@ -38,6 +38,7 @@ build() {
     done
 
     echo "Successfully updated install.yaml for ${ENVIRONMENT} environment"
+
     # Code cleanup
     find "$PWD" -maxdepth 4 -type d -name 'charts' -exec rm -rf {} \;
 }
