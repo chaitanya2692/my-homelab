@@ -72,6 +72,14 @@ data:
             href: https://prowlarr.my-homelab.party
             description: Torrent Tracker Management
             icon: prowlarr
+        - qBittorrent:
+            href: http://qbittorrent.my-homelab.party
+            description: Torrent Client WebUI
+            icon: qbittorrent
+        - autobrr:
+            href: http://autobrr.my-homelab.party
+            description: Download automation for torrents
+            icon: autobrr
 
     - Monitoring:
         - Grafana:
