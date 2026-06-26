@@ -24,8 +24,8 @@ deployment:
       secret:
         secretName: crowdsec-bouncer-key
 
-logs:
-  access:
+log:
+  accessLog:
     enabled: true
     format: json
     timezone: "CET"
