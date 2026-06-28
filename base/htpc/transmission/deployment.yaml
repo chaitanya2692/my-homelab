@@ -60,22 +60,8 @@ spec:
                 secretKeyRef:
                   name: protonvpn-wireguard
                   key: WIREGUARD_PRIVATE_KEY
-            - name: PORT_FORWARD_ONLY
-              value: "on"
             - name: VPN_PORT_FORWARDING
-              value: "on"
-            - name: VPN_PORT_FORWARDING_PORTS_COUNT
-              value: "1"
-            - name: VPN_PORT_FORWARDING_UP_COMMAND
-              value: >-
-                /bin/sh -c 'sid="$(wget -S -O- --post-data
-                "{\"method\":\"session-get\"}"
-                http://127.0.0.1:9091/transmission/rpc 2>&1 | sed -n
-                "s/.*X-Transmission-Session-Id: //p" | tr -d "\r" | tail -n1)"
-                && wget -qO- --header "X-Transmission-Session-Id: ${sid}"
-                --post-data
-                "{\"method\":\"session-set\",\"arguments\":{\"peer-port\":{{PORT}},\"port-forwarding-enabled\":false}}"
-                http://127.0.0.1:9091/transmission/rpc'
+              value: "off"
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: "10.43.0.0/16"
             - name: FIREWALL_INPUT_PORTS
