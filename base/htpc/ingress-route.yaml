@@ -13,6 +13,9 @@ spec:
     - kind: Rule
       match: Host(`jellyfin.my-homelab.party`)
       priority: 0
+      middlewares:
+        - name: jellyfin-bouncer
+        - name: jellyfin-headers
       services:
         - kind: Service
           name: jellyfin
@@ -70,6 +73,16 @@ spec:
           name: transmission
           port: 9091
     - kind: Rule
+      match: Host(`qbittorrent.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - kind: Service
+          name: qbittorrent
+          port: 8080
+    - kind: Rule
       match: Host(`flaresolverr.my-homelab.party`)
       priority: 0
       middlewares:
@@ -79,3 +92,13 @@ spec:
         - kind: Service
           name: flaresolverr
           port: 8191
+    - kind: Rule
+      match: Host(`autobrr.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
+      services:
+        - kind: Service
+          name: autobrr
+          port: 7474

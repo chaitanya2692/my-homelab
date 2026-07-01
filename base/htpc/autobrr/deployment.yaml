@@ -1,0 +1,85 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: autobrr
+  name: autobrr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: autobrr
+  template:
+    metadata:
+      labels:
+        run: autobrr
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.38.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /config && chown -R 1000:1000 /config && chmod -R a=,a+rX,u+w,g+w /config",
+            ]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: autobrr/config
+      containers:
+        - name: autobrr
+          image: ghcr.io/autobrr/autobrr:v1.80.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "CET"
+          ports:
+            - containerPort: 7474
+              name: webui
+              protocol: TCP
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /config
+              subPath: autobrr/config
+            - name: sizechecker-bin
+              mountPath: /usr/local/bin/sizechecker
+          livenessProbe:
+            httpGet:
+              path: /api/healthz/liveness
+              port: 7474
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/healthz/readiness
+              port: 7474
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: htpc-pvc
+        - name: sizechecker-bin
+          hostPath:
+            path: /usr/local/bin/sizechecker
+            type: File
