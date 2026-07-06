@@ -40,6 +40,23 @@ spec:
             - name: arr-stack-storage
               mountPath: /qbittorrent/var
               subPath: qbittorrent/var
+        - name: qbittorrent-config
+          image: busybox:1.38.0
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          command:
+            - "sh"
+            - "-c"
+            - |
+              CONFIG=/qbittorrent/etc/qBittorrent.conf
+              if [ -f "$CONFIG" ] && ! grep -q "TorrentContentRemoveOption" "$CONFIG"; then
+                awk '/^\[BitTorrent\]/{print; print "Session\\TorrentContentRemoveOption=Delete"; next}1' "$CONFIG" > "${CONFIG}.tmp" && mv "${CONFIG}.tmp" "$CONFIG"
+              fi
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/etc
+              subPath: qbittorrent/etc
       containers:
         - name: gluetun
           image: qmcgaw/gluetun:v3.41.1
