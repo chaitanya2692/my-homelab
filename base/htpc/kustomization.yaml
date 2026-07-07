@@ -12,7 +12,6 @@ resources:
   - qbittorrent
   - radarr
   - sonarr
-  - transmission
   - scraparr
   - autobrr
   - ingress-route.yaml

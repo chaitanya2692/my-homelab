@@ -60,10 +60,6 @@ data:
             href: https://jellyfin.my-homelab.party
             description: Plex but better
             icon: jellyfin
-        - Transmission:
-            href: https://transmission.my-homelab.party
-            description: Torrent Client WebUI
-            icon: transmission
         - Flaresolverr:
             href: https://flaresolverr.my-homelab.party
             description: Request bypass service

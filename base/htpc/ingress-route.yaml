@@ -63,16 +63,6 @@ spec:
           name: radarr
           port: 7878
     - kind: Rule
-      match: Host(`transmission.my-homelab.party`)
-      priority: 0
-      middlewares:
-        - name: local-only
-          namespace: infra
-      services:
-        - kind: Service
-          name: transmission
-          port: 9091
-    - kind: Rule
       match: Host(`qbittorrent.my-homelab.party`)
       priority: 0
       middlewares:
