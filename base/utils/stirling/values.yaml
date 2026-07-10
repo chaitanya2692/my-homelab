@@ -1,8 +1,5 @@
 fullnameOverride: stirling-pdf
 
-image:
-  tag: "2.5.1"
-
 envs:
   - name: SECURITY_ENABLELOGIN
     value: "false"
@@ -12,6 +9,21 @@ persistence:
   storageClass: local-path-utils
   size: 8Gi
   path: /configs
+
+# probes:
+#   liveness:
+#     initialDelaySeconds: 120
+#     periodSeconds: 30
+#     timeoutSeconds: 5
+#   readiness:
+#     initialDelaySeconds: 45
+#     periodSeconds: 15
+#     timeoutSeconds: 5
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: kube-prometheus-stack
 
 deployment:
   extraVolumeMounts:
