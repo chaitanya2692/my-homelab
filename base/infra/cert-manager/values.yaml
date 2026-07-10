@@ -21,7 +21,6 @@ prometheus:
     prometheusInstance: infra
     labels:
       release: kube-prometheus-stack
-    targetPort: 9402
 
 crds:
   enabled: false
