@@ -6,12 +6,14 @@ namespace: htpc
 
 resources:
   - flaresolverr
+  - gluetun
   - jellyfin
   - prowlarr
+  - qbittorrent
   - radarr
   - sonarr
-  - transmission
   - scraparr
+  - autobrr
   - ingress-route.yaml
   - persistent-volume-claim.yaml
   - network-policy.yaml

@@ -60,10 +60,6 @@ data:
             href: https://jellyfin.my-homelab.party
             description: Plex but better
             icon: jellyfin
-        - Transmission:
-            href: https://transmission.my-homelab.party
-            description: Torrent Client WebUI
-            icon: transmission
         - Flaresolverr:
             href: https://flaresolverr.my-homelab.party
             description: Request bypass service
@@ -72,6 +68,14 @@ data:
             href: https://prowlarr.my-homelab.party
             description: Torrent Tracker Management
             icon: prowlarr
+        - qBittorrent:
+            href: http://qbittorrent.my-homelab.party
+            description: Torrent Client WebUI
+            icon: qbittorrent
+        - autobrr:
+            href: http://autobrr.my-homelab.party
+            description: Download automation for torrents
+            icon: autobrr
 
     - Monitoring:
         - Grafana:

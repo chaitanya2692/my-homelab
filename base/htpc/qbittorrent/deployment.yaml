@@ -1,0 +1,130 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: qbittorrent
+    vpn: gluetun
+  name: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: qbittorrent
+  template:
+    metadata:
+      labels:
+        run: qbittorrent
+        vpn: gluetun
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: fix-permissions
+          image: busybox:1.38.0
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            [
+              "sh",
+              "-c",
+              "mkdir -p /qbittorrent/etc /qbittorrent/var && chown -R 1000:1000 /qbittorrent && chmod -R a=,a+rX,u+w,g+w /qbittorrent",
+            ]
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/etc
+              subPath: qbittorrent/etc
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/var
+              subPath: qbittorrent/var
+      containers:
+        - name: gluetun
+          image: qmcgaw/gluetun:v3.41.1
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            capabilities:
+              add:
+                - NET_ADMIN
+              drop:
+                - NET_RAW
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "protonvpn"
+            - name: VPN_TYPE
+              value: "wireguard"
+            - name: WIREGUARD_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: protonvpn-wireguard
+                  key: WIREGUARD_PRIVATE_KEY
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.43.0.0/16"
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"
+            - name: TZ
+              value: "CET"
+            - name: UPDATER_PERIOD
+              value: "720h"
+            - name: LOG_LEVEL
+              value: "info"
+          volumeMounts:
+            - name: tun-device
+              mountPath: /dev/net/tun
+            - name: gluetun-data
+              mountPath: /gluetun
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "25m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+        - name: qbittorrent
+          image: 11notes/qbittorrent:5.2.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: "CET"
+            - name: QBITTORRENT_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-config
+                  key: QBITTORRENT_CONFIG
+          ports:
+            - containerPort: 8080
+              name: webui
+              protocol: TCP
+          volumeMounts:
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/etc
+              subPath: qbittorrent/etc
+            - name: arr-stack-storage
+              mountPath: /qbittorrent/var
+              subPath: qbittorrent/var
+            - name: arr-stack-storage
+              mountPath: /data
+              subPath: data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "2"
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      volumes:
+        - name: arr-stack-storage
+          persistentVolumeClaim:
+            claimName: htpc-pvc
+        - name: tun-device
+          hostPath:
+            path: /dev/net/tun
+        - name: gluetun-data
+          emptyDir: {}
