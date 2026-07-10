@@ -37,7 +37,7 @@ spec:
               subPath: autobrr/config
       containers:
         - name: autobrr
-          image: ghcr.io/autobrr/autobrr:v1.80.0
+          image: ghcr.io/autobrr/autobrr:v1.81.0
           imagePullPolicy: IfNotPresent
           env:
             - name: TZ
