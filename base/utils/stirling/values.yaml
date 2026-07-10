@@ -10,15 +10,15 @@ persistence:
   size: 8Gi
   path: /configs
 
-# probes:
-#   liveness:
-#     initialDelaySeconds: 120
-#     periodSeconds: 30
-#     timeoutSeconds: 5
-#   readiness:
-#     initialDelaySeconds: 45
-#     periodSeconds: 15
-#     timeoutSeconds: 5
+probes:
+  liveness:
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+  readiness:
+    initialDelaySeconds: 45
+    periodSeconds: 15
+    timeoutSeconds: 5
 
 serviceMonitor:
   enabled: true
