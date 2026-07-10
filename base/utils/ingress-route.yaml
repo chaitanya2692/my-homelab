@@ -57,3 +57,15 @@ spec:
         - kind: Service
           name: immich-server
           port: 2283
+    - kind: Rule
+      match: Host(`stirling.my-homelab.party`)
+      priority: 0
+      middlewares:
+        - name: local-only
+          namespace: infra
+        - name: homelab-auth
+          namespace: infra
+      services:
+        - kind: Service
+          name: stirling-pdf
+          port: 8080

@@ -10,5 +10,6 @@ resources:
   - immich
   - tandoor
   - cnpg
+  - stirling
   - ingress-route.yaml
   - persistent-volume-claim.yaml

@@ -1,0 +1,27 @@
+fullnameOverride: stirling-pdf
+
+image:
+  tag: "2.5.1"
+
+envs:
+  - name: SECURITY_ENABLELOGIN
+    value: "false"
+
+persistence:
+  enabled: true
+  storageClass: local-path-utils
+  size: 8Gi
+  path: /configs
+
+deployment:
+  extraVolumeMounts:
+    - name: storage-volume
+      mountPath: /configs
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 2Gi

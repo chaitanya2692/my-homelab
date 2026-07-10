@@ -122,6 +122,10 @@ data:
             href: https://nextcloud.my-homelab.party
             description: File browser and more
             icon: nextcloud
+        - Stirling PDF:
+            href: https://stirling.my-homelab.party
+            description: PDF tools
+            icon: stirling-pdf
         - Pihole:
             href: http://192.168.1.50/admin/
             description: LAN Ad-blocker
