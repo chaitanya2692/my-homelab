@@ -105,7 +105,7 @@ spec:
               subPath: static
       containers:
         - name: tandoor-nginx
-          image: nginx:1.31.2
+          image: nginx:1.31.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
