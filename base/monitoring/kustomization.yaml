@@ -36,7 +36,7 @@ helmCharts:
 
   - name: jaeger
     repo: https://jaegertracing.github.io/helm-charts
-    version: 4.11.2
+    version: 4.12.0
     releaseName: jaeger
     namespace: monitoring
     includeCRDs: true
