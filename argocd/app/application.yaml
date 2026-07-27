@@ -19,7 +19,7 @@ spec:
       project: default
       source:
         repoURL: https://github.com/chaitanya2692/my-homelab.git
-        targetRevision: main
+        targetRevision: add-stirling
         path: overlays/{{path}}
       destination:
         server: https://kubernetes.default.svc
