@@ -44,6 +44,21 @@ spec:
       storage: 10Gi
 
 ---
+# PVC for Actual Budget application data
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: actual-data-pvc
+  namespace: utils
+spec:
+  storageClassName: local-path-utils
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+---
 # PVC for Tandoor application data (media, static files)
 apiVersion: v1
 kind: PersistentVolumeClaim
