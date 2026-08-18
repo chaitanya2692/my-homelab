@@ -18,7 +18,7 @@ spec:
       serviceAccountName: homepage
       containers:
         - name: homepage
-          image: ghcr.io/gethomepage/homepage:v1.13.2
+          image: ghcr.io/gethomepage/homepage:v2.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -28,6 +28,20 @@ spec:
               value: "CET"
             - name: HOMEPAGE_ALLOWED_HOSTS
               value: "*"
+            - name: HOMEPAGE_AUTH_ENABLED
+              value: "true"
+            - name: HOMEPAGE_EXTERNAL_URL
+              value: "https://home.my-homelab.party"
+            - name: HOMEPAGE_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: homepage-auth
+                  key: HOMEPAGE_AUTH_SECRET
+            - name: HOMEPAGE_AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homepage-auth
+                  key: HOMEPAGE_AUTH_PASSWORD
           readinessProbe:
             httpGet:
               path: /
