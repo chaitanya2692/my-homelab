@@ -19,7 +19,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: prowlarr
-          image: 11notes/prowlarr:2.5.2
+          image: 11notes/prowlarr:2.6.5
           imagePullPolicy: IfNotPresent
           resources:
             limits:
