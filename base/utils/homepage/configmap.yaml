@@ -122,6 +122,10 @@ data:
             href: https://nextcloud.my-homelab.party
             description: File browser and more
             icon: nextcloud
+        - PriceBuddy:
+            href: https://pricebuddy.my-homelab.party
+            description: Price tracker
+            icon: mdi-cash-sync
         - Pihole:
             href: http://192.168.1.50/admin/
             description: LAN Ad-blocker
