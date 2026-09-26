@@ -1,0 +1,24 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pricebuddy-db
+spec:
+  instances: 1
+  managed:
+    roles:
+      - name: pricebuddy
+        login: true
+  bootstrap:
+    initdb:
+      database: pricebuddy
+      owner: pricebuddy
+      secret:
+        name: pricebuddy-credentials
+  storage:
+    storageClass: local-path-utils
+    size: 5Gi
+  backup:
+    retentionPolicy: 30d
+    volumeSnapshot:
+      className: local-path-utils
+      snapshotOwnerReference: cluster
