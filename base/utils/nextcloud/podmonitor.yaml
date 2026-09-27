@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: redis
+  namespace: utils
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      run: redis
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics

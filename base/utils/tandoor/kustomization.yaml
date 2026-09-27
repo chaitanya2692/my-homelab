@@ -11,6 +11,7 @@ resources:
   - configmap.yaml
   - secrets.yaml
   - serviceaccount.yaml
+  - podmonitor.yaml
 
 labels:
   - includeSelectors: true

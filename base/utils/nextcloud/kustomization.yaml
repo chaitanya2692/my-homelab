@@ -12,6 +12,7 @@ resources:
   - postgres-cluster.yaml
   - redis-deployment.yaml
   - redis-service.yaml
+  - podmonitor.yaml
   - middleware.yaml
 
 generatorOptions:
