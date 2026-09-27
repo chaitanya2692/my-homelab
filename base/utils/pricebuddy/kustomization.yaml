@@ -8,5 +8,6 @@ resources:
   - persistent-volume-claim.yaml
   - postgres-cluster.yaml
   - database-migration-job.yaml
+  - swedish-stores-seed-job.yaml
   - deployment.yaml
   - service.yaml
