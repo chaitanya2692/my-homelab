@@ -974,6 +974,12 @@ spec:
         - args:
             - /usr/local/bin/argocd-applicationset-controller
           env:
+            - name: GRPC_ENABLE_TXT_SERVICE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.grpc.enable.txt.service.config
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATIONSET_CONTROLLER_GLOBAL_PRESERVED_ANNOTATIONS
               valueFrom:
                 configMapKeyRef:
@@ -1038,6 +1044,48 @@ spec:
                   key: log.format.timestamp
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_K8S_CLIENT_QPS
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.client.qps
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_BURST
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.client.burst
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_MAX_IDLE_CONNECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.client.max.idle.connections
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.tcp.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_KEEPALIVE
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.tcp.keepalive
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TLS_HANDSHAKE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.tls.handshake.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.k8s.tcp.idle.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATIONSET_CONTROLLER_DRY_RUN
               valueFrom:
                 configMapKeyRef:
@@ -1078,6 +1126,24 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: applicationsetcontroller.repo.server.strict.tls
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATIONSET_CONTROLLER_REPO_SERVER_CA_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.repo.server.ca.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATIONSET_CONTROLLER_REPO_SERVER_CLIENT_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.repo.server.client.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATIONSET_CONTROLLER_REPO_SERVER_CLIENT_CERT_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: applicationsetcontroller.repo.server.client.cert.key.path
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_APPLICATIONSET_CONTROLLER_REPO_SERVER_TIMEOUT_SECONDS
@@ -1170,6 +1236,8 @@ spec:
               name: tmp
             - mountPath: /app/config/reposerver/tls
               name: argocd-repo-server-tls
+            - mountPath: /app/config/reposerver/mtls
+              name: argocd-repo-server-mtls
             - mountPath: /home/argocd/params
               name: argocd-cmd-params-cm
       nodeSelector:
@@ -1200,6 +1268,17 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-repo-server-tls
+        - name: argocd-repo-server-mtls
+          secret:
+            items:
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
+              - key: server-ca.crt
+                path: server-ca.crt
+            optional: true
+            secretName: argocd-repo-server-mtls
         - configMap:
             items:
               - key: applicationsetcontroller.profile.enabled
@@ -1263,7 +1342,13 @@ spec:
                   key: dexserver.disable.tls
                   name: argocd-cmd-params-cm
                   optional: true
-          image: ghcr.io/dexidp/dex:v2.43.0
+            - name: DEX_CONTINUE_ON_CONNECTOR_FAILURE
+              valueFrom:
+                configMapKeyRef:
+                  key: dexserver.connector.failure.continue
+                  name: argocd-cmd-params-cm
+                  optional: true
+          image: ghcr.io/dexidp/dex:v2.45.1
           imagePullPolicy: Always
           name: dex
           ports:
@@ -1277,6 +1362,7 @@ spec:
                 - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
+            runAsUser: 1001
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:
@@ -1364,6 +1450,12 @@ spec:
                   key: notificationscontroller.log.level
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_NOTIFICATION_CONTROLLER_PROCESSORS_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  key: notificationscontroller.processors.count
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_LOG_FORMAT_TIMESTAMP
               valueFrom:
                 configMapKeyRef:
@@ -1388,6 +1480,24 @@ spec:
                   key: notificationscontroller.repo.server.plaintext
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_NOTIFICATION_CONTROLLER_REPO_SERVER_CA_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: notificationscontroller.repo.server.ca.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_NOTIFICATION_CONTROLLER_REPO_SERVER_CLIENT_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: notificationscontroller.repo.server.client.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_NOTIFICATION_CONTROLLER_REPO_SERVER_CLIENT_CERT_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: notificationscontroller.repo.server.client.cert.key.path
+                  name: argocd-cmd-params-cm
+                  optional: true
           image: quay.io/argoproj/argocd:v3.5.3
           imagePullPolicy: Always
           livenessProbe:
@@ -1405,6 +1515,8 @@ spec:
               name: tls-certs
             - mountPath: /app/config/reposerver/tls
               name: argocd-repo-server-tls
+            - mountPath: /app/config/reposerver/mtls
+              name: argocd-repo-server-mtls
           workingDir: /app
       nodeSelector:
         kubernetes.io/os: linux
@@ -1428,6 +1540,17 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-repo-server-tls
+        - name: argocd-repo-server-mtls
+          secret:
+            items:
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
+              - key: server-ca.crt
+                path: server-ca.crt
+            optional: true
+            secretName: argocd-repo-server-mtls
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1474,7 +1597,7 @@ spec:
                 secretKeyRef:
                   key: auth
                   name: argocd-redis
-          image: public.ecr.aws/docker/library/redis:8.10.2-alpine
+          image: public.ecr.aws/docker/library/redis:8.2.3-alpine
           imagePullPolicy: Always
           name: redis
           ports:
@@ -1553,6 +1676,12 @@ spec:
                 secretKeyRef:
                   key: auth
                   name: argocd-redis
+            - name: GRPC_ENABLE_TXT_SERVICE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: reposerver.grpc.enable.txt.service.config
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_RECONCILIATION_TIMEOUT
               valueFrom:
                 configMapKeyRef:
@@ -1617,6 +1746,12 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: reposerver.tls.ciphers
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_REPO_SERVER_CLIENT_CA_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: reposerver.client.ca.path
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_REPO_CACHE_EXPIRATION
@@ -1781,6 +1916,12 @@ spec:
                   key: reposerver.include.hidden.directories
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_HELM_USER_AGENT
+              valueFrom:
+                configMapKeyRef:
+                  key: reposerver.helm.user.agent
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: HELM_CACHE_HOME
               value: /helm-working-dir
             - name: HELM_CONFIG_HOME
@@ -1827,12 +1968,16 @@ spec:
               name: gpg-keyring
             - mountPath: /app/config/reposerver/tls
               name: argocd-repo-server-tls
+            - mountPath: /app/config/reposerver/mtls
+              name: argocd-repo-server-mtls
             - mountPath: /tmp
               name: tmp
             - mountPath: /helm-working-dir
               name: helm-working-dir
             - mountPath: /home/argocd/cmp-server/plugins
               name: plugins
+            - mountPath: /home/argocd/params
+              name: argocd-cmd-params-cm
       initContainers:
         - args:
             - /bin/cp /usr/local/bin/argocd /var/run/argocd/argocd && /bin/ln -sf /var/run/argocd/argocd /var/run/argocd/argocd-cmp-server
@@ -1883,10 +2028,24 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-repo-server-tls
+        - name: argocd-repo-server-mtls
+          secret:
+            items:
+              - key: client-ca.crt
+                path: client-ca.crt
+            optional: true
+            secretName: argocd-repo-server-mtls
         - emptyDir: {}
           name: var-files
         - emptyDir: {}
           name: plugins
+        - configMap:
+            items:
+              - key: reposerver.profile.enabled
+                path: profiler.enabled
+            name: argocd-cmd-params-cm
+            optional: true
+          name: argocd-cmd-params-cm
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1929,6 +2088,12 @@ spec:
                 secretKeyRef:
                   key: auth
                   name: argocd-redis
+            - name: GRPC_ENABLE_TXT_SERVICE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: server.grpc.enable.txt.service.config
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_SERVER_INSECURE
               valueFrom:
                 configMapKeyRef:
@@ -1957,6 +2122,48 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: server.log.level
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_QPS
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.client.qps
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_BURST
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.client.burst
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_MAX_IDLE_CONNECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.client.max.idle.connections
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.tcp.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_KEEPALIVE
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.tcp.keepalive
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TLS_HANDSHAKE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.tls.handshake.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: server.k8s.tcp.idle.timeout
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_SERVER_REPO_SERVER
@@ -2011,6 +2218,24 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: server.repo.server.strict.tls
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_SERVER_REPO_SERVER_CA_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: server.repo.server.ca.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_SERVER_REPO_SERVER_CLIENT_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: server.repo.server.client.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_SERVER_REPO_SERVER_CLIENT_CERT_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: server.repo.server.client.cert.key.path
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_SERVER_DEX_SERVER_PLAINTEXT
@@ -2169,6 +2394,18 @@ spec:
                   key: server.webhook.parallelism.limit
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_SERVER_GLOB_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  key: server.glob.cache.size
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_SERVER_WEBHOOK_REFRESH_WORKERS
+              valueFrom:
+                configMapKeyRef:
+                  key: server.webhook.refresh.workers
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATIONSET_CONTROLLER_ENABLE_NEW_GIT_FILE_GLOBBING
               valueFrom:
                 configMapKeyRef:
@@ -2246,6 +2483,8 @@ spec:
               name: tls-certs
             - mountPath: /app/config/server/tls
               name: argocd-repo-server-tls
+            - mountPath: /app/config/reposerver/mtls
+              name: argocd-repo-server-mtls
             - mountPath: /app/config/dex/tls
               name: argocd-dex-server-tls
             - mountPath: /home/argocd
@@ -2288,6 +2527,17 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-dex-server-tls
+        - name: argocd-repo-server-mtls
+          secret:
+            items:
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
+              - key: server-ca.crt
+                path: server-ca.crt
+            optional: true
+            secretName: argocd-repo-server-mtls
         - configMap:
             items:
               - key: server.profile.enabled
@@ -2339,6 +2589,12 @@ spec:
                 secretKeyRef:
                   key: auth
                   name: argocd-redis
+            - name: GRPC_ENABLE_TXT_SERVICE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.grpc.enable.txt.service.config
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_CONTROLLER_REPLICAS
               value: "1"
             - name: ARGOCD_RECONCILIATION_TIMEOUT
@@ -2389,6 +2645,12 @@ spec:
                   key: controller.operation.processors
                   name: argocd-cmd-params-cm
                   optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_HYDRATION_PROCESSORS
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.hydration.processors
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_APPLICATION_CONTROLLER_LOGFORMAT
               valueFrom:
                 configMapKeyRef:
@@ -2405,6 +2667,48 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: log.format.timestamp
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_QPS
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.client.qps
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_BURST
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.client.burst
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_CLIENT_MAX_IDLE_CONNECTIONS
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.client.max.idle.connections
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.tcp.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_KEEPALIVE
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.tcp.keepalive
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TLS_HANDSHAKE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.tls.handshake.timeout
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_K8S_TCP_IDLE_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.k8s.tcp.idle.timeout
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_APPLICATION_CONTROLLER_METRICS_CACHE_EXPIRATION
@@ -2465,6 +2769,24 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: controller.repo.server.strict.tls
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER_CA_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.repo.server.ca.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER_CLIENT_CERT_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.repo.server.client.cert.path
+                  name: argocd-cmd-params-cm
+                  optional: true
+            - name: ARGOCD_APPLICATION_CONTROLLER_REPO_SERVER_CLIENT_CERT_KEY_PATH
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.repo.server.client.cert.key.path
                   name: argocd-cmd-params-cm
                   optional: true
             - name: ARGOCD_APPLICATION_CONTROLLER_PERSIST_RESOURCE_HEALTH
@@ -2618,6 +2940,8 @@ spec:
           volumeMounts:
             - mountPath: /app/config/controller/tls
               name: argocd-repo-server-tls
+            - mountPath: /app/config/reposerver/mtls
+              name: argocd-repo-server-mtls
             - mountPath: /home/argocd
               name: argocd-home
             - mountPath: /home/argocd/params
@@ -2644,6 +2968,17 @@ spec:
                 path: ca.crt
             optional: true
             secretName: argocd-repo-server-tls
+        - name: argocd-repo-server-mtls
+          secret:
+            items:
+              - key: client.crt
+                path: client.crt
+              - key: client.key
+                path: client.key
+              - key: server-ca.crt
+                path: server-ca.crt
+            optional: true
+            secretName: argocd-repo-server-mtls
         - configMap:
             items:
               - key: controller.profile.enabled
