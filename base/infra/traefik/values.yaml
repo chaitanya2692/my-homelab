@@ -7,22 +7,6 @@ global:
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
 
-experimental:
-  plugins:
-    crowdsec-bouncer:
-      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      version: v1.6.0
-
-additionalVolumeMounts:
-  - name: crowdsec-bouncer-key
-    mountPath: /etc/traefik/crowdsec
-    readOnly: true
-
-deployment:
-  additionalVolumes:
-    - name: crowdsec-bouncer-key
-      secret:
-        secretName: crowdsec-bouncer-key
 
 log:
   accessLog:

@@ -9,7 +9,6 @@ resources:
   - nextcloud
   - immich
   - tandoor
-  - pricebuddy
   - cnpg
   - ingress-route.yaml
   - persistent-volume-claim.yaml

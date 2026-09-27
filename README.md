@@ -82,7 +82,6 @@ easy addition of new services while maintaining security and reliability.
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/traefik.svg" alt="Traefik logo" height="40"> | [Traefik](https://traefik.io/) | Ingress Controller |
 | <img src="https://raw.githubusercontent.com/cert-manager/cert-manager/master/logo/logo.svg" alt="cert-manager logo" height="40"> | [cert-manager](https://cert-manager.io/) | Certificate Management |
 | <img src="https://raw.githubusercontent.com/metallb/metallb/main/website/static/images/logo/metallb-blue.svg" alt="MetalLB logo" height="40"> | [MetalLB](https://metallb.universe.tf/) | Load Balancer |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/crowdsec.svg" alt="CrowdSec logo" height="40"> | [CrowdSec](https://www.crowdsec.net/) | Edge Security & AppSec |
 | <img src="https://avatars.githubusercontent.com/u/34656521" alt="Sealed Secrets logo" height="40"> | [Sealed Secrets](https://sealed-secrets.netlify.app/) | GitOps Secret Management |
 
 ### 🔭 Observability
@@ -179,8 +178,6 @@ Features:
   - Custom middleware chains
 
 - 🧱 Edge Protection
-  - CrowdSec Traefik bouncer plugin
-  - CrowdSec AppSec virtual patching
   - Local-only middleware for internal tools
 
 
@@ -447,14 +444,6 @@ The security framework is built on multiple layers of protection:
   - Sealed Secrets controller runs in the `infra` namespace
   - `scripts/seal-secrets.sh` discovers and seals secret manifests under `base/`
   - Pre-commit hook prevents plaintext secret drift before commit
-
-#### Edge Protection
-
-- 🧱 **CrowdSec Integration**
-  - Traefik access logs feed CrowdSec agent
-  - LAPI and AppSec services run in `infra`
-  - Traefik bouncer middleware blocks malicious requests
-  - Virtual patching and OWASP CRS rules protect exposed services
 
 #### DNS Security
 
