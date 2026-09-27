@@ -49,11 +49,9 @@ easy addition of new services while maintaining security and reliability.
   - Automated dependency management (Renovate)
 
 - 📊 **Enterprise Monitoring**
-  - Full observability stack (Prometheus, Grafana, Loki, Jaeger)
+  - Prometheus metrics collection and Grafana dashboards
   - Pre-configured Grafana dashboards for all services
   - ServiceMonitor-based metrics collection
-  - Distributed tracing
-  - Centralized logging
   - Performance analytics
 
 - 🎛️ **Advanced Networking**
@@ -93,10 +91,6 @@ easy addition of new services while maintaining security and reliability.
 | ------ | ------ | ------ |
 | <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/prometheus.svg" alt="Prometheus logo" height="40"> | [Prometheus](https://prometheus.io/) | Metrics Collection |
 | <img src="https://raw.githubusercontent.com/grafana/grafana/main/public/img/grafana_icon.svg" alt="Grafana logo" height="40"> | [Grafana](https://grafana.com/) | Visualization |
-| <img src="https://grafana.com/static/img/logos/logo-loki.svg" alt="Loki logo" height="40"> | [Loki](https://grafana.com/oss/loki/) | Log Aggregation |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/jaeger.svg" alt="Jaeger logo" height="40"> | [Jaeger](https://www.jaegertracing.io/) | Distributed Tracing |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alloy.svg" alt="Grafana Alloy logo" height="40"> | [Grafana Alloy](https://grafana.com/oss/alloy-opentelemetry-collector/) | OpenTelemetry Collector |
-| <img src="https://raw.githubusercontent.com/homarr-labs/dashboard-icons/refs/heads/main/svg/alertmanager.svg" alt="Alertmanager logo" height="40"> | [Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/) | Alert Routing |
 
 ### ☁️ Personal Cloud
 
@@ -150,8 +144,7 @@ Kubernetes service. Here's the detailed breakdown:
   - `argocd`: GitOps controller and ApplicationSet bootstrap
   - `htpc`: Media management and streaming services
   - `infra`: Core infrastructure components
-  - `monitoring`: Metrics, logs, traces, dashboards, and alerting
-  - `utils`: Personal cloud applications and shared data services
+  - `monitoring`: Metrics and dashboards
   - Resource isolation and quota management
 
 > 💡 **Architecture Note**: The infrastructure follows the principle of separation
@@ -190,10 +183,6 @@ Features:
   - CrowdSec AppSec virtual patching
   - Local-only middleware for internal tools
 
-- 📈 Telemetry
-  - Prometheus metrics and ServiceMonitor support
-  - OTLP traces sent to Jaeger
-```
 
 > 💡 **Design Choice**: Traefik was chosen for its ease of configuration,
 > Kubernetes-native integration, and robust feature set that allows for
@@ -252,7 +241,6 @@ The storage architecture is designed with the following principles:
 | htpc | htpc-pvc | 500Gi | Media & App Data | High throughput, large files |
 | infra | traefik-data-pvc | 1Gi | Traefik ACME/runtime data | Small persistent config |
 | monitoring | grafana-data-pvc | 5Gi | Dashboards | Fast random access |
-| | alloy-data-pvc | 10Gi | Alloy state | Log pipeline durability |
 | utils | immich-library-pvc | 20Gi | Photos/Videos | Mixed IO patterns |
 | | immich-valkey-pvc | 5Gi | Cache | In-memory performance |
 | | immich-ml-cache-pvc | 10Gi | ML Models | Read-optimized |
@@ -491,8 +479,7 @@ Structure:
     # Core service definitions
     htpc/        # Media services
     infra/       # Infrastructure, ingress, security, storage
-    monitoring/  # Metrics, logs, traces, dashboards
-    utils/       # Utility services
+    monitoring/  # Metrics and dashboards
 ```
 
 #### Environment Overlays
@@ -660,7 +647,7 @@ Features:
 
 ### 10. 📊 Observability Architecture
 
-The monitoring system is built on three pillars: metrics, logs, and traces.
+The monitoring system collects metrics with Prometheus and visualizes them in Grafana.
 
 #### Metrics Collection
 
@@ -671,37 +658,22 @@ The monitoring system is built on three pillars: metrics, logs, and traces.
 | Node Exporter | System Metrics | - Hardware stats<br>- System load<br>- Network usage |
 | ServiceMonitor | Service Discovery | - ArgoCD<br>- Scraparr<br>- cert-manager<br>- CNPG operator |
 
-#### Log Management
+#### Grafana Dashboards
 
-| Component | Role | Features |
-| ----------- | ------ | ---------- |
-| Loki | Log Aggregation | - Label-based queries<br>- Log correlation<br>- Real-time tailing |
-| Alloy | Log Collection | - Service discovery<br>- Label extraction<br>- Pipeline processing |
-
-#### Tracing
-
-| Component | Purpose | Capabilities |
-| ----------- | --------- | ------------- |
-| Jaeger | Request Tracing | - Latency analysis<br>- Error tracking<br>- Dependency mapping |
-
-#### Visualization & Alerting
-
-Pre-configured Grafana dashboards for comprehensive monitoring:
+Pre-configured Grafana dashboards for metrics monitoring:
 
 | Dashboard | Focus | Features |
 | ----------- | ------- | ---------- |
 | ArgoCD | GitOps Operations | - Application sync status<br>- Deployment health<br>- API activity |
 | cert-manager | Certificate Management | - Certificate expiry<br>- Renewal status<br>- Issuer health |
 | Kubernetes | Cluster Health | - Resource usage<br>- Node status<br>- Pod metrics |
-| Loki | Log Aggregation | - Log volume<br>- Error rates<br>- Query performance |
 | Scraparr | Media Automation | - Service health<br>- Request metrics<br>- Error tracking |
-| HTPC | Media Services | - Arr stack metrics<br>- Error Log<br>- Resource limit recomendations |
+| HTPC | Media Services | - Arr stack metrics<br>- Resource limit recommendations |
 | System Health | Infrastructure | - Resource usage<br>- Node status<br>- Network stats |
 | Media Status | Content | - Download progress<br>- Library status<br>- Quality metrics |
 | Application | Services | - Response times<br>- Error rates<br>- Request volume |
 
-> 💡 **Observability Philosophy**: Complete system visibility with correlation
-> across metrics, logs, and traces for rapid problem resolution.
+> 💡 **Monitoring Philosophy**: Metrics and dashboards for rapid problem resolution.
 
 ## 🚀 Deployment Guide
 

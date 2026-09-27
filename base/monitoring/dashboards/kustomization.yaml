@@ -6,5 +6,4 @@ resources:
   - cert-manager-dashboard-cm.yaml
   - htpc-dashboard-cm.yaml
   - k8s-dashboard-cm.yaml
-  - loki-dashboard-cm.yaml
   - scraparr-dashboard-cm.yaml

@@ -23,11 +23,6 @@ grafana:
     datasources:
       enabled: true
       skipTlsVerify: true
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      uid: loki
-      url: http://loki.monitoring.svc.cluster.local:3100
 
 prometheus:
   enabled: true
@@ -44,8 +39,62 @@ prometheus:
     retention: 7d
     enableAdminAPI: true
     walCompression: true
-    enableFeatures:
-      - remote-write-receiver
+    additionalScrapeConfigs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_scrape
+            action: keep
+            regex: "true"
+          - source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_path
+            target_label: __metrics_path__
+            regex: "(.+)"
+            replacement: $1
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_annotation_prometheus_io_path
+            target_label: __metrics_path__
+            regex: ^$
+            replacement: /metrics
+            action: replace
+          - source_labels:
+              - __address__
+              - __meta_kubernetes_pod_annotation_prometheus_io_port
+            target_label: __address__
+            regex: '([^:]+)(?::\d+)?;(\d+)'
+            replacement: $1:$2
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_namespace
+            target_label: kubernetes_namespace
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_name
+            target_label: kubernetes_pod_name
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_container_name
+            target_label: container_name
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_label_app
+            target_label: app
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_name
+            target_label: app_kubernetes_io_name
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_label_app_kubernetes_io_instance
+            target_label: app_kubernetes_io_instance
+            action: replace
+          - source_labels:
+              - __meta_kubernetes_pod_label_run
+            target_label: run
+            action: replace
     resources:
       requests:
         cpu: "150m"
@@ -121,20 +170,7 @@ kube-state-metrics:
       cpu: "200m"
 
 alertmanager:
-  enabled: true
-  fullnameOverride: alertmanager
-  serviceAccount:
-    create: true
-    name: kube-prometheus-stack-alertmanager
-  alertmanagerSpec:
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "50m"
-      limits:
-        memory: "128Mi"
-        cpu: "100m"
-
+  enabled: false
 kubeApiServer:
   enabled: true
 

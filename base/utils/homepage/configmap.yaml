@@ -86,18 +86,6 @@ data:
             href: https://prometheus.my-homelab.party
             description: Metrics Collection
             icon: prometheus
-        - Alertmanager:
-            href: https://alertmanager.my-homelab.party
-            description: Alert Management
-            icon: alertmanager
-        - Jaeger:
-            href: https://jaeger.my-homelab.party
-            description: Distributed Tracing
-            icon: jaeger
-        - Alloy:
-            href: https://alloy.my-homelab.party
-            description: Observability Platform
-            icon: alloy
 
     - Infrastructure:
         - Traefik:
