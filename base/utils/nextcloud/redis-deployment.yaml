@@ -14,9 +14,6 @@ spec:
     metadata:
       labels:
         run: redis
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9121"
     spec:
       containers:
         - name: redis

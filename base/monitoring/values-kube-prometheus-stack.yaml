@@ -23,11 +23,6 @@ grafana:
     datasources:
       enabled: true
       skipTlsVerify: true
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      uid: loki
-      url: http://loki.monitoring.svc.cluster.local:3100
 
 prometheus:
   enabled: true
@@ -44,8 +39,6 @@ prometheus:
     retention: 7d
     enableAdminAPI: true
     walCompression: true
-    enableFeatures:
-      - remote-write-receiver
     resources:
       requests:
         cpu: "150m"
@@ -121,20 +114,7 @@ kube-state-metrics:
       cpu: "200m"
 
 alertmanager:
-  enabled: true
-  fullnameOverride: alertmanager
-  serviceAccount:
-    create: true
-    name: kube-prometheus-stack-alertmanager
-  alertmanagerSpec:
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "50m"
-      limits:
-        memory: "128Mi"
-        cpu: "100m"
-
+  enabled: false
 kubeApiServer:
   enabled: true
 

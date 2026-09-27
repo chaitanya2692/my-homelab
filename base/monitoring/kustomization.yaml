@@ -17,27 +17,3 @@ helmCharts:
     namespace: monitoring
     valuesFile: values-kube-prometheus-stack.yaml
     includeCRDs: true
-
-  - name: loki
-    repo: https://grafana.github.io/helm-charts
-    version: 7.3.0
-    releaseName: loki
-    namespace: monitoring
-    includeCRDs: true
-    valuesFile: values-loki.yaml
-
-  - name: alloy
-    repo: https://grafana.github.io/helm-charts
-    version: 1.13.0
-    releaseName: alloy
-    namespace: monitoring
-    includeCRDs: true
-    valuesFile: values-alloy.yaml
-
-  - name: jaeger
-    repo: https://jaegertracing.github.io/helm-charts
-    version: 4.14.0
-    releaseName: jaeger
-    namespace: monitoring
-    includeCRDs: true
-    valuesFile: values-jaeger.yaml
