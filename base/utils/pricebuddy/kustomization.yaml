@@ -7,5 +7,6 @@ resources:
   - secrets.yaml
   - persistent-volume-claim.yaml
   - postgres-cluster.yaml
+  - database-migration-job.yaml
   - deployment.yaml
   - service.yaml
