@@ -1,0 +1,74 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pricebuddy-migrate-notifications-json-v2
+  labels:
+    app.kubernetes.io/name: pricebuddy
+    app.kubernetes.io/component: database-migration
+spec:
+  activeDeadlineSeconds: 600
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pricebuddy
+        app.kubernetes.io/component: database-migration
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: ghcr.io/cloudnative-pg/postgresql:18.6-system-trixie
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -ec
+          args:
+            - |
+              until [ "$(psql -XtAc "SELECT to_regclass('public.notifications') IS NOT NULL")" = "t" ]; do
+                sleep 5
+              done
+
+              # PriceBuddy v1.0.54 creates text; Filament's PostgreSQL query requires JSON.
+              # Upstream: https://github.com/jez500/pricebuddy/issues/48
+
+              data_type="$(psql -XtAc "SELECT data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'notifications' AND column_name = 'data'")"
+              case "$data_type" in
+                text)
+                  psql -v ON_ERROR_STOP=1 -c "ALTER TABLE public.notifications ALTER COLUMN data TYPE json USING data::json"
+                  ;;
+                json)
+                  ;;
+                *)
+                  echo "Unexpected notifications.data type: $data_type" >&2
+                  exit 1
+                  ;;
+              esac
+          env:
+            - name: PGHOST
+              value: pricebuddy-db-rw
+            - name: PGPORT
+              value: "5432"
+            - name: PGDATABASE
+              value: pricebuddy
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: pricebuddy-credentials
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pricebuddy-credentials
+                  key: password
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
