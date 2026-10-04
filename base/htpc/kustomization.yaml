@@ -13,7 +13,6 @@ resources:
   - radarr
   - sonarr
   - scraparr
-  - autobrr
   - ingress-route.yaml
   - persistent-volume-claim.yaml
   - network-policy.yaml
