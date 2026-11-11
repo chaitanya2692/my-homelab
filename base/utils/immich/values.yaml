@@ -3,7 +3,7 @@ controllers:
     containers:
       main:
         image:
-          tag: v3.3.6
+          tag: v3.4.1
         env:
           DB_HOSTNAME:
             value: immich-rw
