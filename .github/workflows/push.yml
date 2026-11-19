@@ -4,7 +4,7 @@ on: [pull_request] # yamllint disable-line rule:truthy
 
 jobs:
   yaml-lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7.0.1
       - name: yaml-lint
@@ -13,7 +13,7 @@ jobs:
           config_file: .yamllint.yml
 
   markdownlint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7.0.1
       - name: markdownlint-cli2-action
@@ -24,22 +24,18 @@ jobs:
           config: .markdownlint-cli2.yaml
 
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [markdownlint, yaml-lint]
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-      - name: Setup yq
-        uses: fluxcd/pkg/actions/yq@main
       - name: Setup kubeconform
         uses: fluxcd/pkg/actions/kubeconform@main
-      - name: Setup kustomize
-        uses: fluxcd/pkg/actions/kustomize@main
       - name: Validate manifests
         run: ./scripts/validate.sh
 
   detect-secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     needs: [yaml-lint]
     steps:
       - name: Checkout
@@ -53,7 +49,7 @@ jobs:
 
   test-build:
     needs: [validate, detect-secrets]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
